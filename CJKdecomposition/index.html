@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<html>
+
+<head>
+    <title>
+        Decomposition
+    </title>
+
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+
+        td {
+            padding: 5px;
+        }
+
+        .char {
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid black;
+        }
+
+        #view,
+        #search,
+        #negSearch {
+            width: 200px;
+            font-size: 70px;
+            font-family: 'Fsung-1', 'Fsung-2', 'Fsung-3', 'SimSun', 'Times New Roman', serif;
+            /* font-family:'Nom Na Tong','HAN NOM A','HAN NOM B',Sun-ExtA,Sun-ExtB,Ming-Lt-HKSCS-UNI-H,Ming-Lt-HKSCS-ExtB,HanaMinA,HanaMinB,HanaMin,'PingFang TC',MingLiU,MingLiU-ExtB,'MingLiU_HKSCS','MingLiU_HKSCS-ExtB',SimSun,SimSun-ExtB,'Arial Unicode MS','TITUS Cyberbit Basic',sans-serif; */
+        }
+
+        .searchResult {
+            /* background-color: #f1f3f4; */
+            box-shadow: 0 1px 1px 0 rgba(52,27,159,.1);
+            font-size: 2rem;
+            margin: 12px 6px 6px;
+            padding: 0.375rem 0.25rem;
+        }
+
+        input,
+        button {
+            font-size: 24px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            font-size: 24px;
+            font-family: 'Fsung-1', 'Fsung-2', 'Fsung-3', 'SimSun', 'Times New Roman', serif;
+            /* font-family: 'Nom Na Tong','HAN NOM A','HAN NOM B',Sun-ExtA,Sun-ExtB,Ming-Lt-HKSCS-UNI-H,Ming-Lt-HKSCS-ExtB,HanaMinA,HanaMinB,HanaMin,'PingFang TC',MingLiU,MingLiU-ExtB,'MingLiU_HKSCS','MingLiU_HKSCS-ExtB',SimSun,SimSun-ExtB,'Arial Unicode MS','TITUS Cyberbit Basic',sans-serif; */
+        }
+
+        .container {
+            display: flex;
+        }
+
+        .container.space-around {
+            justify-content: space-around;
+        }
+
+        .container.space-between {
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <table id="outtable">
+        <tbody>
+            <tr>
+                <td colspan="6">
+                    <button title="Previous characters" onclick="setPage(page - 1)" style="width:70px;">«</button>
+                    <button title="Next characters" onclick="setPage(page + 1)" style="width:70px;">»</button>
+                    <input type="number" id="pageInput" value="78" oninput="setPage(this.value);" style="width:80px;">
+                </td>
+            </tr>
+            <tr>
+                <td>View: <button onclick="copy(view.value);">Copy</button></td>
+                <td onclick="copy(document.getElementById('uni').value);">Unicode:</td>
+                <td>Decimal:</td>
+                <td>Pinyin:</td>
+                <td>Strokes:</td>
+                <td>Components:</td>
+                <td>Definition:</td>
+            </tr>
+            <tr>
+                <td><input maxlength="2" id="view" onchange="findChar(this.value);"></td>
+                <td onclick="copy(this.textContent);">
+                    <input size="10" id="uni" onchange="findUni(this.value);">
+                </td>
+                <td id="dec" onclick="copy(this.textContent);"></td>
+                <td id="read" onclick="copy(this.textContent);"></td>
+                <td id="stroke" onclick="copy(this.textContent);"></td>
+                <td id="ids" onclick="copy(this.textContent);"></td>
+                <td id="def" onclick="copy(this.textContent);"></td>
+            </tr>
+        </tbody>
+    </table>
+    <br>
+    <table>
+        <tbody id="body">
+        </tbody>
+    </table>
+
+    <div>
+        <input type="checkbox" onchange="hideCDP = !hideCDP;" checked>hideCDP<br>
+        Search depth: <select id="searchDepth">
+            <option value="0" selected>Recursive</option>
+            <option value="1">1 stroke away</option>
+            <option value="2">Superficial</option>
+        </select>
+        Range: <input id="searchStart" size="10" value="3400"> to <input id="searchEnd" size="10" value="323B0">
+        Max results: <input type="number" id="maxResults" style="width: 150px;" value="10000"><br>
+
+        <button onclick="searchChar(document.getElementById('search').value);">Search</button>
+        <input id="search">
+        Filter out:
+        <input id="negSearch">
+
+        <div id="result_div">
+            Components: <span id="result_components"></span>
+            <br>
+            <div id="results">Click any of Unicode (the heading), Decimal, Pinyin, Components, Definition to highlight
+                it.</div>
+        </div>
+    </div>
+
+    <ul id="verbose"></ul>
+
+    <script src="readings.js"></script>
+    <script src="ids.js"></script>
+    <!-- <script src="names.js"></script> -->
+    <script src="search_ids.js"></script>
+</body>
+
+</html>
