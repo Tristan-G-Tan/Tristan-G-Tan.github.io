@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Unicode Font Generator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      padding: 18px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    #source {
+      font-family: 'Times New Roman', Times, serif;
+      resize: none;
+      field-sizing: content;
+      width: 100%;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      min-height: 34px;
+      font-size: 18px;
+      word-break: break-word;
+      background: #fafafa;
+    }
+
+    .block {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 10px 0 24px;
+    }
+
+    .out {
+      font-family: 'Times New Roman', Times, serif;
+      flex: 1;
+      white-space: pre-wrap;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      min-height: 34px;
+      display: flex;
+      align-items: center;
+      font-size: 18px;
+      word-break: break-word;
+      background: #fafafa;
+    }
+
+    button.copy {
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid #bbb;
+      background: white;
+      cursor: pointer;
+    }
+
+    h2 {
+      font-size: 16px;
+      margin: 6px 0 6px;
+      display: block;
+      font-weight: 700;
+    }
+
+    .meta {
+      color: #666;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    footer {
+      margin-top: 30px;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Unicode Font Generator</h1>
+  <p class="meta">Type in the box below. Each "font" is a Unicode transformation (Mathematical Alphanumeric Symbols /
+    related blocks).</p>
+
+  <h2>Font 0: Serif (Type in here!)</h2>
+  <textarea id="source">ABCDEFGHIJKLMNOPQRSTUVWXYZ
+abcdefghijklmnopqrstuvwxyzıȷ
+0123456789
+ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ∇ΣΤΥΦΧΨΩϜ
+αβγδεζηθικλμνξοπρςστυφχψω∂ϵϑϰϕϱϖϝ</textarea>
+  <div id="results"></div>
+
+  <footer>Mapping scraped from <a
+      href="https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols#Tables_of_styled_letters_and_digits">Wikipedia</a>.
+    If a glyph is not present on your system, it may display as a box or fall back font. Hope you found this tool
+    helpful!</footer>
+
+  <script>
+    /*
+      Styles chosen & codepoint starts taken from the mapping table you provided (Mathematical Alphanumeric Symbols).
+      For each style we provide an uppercaseStart and lowercaseStart (both in hex). When mapping, A..Z -> start + (ch - 'A')
+      and a..z -> start + (ch - 'a'). Non-letters are left unchanged.
+    
+      The 13 styles (titles chosen to match examples you requested) and the Unicode starts come from the table
+      you pasted (these are the standard block starts for the mathematical alphabets).
+    */
+
+    const styles = [
+      { name: "Serif Bold", latinUp: 0x1D400, latinLow: 0x1D41A, digits: 0x1D7CE, greekUp: 0x1D6A8, greekLow: 0x1D6C2 },
+      { name: "Serif Italic", latinUp: 0x1D434, latinLow: 0x1D44E, greekUp: 0x1D6E2, greekLow: 0x1D6FC },
+      { name: "Serif Bold Italic", latinUp: 0x1D468, latinLow: 0x1D482, greekUp: 0x1D71C, greekLow: 0x1D736 },
+      { name: "Sans-serif", latinUp: 0x1D5A0, latinLow: 0x1D5BA, digits: 0x1D7E2 },
+      { name: "Sans-serif Bold", latinUp: 0x1D5D4, latinLow: 0x1D5EE, digits: 0x1D7EC, greekUp: 0x1D756, greekLow: 0x1D770 },
+      { name: "Sans-serif Italic", latinUp: 0x1D608, latinLow: 0x1D622 },
+      { name: "Sans-serif Bold Italic", latinUp: 0x1D63C, latinLow: 0x1D656, greekUp: 0x1D790, greekLow: 0x1D7AA },
+      { name: "Script (calligraphy)", latinUp: 0x1D49C, latinLow: 0x1D4B6 },
+      { name: "Bold Script", latinUp: 0x1D4D0, latinLow: 0x1D4EA },
+      { name: "Double-struck", latinUp: 0x1D538, latinLow: 0x1D552, digits: 0x1D7D8 },
+      { name: "Mono-space", latinUp: 0x1D670, latinLow: 0x1D68A, digits: 0x1D7F6 },
+      { name: "Fraktur", latinUp: 0x1D504, latinLow: 0x1D51E },
+      { name: "Bold Fraktur", latinUp: 0x1D56C, latinLow: 0x1D586 }
+    ];
+
+    // Some styles (script, fraktur, double-struck) have gaps for certain letters in Unicode;
+    // the simple mapping above may produce an unassigned codepoint — handle by falling back if necessary.
+    // We'll produce the candidate transformed string, and if a character turns into an unprintable placeholder,
+    // we will leave that character as the original.
+    function transformChar(code, style) {
+      // let exceptions = ['ℬ', 'ℭ', 'ℂ', 'ℰ', 'ℱ', 'ℋ', 'ℌ', 'ℍ', 'ℐ', 'ℑ', 'ℒ', 'ℳ', 'ℕ', 'ℙ', 'ℚ', 'ℛ', 'ℜ', 'ℝ', 'ℨ', 'ℤ', 'ℯ', 'ℊ', 'ℎ', 'ℴ'];
+
+      // red highlights
+      switch (style.name) {
+        case "Serif Italic":
+          switch (code) {
+            case 104: // h
+              return 8462;
+          }
+          break
+        case "Script (calligraphy)":
+          switch (code) {
+            case 66: // B
+              return 8492;
+            case 69: // E
+              return 8496;
+            case 70: // F
+              return 8497;
+            case 72: // H
+              return 8459;
+            case 73: // I
+              return 8464;
+            case 76: // L
+              return 8466;
+            case 77: // M
+              return 8499;
+            case 82: // R
+              return 8475;
+            case 101: // e
+              return 8495;
+            case 103: // g
+              return 8458;
+            case 111: // o
+              return 8500;
+          }
+          break
+        case "Fraktur":
+          switch (code) {
+            case 67: // C
+              return 8493;
+            case 72: // H
+              return 8460;
+            case 73: // I
+              return 8465;
+            case 82: // R
+              return 8476;
+            case 90: // Z
+              return 8488;
+          }
+          break
+        case "Double-struck":
+          switch (code) {
+            case 67: // C
+              return 8450;
+            case 72: // H
+              return 8461;
+            case 78: // N
+              return 8469;
+            case 80: // P
+              return 8473;
+            case 81: // Q
+              return 8474;
+            case 82: // R
+              return 8477;
+            case 90: // Z
+              return 8484;
+          }
+          break
+      }
+      switch (code) {
+        // red highlights
+        // case 66: // B
+        //   if (style.name === "Script (calligraphy)")
+        //     return 8492;
+        //   break;
+        // case 67: // C
+        //   switch (style.name) {
+        //     case "Fraktur":
+        //       return 8493;
+        //     case "Double-struck":
+        //       return 8450;
+        //   }
+        //   break;
+
+        // yellow highlights; map them onto the blank spots in the Greek unicode block
+        case 1012: // ϴ
+          if (style.greekUp) {
+            code = 930;
+            break;
+          }
+          return code;
+        case 8711: // ∇
+          if (style.greekUp) {
+            code = 938;
+            break;
+          }
+          return code;
+        case 8706: // ∂
+          if (style.greekLow) {
+            code = 970;
+            break;
+          }
+          return code;
+        case 1013: // ϵ
+          if (style.greekLow) {
+            code = 971;
+            break;
+          }
+          return code;
+        case 977: // ϑ
+          if (style.greekLow) {
+            code = 972;
+            break;
+          }
+          return code;
+        case 1008: // ϰ
+          if (style.greekLow) {
+            code = 973;
+            break;
+          }
+          return code;
+        case 981: // ϕ
+          if (style.greekLow) {
+            code = 974;
+            break;
+          }
+          return code;
+        case 1009: // ϱ
+          if (style.greekLow) {
+            code = 975;
+            break;
+          }
+          return code;
+        case 982: // ϖ
+          if (style.greekLow) {
+            code = 976;
+            break;
+          }
+          return code;
+
+        // – row characters
+        case 305: // ı
+          return style.name === "Serif Italic" ? 120484 : code;
+        case 567: // ȷ
+          return style.name === "Serif Italic" ? 120485 : code;
+        case 988: // Ϝ
+          return style.name === "Serif Bold" ? 120778 : code;
+        case 989: // ϝ
+          return style.name === "Serif Bold" ? 120779 : code;
+      }
+
+      // uppercase A-Z
+      if (code >= 65 && code <= 90) {
+        return code + style.latinUp - 65;
+      }
+      // lowercase a-z
+      if (code >= 97 && code <= 122) {
+        return code + style.latinLow - 97;
+      }
+      // numbers
+      if (code >= 48 && code <= 57 && style.digits) {
+        return code + style.digits - 48;
+      }
+      // greek uppercase
+      if (code >= 0x391 && code <= 0x3AA && style.greekUp) {
+        return code + style.greekUp - 0x391;
+      }
+      // greek lowercase
+      if (code >= 0x3B1 && code <= 0x3D0 && style.greekLow) {
+        return code + style.greekLow - 0x3B1;
+      }
+      // other characters unchanged (digits, punctuation, spaces)
+      return code;
+    }
+
+    function transformString(s, style) {
+      let out = [];
+      for (const ch of Array.from(s)) {
+        let changed = transformChar(ch.codePointAt(0), style);
+        out.push(changed);
+        if (style.name === "Script (calligraphy)")
+          console.log(`U+${changed.toString(16).toUpperCase()}`);
+      }
+      return String.fromCodePoint(...out);
+    }
+
+    // Build UI
+    const resultsDiv = document.getElementById('results');
+
+    styles.forEach((st, idx) => {
+      const container = document.createElement('div');
+      container.className = 'block-container';
+
+      const h = document.createElement('h2');
+      h.textContent = `Font ${idx + 1}: ${st.name}`;
+      container.appendChild(h);
+
+      const row = document.createElement('div');
+      row.className = 'block';
+
+      const out = document.createElement('div');
+      out.className = 'out';
+      out.id = `out-${idx}`;
+      out.textContent = ''; // filled by update()
+      row.appendChild(out);
+
+      const btn = document.createElement('button');
+      btn.className = 'copy';
+      btn.type = 'button';
+      btn.textContent = 'copy to clipboard';
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(out.textContent);
+          btn.textContent = 'copied!';
+          setTimeout(() => btn.textContent = 'copy to clipboard', 1000);
+        } catch (e) {
+          // fallback method
+          try {
+            const ta = document.createElement('textarea');
+            ta.value = out.textContent;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            btn.textContent = 'copied!';
+            setTimeout(() => btn.textContent = 'copy to clipboard', 1000);
+          } catch (err) {
+            alert('Copy failed: ' + (err && err.message ? err.message : err));
+          }
+        }
+      });
+      row.appendChild(btn);
+
+      container.appendChild(row);
+      resultsDiv.appendChild(container);
+    });
+
+    // Update outputs from input
+    const input = document.getElementById('source');
+    function updateAll() {
+      const text = input.value || '';
+      styles.forEach((st, idx) => {
+        const el = document.getElementById(`out-${idx}`);
+        el.textContent = transformString(text, st);
+      });
+      // input.style.height = 'auto';
+      // input.style.height = textarea.scrollHeight + 'px';
+    }
+    input.oninput = updateAll;
+    updateAll();
+
+  </script>
+</body>
+
+</html>
