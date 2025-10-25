@@ -88,8 +88,10 @@
     related blocks).</p>
 
   <h2>Font 0: Serif (Type in here!)</h2>
-  <button class="copy" onclick="selectAll();">Select all</button>
-  <button class="copy" onclick="undo();">Undo</button>
+  <button class="copy" onclick="selectAll();">select all</button>
+  <button class="copy" id="copyInput">copy</button>
+  <button class="copy" onclick="paste();">paste</button>
+  <button class="copy" onclick="undo();">undo</button>
   <textarea id="source" title="Input">ABCDEFGHIJKLMNOPQRSTUVWXYZ
 abcdefghijklmnopqrstuvwxyzıȷ
 0123456789
@@ -298,8 +300,6 @@ abcdefghijklmnopqrstuvwxyzıȷ
       for (const ch of Array.from(s)) {
         let changed = transformChar(ch.codePointAt(0), style);
         out.push(changed);
-        if (style.name === "Script (calligraphy)")
-          console.log(`U+${changed.toString(16).toUpperCase()}`);
       }
       return String.fromCodePoint(...out);
     }
@@ -323,11 +323,13 @@ abcdefghijklmnopqrstuvwxyzıȷ
       out.id = `out-${idx}`;
       row.appendChild(out);
 
+      let virtual_clipboard;
       const btn = document.createElement('button');
       btn.className = 'copy';
       btn.type = 'button';
       btn.textContent = 'copy to clipboard';
-      btn.addEventListener('click', async () => {
+      btn.onclick = async () => {
+        virtual_clipboard = out.textContent;
         try {
           await navigator.clipboard.writeText(out.textContent);
           btn.textContent = 'copied!';
@@ -347,12 +349,36 @@ abcdefghijklmnopqrstuvwxyzıȷ
             alert('Copy failed: ' + (err && err.message ? err.message : err));
           }
         }
-      });
+      };
       row.appendChild(btn);
 
       container.appendChild(row);
       resultsDiv.appendChild(container);
     });
+
+    let copyInput = document.getElementById("copyInput");
+    copyInput.onclick = async () => {
+      virtual_clipboard = input.textContent;
+      try {
+        await navigator.clipboard.writeText(input.textContent);
+        copyInput.textContent = 'copied!';
+        setTimeout(() => copyInput.textContent = 'copy to clipboard', 1000);
+      } catch (e) {
+        // fallback method
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = input.textContent;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand('copy');
+          document.body.removeChild(ta);
+          copyInput.textContent = 'copied!';
+          setTimeout(() => copyInput.textContent = 'copy to clipboard', 1000);
+        } catch (err) {
+          alert('Copy failed: ' + (err && err.message ? err.message : err));
+        }
+      }
+    };
 
     const undoStack = [];
     // Update outputs from input
@@ -382,6 +408,18 @@ abcdefghijklmnopqrstuvwxyzıȷ
         input.dispatchEvent(new Event('input')); // trigger any updates
       }
     }
+
+    const paste = async () => {
+      let text;
+      try {
+        text = await navigator.clipboard.readText(); // read clipboard
+      } catch (err) {
+        // alert('Clipboard access denied. Try granting permission or pasting manually.');
+        text = virtual_clipboard || "";
+      }
+      input.setRangeText(text, input.selectionStart, input.selectionEnd, 'end');
+      input.dispatchEvent(new Event('input')); // update height etc.
+    };
   </script>
 </body>
 
