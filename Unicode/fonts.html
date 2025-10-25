@@ -99,10 +99,13 @@ abcdefghijklmnopqrstuvwxyzıȷ
 αβγδεζηθικλμνξοπρςστυφχψω∂ϵϑϰϕϱϖϝ</textarea>
   <div id="results"></div>
 
-  <footer>Mapping scraped from <a
+  <footer>
+    Mapping scraped from <a
       href="https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols#Tables_of_styled_letters_and_digits">Wikipedia</a>.
     If a glyph is not present on your system, it may display as a box or fall back font. Hope you found this tool
-    helpful!</footer>
+    helpful!<br>
+    "Paste" button first asks for permission to access your clipboard. If access is denied, it instead pastes the last thing this website copied.
+  </footer>
 
   <script>
     /*
@@ -414,9 +417,10 @@ abcdefghijklmnopqrstuvwxyzıȷ
       try {
         text = await navigator.clipboard.readText(); // read clipboard
       } catch (err) {
-        alert('Clipboard access denied. Try granting permission or pasting manually.');
-        text = "";
-        // text = virtual_clipboard || "";
+        // alert('Clipboard access denied. Try granting permission or pasting manually.');
+        // text = "";
+        // Note: HUAWEI browser ALWAYS denies pasting permission. Use our virtual_clipboard variable instead.
+        text = virtual_clipboard || "";
       }
       input.setRangeText(text, input.selectionStart, input.selectionEnd, 'end');
       input.dispatchEvent(new Event('input')); // update height etc.
