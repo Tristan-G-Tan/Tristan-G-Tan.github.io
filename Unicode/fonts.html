@@ -358,22 +358,22 @@ abcdefghijklmnopqrstuvwxyzıȷ
 
     let copyInput = document.getElementById("copyInput");
     copyInput.onclick = async () => {
-      virtual_clipboard = input.textContent;
+      virtual_clipboard = input.value;
       try {
-        await navigator.clipboard.writeText(input.textContent);
+        await navigator.clipboard.writeText(input.value);
         copyInput.textContent = 'copied!';
-        setTimeout(() => copyInput.textContent = 'copy to clipboard', 1000);
+        setTimeout(() => copyInput.textContent = 'copy', 1000);
       } catch (e) {
         // fallback method
         try {
           const ta = document.createElement('textarea');
-          ta.value = input.textContent;
+          ta.value = input.value;
           document.body.appendChild(ta);
           ta.select();
           document.execCommand('copy');
           document.body.removeChild(ta);
           copyInput.textContent = 'copied!';
-          setTimeout(() => copyInput.textContent = 'copy to clipboard', 1000);
+          setTimeout(() => copyInput.textContent = 'copy', 1000);
         } catch (err) {
           alert('Copy failed: ' + (err && err.message ? err.message : err));
         }
@@ -414,8 +414,9 @@ abcdefghijklmnopqrstuvwxyzıȷ
       try {
         text = await navigator.clipboard.readText(); // read clipboard
       } catch (err) {
-        // alert('Clipboard access denied. Try granting permission or pasting manually.');
-        text = virtual_clipboard || "";
+        alert('Clipboard access denied. Try granting permission or pasting manually.');
+        text = "";
+        // text = virtual_clipboard || "";
       }
       input.setRangeText(text, input.selectionStart, input.selectionEnd, 'end');
       input.dispatchEvent(new Event('input')); // update height etc.
