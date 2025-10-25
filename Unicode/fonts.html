@@ -104,7 +104,8 @@ abcdefghijklmnopqrstuvwxyzıȷ
       href="https://en.wikipedia.org/wiki/Mathematical_Alphanumeric_Symbols#Tables_of_styled_letters_and_digits">Wikipedia</a>.
     If a glyph is not present on your system, it may display as a box or fall back font. Hope you found this tool
     helpful!<br>
-    "Paste" button first asks for permission to access your clipboard. If access is denied, it instead pastes the last thing this website copied.
+    "Paste" button first asks for permission to access your clipboard. If access is denied, it instead pastes the last
+    thing this website copied.
   </footer>
 
   <script>
@@ -309,6 +310,7 @@ abcdefghijklmnopqrstuvwxyzıȷ
 
     // Build UI
     const resultsDiv = document.getElementById('results');
+    let virtual_clipboard;
 
     styles.forEach((st, idx) => {
       const container = document.createElement('div');
@@ -326,7 +328,6 @@ abcdefghijklmnopqrstuvwxyzıȷ
       out.id = `out-${idx}`;
       row.appendChild(out);
 
-      let virtual_clipboard;
       const btn = document.createElement('button');
       btn.className = 'copy';
       btn.type = 'button';
