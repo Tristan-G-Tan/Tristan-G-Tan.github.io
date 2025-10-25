@@ -13,10 +13,13 @@
       margin: auto;
     }
 
+    /* field-sizing only works on Chrome and Edge, not Firefox and Safari.
+    https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize */
     #source {
       font-family: 'Times New Roman', Times, serif;
       resize: none;
-      field-sizing: content;
+      /* field-sizing: content; */
+      overflow-y: hidden;
       width: 100%;
       padding: 12px;
       border-radius: 8px;
@@ -85,7 +88,9 @@
     related blocks).</p>
 
   <h2>Font 0: Serif (Type in here!)</h2>
-  <textarea id="source">ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  <button class="copy" onclick="selectAll();">Select all</button>
+  <button class="copy" onclick="undo();">Undo</button>
+  <textarea id="source" title="Input">ABCDEFGHIJKLMNOPQRSTUVWXYZ
 abcdefghijklmnopqrstuvwxyzıȷ
 0123456789
 ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ∇ΣΤΥΦΧΨΩϜ
@@ -198,21 +203,6 @@ abcdefghijklmnopqrstuvwxyzıȷ
           break
       }
       switch (code) {
-        // red highlights
-        // case 66: // B
-        //   if (style.name === "Script (calligraphy)")
-        //     return 8492;
-        //   break;
-        // case 67: // C
-        //   switch (style.name) {
-        //     case "Fraktur":
-        //       return 8493;
-        //     case "Double-struck":
-        //       return 8450;
-        //   }
-        //   break;
-
-        // yellow highlights; map them onto the blank spots in the Greek unicode block
         case 1012: // ϴ
           if (style.greekUp) {
             code = 930;
@@ -331,7 +321,6 @@ abcdefghijklmnopqrstuvwxyzıȷ
       const out = document.createElement('div');
       out.className = 'out';
       out.id = `out-${idx}`;
-      out.textContent = ''; // filled by update()
       row.appendChild(out);
 
       const btn = document.createElement('button');
@@ -365,20 +354,34 @@ abcdefghijklmnopqrstuvwxyzıȷ
       resultsDiv.appendChild(container);
     });
 
+    const undoStack = [];
     // Update outputs from input
     const input = document.getElementById('source');
     function updateAll() {
       const text = input.value || '';
+      undoStack.push(text);
       styles.forEach((st, idx) => {
         const el = document.getElementById(`out-${idx}`);
         el.textContent = transformString(text, st);
       });
-      // input.style.height = 'auto';
-      // input.style.height = textarea.scrollHeight + 'px';
+      input.style.height = 'auto';
+      input.style.height = input.scrollHeight + 'px';
     }
     input.oninput = updateAll;
     updateAll();
 
+    function selectAll() {
+      input.focus();
+      input.select();
+    }
+
+    function undo() {
+      if (undoStack.length > 1) {
+        undoStack.pop(); // remove current state
+        input.value = undoStack.pop(); // revert to previous
+        input.dispatchEvent(new Event('input')); // trigger any updates
+      }
+    }
   </script>
 </body>
 
