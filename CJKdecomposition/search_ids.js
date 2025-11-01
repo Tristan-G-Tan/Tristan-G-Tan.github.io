@@ -336,7 +336,6 @@ function findUni(code) {
 }
 
 const copy = async txt => {
-    alert(`Attempting to copy "${txt}" to clipboard.`)
     try {
         await navigator.clipboard.writeText(txt);
     } catch (e) {
