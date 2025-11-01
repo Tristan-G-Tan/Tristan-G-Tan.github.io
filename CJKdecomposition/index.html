@@ -9,6 +9,14 @@
     </title>
 
     <style>
+        header,
+        footer {
+            margin-top: 30px;
+            color: #666;
+            font-size: 13px;
+            font-family: system-ui, Arial, sans-serif;
+        }
+
         table {
             border-collapse: collapse;
         }
@@ -34,7 +42,7 @@
 
         .searchResult {
             /* background-color: #f1f3f4; */
-            box-shadow: 0 1px 1px 0 rgba(52,27,159,.1);
+            box-shadow: 0 1px 1px 0 rgba(52, 27, 159, .1);
             font-size: 2rem;
             margin: 12px 6px 6px;
             padding: 0.375rem 0.25rem;
@@ -67,6 +75,11 @@
 </head>
 
 <body>
+    <footer>
+        <p>
+            <a href="javascript:window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Click to scroll to the bottom.</a>
+        </p>
+    </footer>
     <table id="outtable">
         <tbody>
             <tr>
@@ -128,6 +141,12 @@
     </div>
 
     <ul id="verbose"></ul>
+
+    <footer>
+        <p>
+            <a href="javascript:window.scrollTo({ top: 0, behavior: 'smooth' })">Click to scroll to the top.</a>. <a href="https://tristan-g-tan.github.io/">Click to return to main page</a>.
+        </p>
+    </footer>
 
     <script src="readings.js"></script>
     <script src="ids.js"></script>
