@@ -239,7 +239,7 @@ function searchChar(c) {
             //     console.log(ids);
             //     console.log(containsAll(decomposition, ids));
             // }
-            
+
             if (results.length >= maxResults) {
                 results.push("...")
                 break;
@@ -336,5 +336,19 @@ function findUni(code) {
 }
 
 function copy(txt) {
-    navigator.clipboard.writeText(txt);
+    try {
+        navigator.clipboard.writeText(txt);
+    } catch (e) {
+        // fallback method, for HUAWEI
+        try {
+            const ta = document.createElement('textarea');
+            ta.value = txt;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        } catch (err) {
+            alert('Copy failed: ' + (err && err.message ? err.message : err));
+        }
+    }
 }

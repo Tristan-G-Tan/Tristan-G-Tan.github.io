@@ -87,11 +87,12 @@
         of
         combining unicode characters.</p>
     <div>
-        <h2>Settings (see <a href="https://en.wikipedia.org/wiki/Combining_character#Unicode_ranges">Wikipedia</a> for more information):</h2>
+        <h2>Settings (see <a href="https://en.wikipedia.org/wiki/Combining_character#Unicode_ranges">Wikipedia</a> for
+            more information):</h2>
         <label for="craziness" title="Number of diacritical marks added onto each character">Craziness level:</label>
         <input type="number" id="craziness" value="10" min="1" max="10000">
         <br>
-        
+
         <input type="checkbox" id="block1" oninput="getDiacritics();" checked>
         <label for="block1" title="Use the characters in this unicode block?">Combining Diacritical Marks</label>
         <br>
@@ -349,10 +350,14 @@
             out.value = transformString(text);
             input.style.height = 'auto';
             input.style.height = input.scrollHeight + 'px';
+            out.style.height = 'auto';
+            out.style.height = out.scrollHeight + 'px';
         }
         function unZalgo() {
             const text = out.value || '';
             input.value = text.replace(/[\u0300-\u036f\u1ab0-\u1aff\u1dc0-\u1dff\u20d0-\u20ff\ufe20-\ufe2f]/g, '');
+            out.style.height = 'auto';
+            out.style.height = out.scrollHeight + 'px';
             out.style.height = 'auto';
             out.style.height = out.scrollHeight + 'px';
         }
