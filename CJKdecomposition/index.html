@@ -90,7 +90,7 @@
                 </td>
             </tr>
             <tr>
-                <td>View: <button onclick="copy(view.value);">Copy</button></td>
+                <td>View: <button onclick="alert('clicked!'); copy(document.getElementById('uni').value);">Copy</button></td>
                 <td onclick="copy(document.getElementById('uni').value);">Unicode:</td>
                 <td>Decimal:</td>
                 <td>Pinyin:</td>
@@ -150,7 +150,6 @@
 
     <script src="readings.js"></script>
     <script src="ids.js"></script>
-    <!-- <script src="names.js"></script> -->
     <script src="search_ids.js"></script>
 </body>
 

@@ -336,8 +336,10 @@ function findUni(code) {
 }
 
 function copy(txt) {
+    alert('copy called!');
     try {
         navigator.clipboard.writeText(txt);
+        alert('navigator.clipboard.writeText successful!');
     } catch (e) {
         // fallback method, for HUAWEI
         try {
@@ -347,6 +349,7 @@ function copy(txt) {
             ta.select();
             document.execCommand('copy');
             document.body.removeChild(ta);
+            alert('old method successful!');
         } catch (err) {
             alert('Copy failed: ' + (err && err.message ? err.message : err));
         }
