@@ -335,13 +335,12 @@ function findUni(code) {
     document.getElementById("uni").value = `U+${code.toString(16).toUpperCase().padStart(6, "0")}`;
 }
 
-function copy(txt) {
-    alert('copy called!');
+const copy = async txt => {
+    alert(`Attempting to copy "${txt}" to clipboard.`)
     try {
-        navigator.clipboard.writeText(txt);
-        alert('navigator.clipboard.writeText successful!');
+        await navigator.clipboard.writeText(txt);
     } catch (e) {
-        // fallback method, for HUAWEI
+        // old fallback method, for HUAWEI
         try {
             const ta = document.createElement('textarea');
             ta.value = txt;
@@ -349,7 +348,6 @@ function copy(txt) {
             ta.select();
             document.execCommand('copy');
             document.body.removeChild(ta);
-            alert('old method successful!');
         } catch (err) {
             alert('Copy failed: ' + (err && err.message ? err.message : err));
         }
