@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<html>
+    <head>
+        <title>
+            ASCII Art with Chinese characters
+        </title>
+
+        <style>
+            canvas {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+
+    <body>
+        <input type="file" id="upload" accept="image/*" onchange="upload(this.files[0]);"><br>
+        <h3>Input:</h3><br>
+        <canvas id="original"></canvas><br>
+        <h3>Dithered:</h3><br>
+        <canvas id="modified"></canvas><br>
+        <h3>Output:</h3><br>
+        <div id="output"></div><br>
+        <button onclick="navigator.clipboard.writeText(output.innerText);">Copy</button>
+
+        <script src="chinese.js"></script>
+    </body>
+</html>

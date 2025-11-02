@@ -116,10 +116,6 @@ function findChar(c) {
 }
 
 function expand(c) {
-    // if (!(typeof c === "string")) {
-    //     console.error(`WHAT THE FUCKETH IS THIS SHIT ${c}`);
-    //     return;
-    // }
     let ids = ids_map[c];
     if (ids === undefined)
         return [c]
@@ -256,6 +252,10 @@ function searchChar(c) {
                 results.push(key);
             }
 
+            // if (key.codePointAt(0) < 0x20000) continue;
+            // let entry = readings_map[key];
+            // if (entry && entry["kDefinition"] && !entry["kTraditionalVariant"]) results.push(key);
+
             // if (key[0] === "C")
             //     // results.push(key);
             //     continue;
@@ -334,6 +334,7 @@ function findUni(code) {
     select(code & 0xFF); // mod(code, 2^8)
     document.getElementById("uni").value = `U+${code.toString(16).toUpperCase().padStart(6, "0")}`;
 }
+
 
 const copy = async txt => {
     try {

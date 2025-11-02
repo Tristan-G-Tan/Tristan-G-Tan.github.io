@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>错别字生成器r</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <style>
+        body {
+            font-family: system-ui, Arial, sans-serif;
+            padding: 18px;
+            max-width: 900px;
+            margin: auto;
+        }
+
+        /* field-sizing only works on Chrome and Edge, not Firefox and Safari.
+    https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize */
+        textarea {
+            font-family: system-ui, Arial, sans-serif;
+            resize: none;
+            /* field-sizing: content; */
+            overflow-y: hidden;
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            min-height: 34px;
+            font-size: 18px;
+            word-break: break-word;
+            background: #fafafa;
+        }
+
+        .block {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0 24px;
+        }
+
+        .out {
+            flex: 1;
+            white-space: pre-wrap;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            min-height: 34px;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            word-break: break-word;
+            background: #fafafa;
+        }
+
+        button.copy {
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: 1px solid #bbb;
+            background: white;
+            cursor: pointer;
+        }
+
+        h2 {
+            font-size: 16px;
+            margin: 6px 0 6px;
+            display: block;
+            font-weight: 700;
+        }
+
+        .meta {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 6px;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #666;
+            font-size: 13px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Chinese Text Spoofer</h1>
+    <div>
+        <h2>Settings</h2>
+        <label for="craziness" title="Number of diacritical marks added onto each character">Craziness level:</label>
+        <input type="number" id="craziness" value="10" min="1" max="10000">
+    </div>
+
+    <h2>Type in here:</h2>
+    <button class="copy" onclick="selectAll();">select all</button>
+    <button class="copy" id="copyInput">copy</button>
+    <button class="copy" onclick="paste();">paste</button>
+    <button class="copy" onclick="undo();">undo</button>
+    <textarea id="source" title="Input"></textarea>
+    <div class="block-container">
+        <h2>Output</h2>
+        <div class="block">
+            <textarea class="out" id="out" readonly></textarea>
+            <button class="copy" type="button" id="copyOutput" onclick="copy();">copy to
+                clipboard</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>
+            The "Paste" button first asks for permission to access your clipboard. If access is denied, it instead
+            pastes the
+            last
+            thing this website copied.
+        </p>
+        <p>
+            <a href="https://tristan-g-tan.github.io/">Click to return to main page</a>.
+        </p>
+    </footer>
+
+    <!-- <script src="readings.js"></script> -->
+    <script src="ids.js"></script>
+    <script src="spoof.js"></script>
+</body>
+
+</html>

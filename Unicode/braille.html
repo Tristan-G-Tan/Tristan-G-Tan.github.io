@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+
+<html>
+    <head>
+        <title>
+            Braille Art
+        </title>
+
+        <style>
+            canvas {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+
+    <body>
+        <input type="range" id="slider1" oninput="slider(1, this.value);" step="any" min="0" max="1" value="0.4375">
+        <input type="range" id="slider2" oninput="slider(2, this.value);" step="any" min="0" max="1" value="0.1875">
+        <input type="range" id="slider3" oninput="slider(3, this.value);" step="any" min="0" max="1" value="0.3125">
+        <input type="range" id="slider4" oninput="slider(4, this.value);" step="any" min="0" max="1" value="0.0625">
+        <input type="file" id="upload" accept="image/*" onchange="upload(this.files[0]);"><br>
+        <h3>Input:</h3><br>
+        <canvas id="original"></canvas><br>
+        <h3>Dithered:</h3><br>
+        <canvas id="modified"></canvas><br>
+        <h3>Output:</h3><br>
+        <div id="output"></div><br>
+        <button onclick="navigator.clipboard.writeText(output.innerText);">Copy</button>
+
+        <script src="braille.js"></script>
+    </body>
+</html>
