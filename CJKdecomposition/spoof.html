@@ -15,8 +15,9 @@
 
         /* field-sizing only works on Chrome and Edge, not Firefox and Safari.
     https://stackoverflow.com/questions/454202/creating-a-textarea-with-auto-resize */
-        textarea {
-            font-family: system-ui, Arial, sans-serif;
+        #source,
+        #out {
+            font-family: system-ui, Arial, sans-serif, 'Times New Roman', Times, '宋体', serif;
             resize: none;
             /* field-sizing: content; */
             overflow-y: hidden;
@@ -84,8 +85,12 @@
     <h1>Chinese Text Spoofer</h1>
     <div>
         <h2>Settings</h2>
-        <label for="craziness" title="Number of diacritical marks added onto each character">Craziness level:</label>
-        <input type="number" id="craziness" value="10" min="1" max="10000">
+
+        <label for="mode">Mode:</label>
+        <select id="mode">
+            <option value="name">Match all radicals</option>
+            <option value="random" selected>Choose all radicals</option>
+        </select>
     </div>
 
     <h2>Type in here:</h2>
@@ -97,11 +102,12 @@
     <div class="block-container">
         <h2>Output</h2>
         <div class="block">
-            <textarea class="out" id="out" readonly></textarea>
+            <div class="out" id="out" readonly></div>
             <button class="copy" type="button" id="copyOutput" onclick="copy();">copy to
                 clipboard</button>
         </div>
     </div>
+    <br><button class="copy" type="button" id="randomizeOutput" onclick="randomize();">Randomize</button>
 
     <footer>
         <p>
@@ -116,7 +122,8 @@
     </footer>
 
     <!-- <script src="readings.js"></script> -->
-    <script src="ids.js"></script>
+    <!-- <script src="ids.js"></script> -->
+    <script src="ids_BMP.js"></script>
     <script src="spoof.js"></script>
 </body>
 

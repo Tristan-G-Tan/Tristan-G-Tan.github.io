@@ -1,4 +1,4 @@
-function transformString(s) {
+function spoofName(s) {
     /* TODO: TRANSLATE THIS INTO JS!
 
     name = input()
@@ -35,7 +35,76 @@ function transformString(s) {
                 print(available.pop(), end="")
         print()
      */
-    return s.repeat(2);
+    let variants = [];
+    let char_no = 0;
+    for (const query of Array.from(s)) {
+        variants.push(new Set());
+        for (let parts of Object.values(ids_map_BMP)) {
+            parts = [...parts];
+            if (parts.includes(query)) {
+                parts.pop(parts.indexOf(query));
+            } else {
+                continue;
+            }
+            variants[char_no] = variants[char_no].union(new Set(parts));
+        }
+        ++char_no;
+    }
+
+    let total_variants = variants[0];
+    for (let i = 1; i < s.length; ++i) {
+        total_variants = total_variants.intersection(variants[i]);
+    }
+    let results = [[...total_variants].join("")];
+
+    for (let variant of total_variants) {
+        let name = `${variant}：`;
+        for (let query of Array.from(s)) {
+            let available = new Set();
+            for (let [char, ids] of Object.entries(ids_map_BMP)) {
+                if (ids.includes(query) && ids.includes(variant))
+                    available.add(char);
+            }
+            if (available.size > 1) {
+                name += `{${[...available]}}`;
+            } else {
+                name += `${[...available]}`;
+            }
+        }
+        results.push(name);
+    }
+
+    out.innerHTML = "";
+    out.textContent = results.join("\n");
+    document.getElementById("randomizeOutput").style.display = 'none';
+}
+
+function spoofText(s) {
+    out.innerHTML = "";
+
+    for (const char of Array.from(s)) {
+        let available = new Set([char]);
+        for (let [key, ids] of Object.entries(ids_map_BMP)) {
+            if (ids.includes(char))
+                available.add(key);
+        }
+
+        if (available.size > 1) {
+            const select = document.createElement("select");
+            for (let variant of available) {
+                const choice = document.createElement("option");
+                choice.innerHTML = variant;
+                choice.value = variant;
+                select.appendChild(choice);
+            }
+            out.appendChild(select);
+        } else {
+            out.appendChild(
+                document.createTextNode(char)
+            )
+        }
+    }
+    document.getElementById("randomizeOutput").style.display = 'block';
 }
 
 let copyInput = document.getElementById("copyInput");
@@ -69,9 +138,16 @@ const input = document.getElementById('source');
 const craziness = document.getElementById('craziness');
 const out = document.getElementById("out");
 function update() {
+    const mode = document.getElementById('mode').value;
     const text = input.value || '';
-    undoStack.push(text);
-    out.value = transformString(text);
+    switch (mode) {
+        case "name":
+            spoofName(text);
+            break;
+        case "random":
+            spoofText(text);
+            break;
+    }
     input.style.height = 'auto';
     input.style.height = input.scrollHeight + 'px';
     out.style.height = 'auto';
@@ -94,16 +170,25 @@ function undo() {
 }
 
 const copy = async () => {
-    virtual_clipboard = out.value;
+    let text;
+    if (out.children) {
+        text = "";
+        for (let select of out.children) {
+            text += select.value;
+        }
+    } else {
+        text = out.textContent;
+    }
+    virtual_clipboard = text;
     try {
-        await navigator.clipboard.writeText(out.value);
+        await navigator.clipboard.writeText(text);
         copyOutput.textContent = 'copied!';
         setTimeout(() => copyOutput.textContent = 'copy to clipboard', 1000);
     } catch (e) {
         // fallback method
         try {
             const ta = document.createElement('textarea');
-            ta.value = out.value;
+            ta.value = out.text;
             document.body.appendChild(ta);
             ta.select();
             document.execCommand('copy');
@@ -129,3 +214,9 @@ const paste = async () => {
     input.setRangeText(text, input.selectionStart, input.selectionEnd, 'end');
     input.dispatchEvent(new Event('input')); // update height etc.
 };
+
+function randomize() {
+    for (let select of out.children) {
+        select.value = select.options[Math.trunc(Math.random() * select.options.length)].value;
+    }
+}
