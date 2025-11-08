@@ -4,42 +4,6 @@ function union(arr1, arr2) {
 }
 
 function spoofName(s) {
-    /* TODO: TRANSLATE THIS INTO JS!
-
-    name = input()
-    variants = []
-
-    char_no = 0
-    for query in name:
-        variants.append(set())
-        for char in ids:
-            parts = ids[char][:]
-            if query in parts:
-                parts.pop(parts.index(query))
-            else:
-                continue
-            variants[char_no].update(set(parts))
-
-        char_no += 1
-
-    total_variants = variants[0]
-    for i in range(1, len(name)):
-        total_variants.intersection_update(variants[i])
-
-    print(total_variants)
-
-    for variant in total_variants:
-        for query in name:
-            available = set()
-            for char in ids:
-                if query in ids[char] and variant in ids[char]:
-                    available.add(char)
-            if len(available) > 1:
-                print(available, end="")
-            else:
-                print(available.pop(), end="")
-        print()
-     */
     let results = ["Test results:"];
     try {
         // let variants = [];
@@ -83,6 +47,7 @@ function spoofName(s) {
 
 
         let A = new Set([67, 69, 420]);
+        alert("initialized set");
         results.push(Array.from(A));
         results.push([...A]);
         A.add(520);
@@ -104,9 +69,11 @@ function spoofName(s) {
         results.push(A.intersection);
         results.push(A.union);
 
+        alert(results);
         out.innerHTML = "";
         out.textContent = results.join("\n");
         document.getElementById("randomizeOutput").style.display = 'none';
+        alert("did everything");
     } catch (err) {
         alert(err && err.message ? err.message : err);
     }
