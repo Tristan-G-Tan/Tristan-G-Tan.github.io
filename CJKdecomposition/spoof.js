@@ -204,16 +204,19 @@ function undo() {
 const copy = async () => {
     let text;
     if (out.children.length) {
+        alert("has children")
         text = "";
         for (let select of out.children) {
             text += select.value;
         }
     } else {
+        alert("no children")
         text = out.textContent;
     }
+    alert(text)
     virtual_clipboard = text;
     try {
-        await navigator.clipboard.writeText(text);
+        alert(await navigator.clipboard.writeText(text));
         copyOutput.textContent = 'copied!';
         setTimeout(() => copyOutput.textContent = 'copy to clipboard', 1000);
     } catch (e) {
