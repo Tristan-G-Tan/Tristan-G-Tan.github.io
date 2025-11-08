@@ -342,6 +342,7 @@ const copy = async txt => {
     } catch (e) {
         // old fallback method, for HUAWEI
         try {
+            alert("fallback area");
             const ta = document.createElement('textarea');
             ta.value = txt;
             document.body.appendChild(ta);

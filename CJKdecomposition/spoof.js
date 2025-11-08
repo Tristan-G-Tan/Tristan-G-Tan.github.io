@@ -205,16 +205,13 @@ const copy = async () => {
     try {
         let text;
         if (out.children.length) {
-            alert("has children")
             text = "";
             for (let select of out.children) {
                 text += select.value;
             }
         } else {
-            alert("no children")
             text = out.textContent;
         }
-        alert(text);
         virtual_clipboard = text;
         try {
             await navigator.clipboard.writeText(text);
@@ -223,8 +220,9 @@ const copy = async () => {
         } catch (e) {
             // fallback method
             try {
+                alert("fallback copy method")
                 const ta = document.createElement('textarea');
-                ta.value = out.text;
+                ta.value = text;
                 document.body.appendChild(ta);
                 ta.select();
                 document.execCommand('copy');
