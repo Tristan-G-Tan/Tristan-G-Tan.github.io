@@ -104,12 +104,12 @@ function spoofName(s) {
         results.push(A.intersection);
         results.push(A.union);
 
+        out.innerHTML = "";
+        out.textContent = results.join("\n");
+        document.getElementById("randomizeOutput").style.display = 'none';
     } catch (err) {
         alert(err && err.message ? err.message : err);
     }
-    out.innerHTML = "";
-    out.textContent = results.join("\n");
-    document.getElementById("randomizeOutput").style.display = 'none';
 }
 
 function spoofText(s) {
