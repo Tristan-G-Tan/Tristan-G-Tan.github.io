@@ -35,48 +35,59 @@ function spoofName(s) {
                 print(available.pop(), end="")
         print()
      */
-    let variants = [];
-    let char_no = 0;
-    for (const query of Array.from(s)) {
-        variants.push(new Set());
-        for (let parts of Object.values(ids_map_BMP)) {
-            parts = [...parts];
-            if (parts.includes(query)) {
-                parts.pop(parts.indexOf(query));
-            } else {
-                continue;
+    try {
+        alert("start");
+        let variants = [];
+        let char_no = 0;
+        for (const query of Array.from(s)) {
+            variants.push(new Set());
+            for (let parts of Object.values(ids_map_BMP)) {
+                parts = [...parts];
+                if (parts.includes(query)) {
+                    parts.pop(parts.indexOf(query));
+                } else {
+                    continue;
+                }
+                variants[char_no] = variants[char_no].union(new Set(parts));
             }
-            variants[char_no] = variants[char_no].union(new Set(parts));
+            ++char_no;
         }
-        ++char_no;
-    }
+        alert("found all variants");
 
-    let total_variants = variants[0];
-    for (let i = 1; i < s.length; ++i) {
-        total_variants = total_variants.intersection(variants[i]);
-    }
-    let results = [[...total_variants].join("")];
-
-    for (let variant of total_variants) {
-        let name = `${variant}：`;
-        for (let query of Array.from(s)) {
-            let available = new Set();
-            for (let [char, ids] of Object.entries(ids_map_BMP)) {
-                if (ids.includes(query) && ids.includes(variant))
-                    available.add(char);
-            }
-            if (available.size > 1) {
-                name += `{${[...available]}}`;
-            } else {
-                name += `${[...available]}`;
-            }
+        let total_variants = variants[0];
+        for (let i = 1; i < s.length; ++i) {
+            total_variants = total_variants.intersection(variants[i]);
         }
-        results.push(name);
-    }
+        alert("found all common variants");
+        let results = [[...total_variants].join("")];
 
-    out.innerHTML = "";
-    out.textContent = results.join("\n");
-    document.getElementById("randomizeOutput").style.display = 'none';
+        for (let variant of total_variants) {
+            let name = `${variant}：`;
+            for (let query of Array.from(s)) {
+                let available = new Set();
+                for (let [char, ids] of Object.entries(ids_map_BMP)) {
+                    if (ids.includes(query) && ids.includes(variant))
+                        available.add(char);
+                }
+                if (available.size > 1) {
+                    name += `{${[...available]}}`;
+                } else {
+                    name += `${[...available]}`;
+                }
+            }
+            results.push(name);
+        }
+        alert("found all results");
+
+        out.innerHTML = "";
+        alert("deleted previous query results");
+        out.textContent = results.join("\n");
+        alert("added all results to webpage");
+        document.getElementById("randomizeOutput").style.display = 'none';
+        alert("hidden randomizeOutput button");
+    } catch (err) {
+        alert(err && err.message ? err.message : err);
+    }
 }
 
 function spoofText(s) {
