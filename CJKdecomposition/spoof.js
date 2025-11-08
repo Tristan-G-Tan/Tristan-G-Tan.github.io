@@ -40,6 +40,7 @@ function spoofName(s) {
                 print(available.pop(), end="")
         print()
      */
+    let results = ["Test results:"];
     try {
         // let variants = [];
         // let char_no = 0;
@@ -80,7 +81,6 @@ function spoofName(s) {
         //     results.push(name);
         // }
 
-        let results = ["Test results:"];
 
         let A = new Set([67, 69, 420]);
         results.push(Array.from(A));
