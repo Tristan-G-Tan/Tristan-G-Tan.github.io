@@ -202,37 +202,41 @@ function undo() {
 }
 
 const copy = async () => {
-    let text;
-    if (out.children.length) {
-        alert("has children")
-        text = "";
-        for (let select of out.children) {
-            text += select.value;
-        }
-    } else {
-        alert("no children")
-        text = out.textContent;
-    }
-    alert(text)
-    virtual_clipboard = text;
     try {
-        alert(await navigator.clipboard.writeText(text));
-        copyOutput.textContent = 'copied!';
-        setTimeout(() => copyOutput.textContent = 'copy to clipboard', 1000);
-    } catch (e) {
-        // fallback method
+        let text;
+        if (out.children.length) {
+            alert("has children")
+            text = "";
+            for (let select of out.children) {
+                text += select.value;
+            }
+        } else {
+            alert("no children")
+            text = out.textContent;
+        }
+        alert(text);
+        virtual_clipboard = text;
         try {
-            const ta = document.createElement('textarea');
-            ta.value = out.text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
+            await navigator.clipboard.writeText(text);
             copyOutput.textContent = 'copied!';
             setTimeout(() => copyOutput.textContent = 'copy to clipboard', 1000);
-        } catch (err) {
-            alert('Copy failed: ' + (err && err.message ? err.message : err));
+        } catch (e) {
+            // fallback method
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = out.text;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                copyOutput.textContent = 'copied!';
+                setTimeout(() => copyOutput.textContent = 'copy to clipboard', 1000);
+            } catch (err) {
+                alert('Copy failed: ' + (err && err.message ? err.message : err));
+            }
         }
+    } catch (err) {
+        alert(err && err.message ? err.message : err);
     }
 };
 
