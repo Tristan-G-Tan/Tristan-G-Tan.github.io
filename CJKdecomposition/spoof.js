@@ -1,57 +1,7 @@
-// https://stackoverflow.com/questions/52841860/javascript-how-to-get-the-union-of-2-3-sets-without-any-library-package-functio
-function union(arr1, arr2) {
-    return new Set([].concat(...sets.map(set => [...set])));
-}
-
 function spoofName(s) {
-    let results = ["Test results:"];
-    try {
-        // let variants = [];
-        // let char_no = 0;
-        // for (const query of Array.from(s)) {
-        //     variants.push(new Set());
-        //     for (let parts of Object.values(ids_map_BMP)) {
-        //         parts = [...parts];
-        //         if (parts.includes(query)) {
-        //             parts.pop(parts.indexOf(query));
-        //         } else {
-        //             continue;
-        //         }
-        //         variants[char_no] = variants[char_no].union(new Set(parts));
-        //     }
-        //     ++char_no;
-        // }
-
-        // let total_variants = variants[0];
-        // for (let i = 1; i < s.length; ++i) {
-        //     total_variants = total_variants.intersection(variants[i]);
-        // }
-        // let results = [[...total_variants].join("")];
-
-        // for (let variant of total_variants) {
-        //     let name = `${variant}：`;
-        //     for (let query of Array.from(s)) {
-        //         let available = new Set();
-        //         for (let [char, ids] of Object.entries(ids_map_BMP)) {
-        //             if (ids.includes(query) && ids.includes(variant))
-        //                 available.add(char);
-        //         }
-        //         if (available.size > 1) {
-        //             name += `{${[...available]}}`;
-        //         } else {
-        //             name += `${[...available]}`;
-        //         }
-        //     }
-        //     results.push(name);
-        // }
-
-
-        let A = new Set([67, 69, 420]);
-        alert("initialized set");
-        results.push(Array.from(A));
-        results.push([...A]);
-        A.add(520);
-        results.push([...A]);
+    /*
+    A = new Set();
+    WORKS on Huawei:
         results.push(A.size);
         results.push(A.has);
         results.push(A.delete);
@@ -60,23 +10,106 @@ function spoofName(s) {
         results.push(A.keys);
         results.push(A.values);
 
-        results.push("Maybe doesn't exist anymore:");
-
+    DOES NOT WORK:
         results.push(A.isSubsetOf);
         results.push(A.isSupersetOf);
         results.push(A.symmetricDifference);
         results.push(A.difference);
         results.push(A.intersection);
         results.push(A.union);
+     */
+    // let variants = [];
+    // let char_no = 0;
+    // for (const query of Array.from(s)) {
+    //     variants.push(new Set());
+    //     for (let parts of Object.values(ids_map_BMP)) {
+    //         parts = [...parts];
+    //         if (parts.includes(query)) {
+    //             parts.pop(parts.indexOf(query));
+    //         } else {
+    //             continue;
+    //         }
+    //         variants[char_no] = variants[char_no].union(new Set(parts));
+    //     }
+    //     ++char_no;
+    // }
 
-        alert(results);
-        out.innerHTML = "";
-        out.textContent = results.join("\n");
-        document.getElementById("randomizeOutput").style.display = 'none';
-        alert("did everything");
-    } catch (err) {
-        alert(err && err.message ? err.message : err);
+    // let total_variants = variants[0];
+    // for (let i = 1; i < s.length; ++i) {
+    //     total_variants = total_variants.intersection(variants[i]);
+    // }
+    // let results = [[...total_variants].join("")];
+
+    // for (let variant of total_variants) {
+    //     let name = `${variant}：`;
+    //     for (let query of Array.from(s)) {
+    //         let available = new Set();
+    //         for (let [char, ids] of Object.entries(ids_map_BMP)) {
+    //             if (ids.includes(query) && ids.includes(variant))
+    //                 available.add(char);
+    //         }
+    //         if (available.size > 1) {
+    //             name += `{${[...available]}}`;
+    //         } else {
+    //             name += `${[...available]}`;
+    //         }
+    //     }
+    //     results.push(name);
+    // }
+
+    let variants = [];
+    let char_no = 0;
+    for (const query of Array.from(s)) {
+        variants.push(new Set());
+        for (let parts of Object.values(ids_map_BMP)) {
+            parts = [...parts];
+            if (parts.includes(query)) {
+                parts.splice(parts.indexOf(query), 1);
+            } else {
+                continue;
+            }
+            if (variants[char_no].union)
+                variants[char_no] = variants[char_no].union(new Set(parts));
+            else
+                for (let part of parts) {
+                    variants[char_no].add(part);
+                }
+        }
+        ++char_no;
     }
+
+    let total_variants = variants[0];
+    for (let i = 1; i < s.length; ++i) {
+        const current = variants[i];
+        if (total_variants.intersection)
+            total_variants = total_variants.intersection(current);
+        else // huawei
+            for (const part of total_variants) {
+                if (!current.has(part))
+                    total_variants.delete(part);
+            }
+    }
+    let results = [[...total_variants].join("")];
+
+    for (let variant of total_variants) {
+        let name = `${variant}：`;
+        for (let query of Array.from(s)) {
+            let available = new Set();
+            for (let [char, ids] of Object.entries(ids_map_BMP)) {
+                if (ids.includes(query) && ids.includes(variant))
+                    available.add(char);
+            }
+            if (available.size > 1) {
+                name += `{${[...available]}}`;
+            } else {
+                name += `${[...available]}`;
+            }
+        }
+        results.push(name);
+    }
+    out.innerHTML = "";
+    out.textContent = results.join("\n");
+    document.getElementById("randomizeOutput").style.display = 'none';
 }
 
 function spoofText(s) {
@@ -132,7 +165,7 @@ copyInput.onclick = async () => {
 };
 
 let virtual_clipboard;
-const undoStack = [];
+const undoStack = [""];
 // Update outputs from input
 const input = document.getElementById('source');
 const craziness = document.getElementById('craziness');
@@ -140,6 +173,7 @@ const out = document.getElementById("out");
 function update() {
     const mode = document.getElementById('mode').value;
     const text = input.value || '';
+    undoStack.push(text);
     switch (mode) {
         case "name":
             spoofName(text);
@@ -153,8 +187,6 @@ function update() {
     out.style.height = 'auto';
     out.style.height = out.scrollHeight + 'px';
 }
-// craziness.oninput = update;
-input.oninput = update;
 
 function selectAll() {
     input.focus();
@@ -171,7 +203,7 @@ function undo() {
 
 const copy = async () => {
     let text;
-    if (out.children) {
+    if (out.children.length) {
         text = "";
         for (let select of out.children) {
             text += select.value;

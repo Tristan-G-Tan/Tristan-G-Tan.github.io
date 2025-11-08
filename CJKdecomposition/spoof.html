@@ -98,7 +98,8 @@
     <button class="copy" id="copyInput">copy</button>
     <button class="copy" onclick="paste();">paste</button>
     <button class="copy" onclick="undo();">undo</button>
-    <textarea id="source" title="Input"></textarea>
+    <textarea id="source" title="Input" oninput="undoStack.push(this.value);"></textarea>
+    <button class="copy" onclick="update();">generate</button>
     <div class="block-container">
         <h2>Output</h2>
         <div class="block">
