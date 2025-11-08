@@ -1,3 +1,8 @@
+// https://stackoverflow.com/questions/52841860/javascript-how-to-get-the-union-of-2-3-sets-without-any-library-package-functio
+function union(arr1, arr2) {
+    return new Set([].concat(...sets.map(set => [...set])));
+}
+
 function spoofName(s) {
     /* TODO: TRANSLATE THIS INTO JS!
 
@@ -36,58 +41,75 @@ function spoofName(s) {
         print()
      */
     try {
-        alert("start");
-        let variants = [];
-        let char_no = 0;
-        for (const query of Array.from(s)) {
-            variants.push(new Set());
-            for (let parts of Object.values(ids_map_BMP)) {
-                parts = [...parts];
-                if (parts.includes(query)) {
-                    parts.pop(parts.indexOf(query));
-                } else {
-                    continue;
-                }
-                variants[char_no] = variants[char_no].union(new Set(parts));
-            }
-            ++char_no;
-        }
-        alert("found all variants");
+        // let variants = [];
+        // let char_no = 0;
+        // for (const query of Array.from(s)) {
+        //     variants.push(new Set());
+        //     for (let parts of Object.values(ids_map_BMP)) {
+        //         parts = [...parts];
+        //         if (parts.includes(query)) {
+        //             parts.pop(parts.indexOf(query));
+        //         } else {
+        //             continue;
+        //         }
+        //         variants[char_no] = variants[char_no].union(new Set(parts));
+        //     }
+        //     ++char_no;
+        // }
 
-        let total_variants = variants[0];
-        for (let i = 1; i < s.length; ++i) {
-            total_variants = total_variants.intersection(variants[i]);
-        }
-        alert("found all common variants");
-        let results = [[...total_variants].join("")];
+        // let total_variants = variants[0];
+        // for (let i = 1; i < s.length; ++i) {
+        //     total_variants = total_variants.intersection(variants[i]);
+        // }
+        // let results = [[...total_variants].join("")];
 
-        for (let variant of total_variants) {
-            let name = `${variant}：`;
-            for (let query of Array.from(s)) {
-                let available = new Set();
-                for (let [char, ids] of Object.entries(ids_map_BMP)) {
-                    if (ids.includes(query) && ids.includes(variant))
-                        available.add(char);
-                }
-                if (available.size > 1) {
-                    name += `{${[...available]}}`;
-                } else {
-                    name += `${[...available]}`;
-                }
-            }
-            results.push(name);
-        }
-        alert("found all results");
+        // for (let variant of total_variants) {
+        //     let name = `${variant}：`;
+        //     for (let query of Array.from(s)) {
+        //         let available = new Set();
+        //         for (let [char, ids] of Object.entries(ids_map_BMP)) {
+        //             if (ids.includes(query) && ids.includes(variant))
+        //                 available.add(char);
+        //         }
+        //         if (available.size > 1) {
+        //             name += `{${[...available]}}`;
+        //         } else {
+        //             name += `${[...available]}`;
+        //         }
+        //     }
+        //     results.push(name);
+        // }
 
-        out.innerHTML = "";
-        alert("deleted previous query results");
-        out.textContent = results.join("\n");
-        alert("added all results to webpage");
-        document.getElementById("randomizeOutput").style.display = 'none';
-        alert("hidden randomizeOutput button");
+        let results = ["Test results:"];
+
+        let A = new Set([67, 69, 420]);
+        results.push(Array.from(A));
+        results.push([...A]);
+        A.add(520);
+        results.push([...A]);
+        results.push(A.size);
+        results.push(A.has);
+        results.push(A.delete);
+        results.push(A.clear);
+        results.push(A.entries);
+        results.push(A.keys);
+        results.push(A.values);
+
+        results.push("Maybe doesn't exist anymore:");
+
+        results.push(A.isSubsetOf);
+        results.push(A.isSupersetOf);
+        results.push(A.symmetricDifference);
+        results.push(A.difference);
+        results.push(A.intersection);
+        results.push(A.union);
+
     } catch (err) {
         alert(err && err.message ? err.message : err);
     }
+    out.innerHTML = "";
+    out.textContent = results.join("\n");
+    document.getElementById("randomizeOutput").style.display = 'none';
 }
 
 function spoofText(s) {
