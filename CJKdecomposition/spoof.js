@@ -218,9 +218,8 @@ const copy = async () => {
             copyOutput.textContent = 'copied!';
             setTimeout(() => copyOutput.textContent = 'copy to clipboard', 1000);
         } catch (e) {
-            // fallback method
+            // old fallback method, for HUAWEI
             try {
-                alert("fallback copy method")
                 const ta = document.createElement('textarea');
                 ta.value = text;
                 document.body.appendChild(ta);
