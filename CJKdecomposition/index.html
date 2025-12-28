@@ -56,7 +56,8 @@
 
         body {
             font-size: 24px;
-            font-family: 'Fsung-1', 'Fsung-2', 'Fsung-3', 'SimSun', 'Times New Roman', serif;
+            font-family: 'Times New Roman', 'SimSun', 'SimSun-ExtB', 'Fsung-1', 'Fsung-2', 'Fsung-3', serif;
+            /* font-family: 'Arial', 'Microsoft YaHei', 'SimSun', 'SimSun-ExtB', 'Fsung-1', 'Fsung-2', 'Fsung-3', serif; */
             /* font-family: 'Nom Na Tong','HAN NOM A','HAN NOM B',Sun-ExtA,Sun-ExtB,Ming-Lt-HKSCS-UNI-H,Ming-Lt-HKSCS-ExtB,HanaMinA,HanaMinB,HanaMin,'PingFang TC',MingLiU,MingLiU-ExtB,'MingLiU_HKSCS','MingLiU_HKSCS-ExtB',SimSun,SimSun-ExtB,'Arial Unicode MS','TITUS Cyberbit Basic',sans-serif; */
         }
 
@@ -86,17 +87,17 @@
                 <td colspan="6">
                     <button title="Previous characters" onclick="setPage(page - 1)" style="width:70px;">«</button>
                     <button title="Next characters" onclick="setPage(page + 1)" style="width:70px;">»</button>
-                    <input type="number" id="pageInput" value="78" oninput="setPage(this.value);" style="width:80px;">
+                    <input type="number" id="pageInput" value="0" oninput="setPage(this.value);" style="width:80px;">
                 </td>
             </tr>
             <tr>
                 <td>View: <button onclick="copy(document.getElementById('view').value);">Copy</button></td>
                 <td onclick="copy(document.getElementById('uni').value);">Unicode:</td>
                 <td>Decimal:</td>
-                <td>Pinyin:</td>
-                <td>Strokes:</td>
+                <td id="title1">Pinyin:</td>
+                <td id="title2">Strokes:</td>
                 <td>Components:</td>
-                <td>Definition:</td>
+                <td id="title3">Definition:</td>
             </tr>
             <tr>
                 <td><input maxlength="2" id="view" onchange="findChar(this.value);"></td>
@@ -124,7 +125,7 @@
             <option value="1">1 stroke away</option>
             <option value="2">Superficial</option>
         </select>
-        Range: <input id="searchStart" size="10" value="3400"> to <input id="searchEnd" size="10" value="33480">
+        Range: <input id="searchStart" size="10" value="3400"> to <input id="searchEnd" size="10" value="3347A">
         Max results: <input type="number" id="maxResults" style="width: 150px;" value="10000"><br>
 
         <button onclick="searchChar(document.getElementById('search').value);">Search</button>
@@ -135,8 +136,7 @@
         <div id="result_div">
             Components: <span id="result_components"></span>
             <br>
-            <div id="results">Click any of Unicode (the heading), Decimal, Pinyin, Components, Definition to copy
-                it.</div>
+            <div id="results"></div>
         </div>
     </div>
 
@@ -150,6 +150,7 @@
 
     <script src="readings.js"></script>
     <script src="ids.js"></script>
+    <script src="names.js"></script>
     <script src="search_ids.js"></script>
 </body>
 

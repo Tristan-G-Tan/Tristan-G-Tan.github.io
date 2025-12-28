@@ -3,7 +3,8 @@ let hideCDP = true;
 
 let cells = new Array(256);
 let selected = 256;
-let page = 78;
+let page = 0;
+
 {
     let table = document.getElementById("body");
     for (let y = 0; y < 16; ++y) {
@@ -42,56 +43,114 @@ function select(i) {
     let char = cells[i].textContent;
     let code = 256 * page + i;
 
-    let ids = ids_map[char];
-    if (ids === undefined)
-        ids = [char];
-    else if (hideCDP)
-        for (component of ids) {
-            if (component.includes("&")) {
-                ids = [char];
-                break
-            }
+    let name;
+    for (let [block, range] of Object.entries(blocks)) {
+        if (code >= range[0] && code <= range[1]) {
+            name = `${block}-${code.toString(16).toUpperCase().padStart(4, "0")}`;
+            break;
         }
+    }
+    name = name || names[char] || `<reserved-${code.toString(16).toUpperCase().padStart(4, "0")}>`;
+    let isCJK = name.includes("CJK Ideograph");
+
     document.getElementById("view").value = char;
     document.getElementById("uni").value = `U+${code.toString(16).toUpperCase().padStart(6, "0")}`;
     document.getElementById("dec").textContent = code.toString();
-    document.getElementById("ids").textContent = ids;
-    let entry = readings_map[char];
     document.getElementById("verbose").innerHTML = "";
-    if (entry) {
-        // kSMSZD2003Readings -> 1983 -> kTGHZ2013 -> kHanyuPinlu -> kHanyuPinyin
-        let reading = entry["kHanyuPinyin"] || entry["kHanyuPinlu"] || entry["kSMSZD2003Readings"] || entry["kXHC1983"] || entry["kTGHZ2013"] || entry["kMandarin"] || "N/A";
+    if (isCJK) {
+        let entry = readings_map[char];
+        document.getElementById("title1").textContent = "Reading:";
+        document.getElementById("read").textContent = "N/A";
 
-        // let reading = entry["kHanyuPinlu"];
-        // if (!reading) {
-        //     reading = entry["kSMSZD2003Readings"]
-        //     if (!reading) {
-        //         reading = entry["kHanyuPinyin"];
-        //         if (!reading) {
-        //             reading = entry["kMandarin"] || "N/A";
-        //         } else {
-        //             reading = reading.slice(reading.indexOf(":") + 1)
-        //         }
-        //     } else {
-        //         reading = reading.split(" ");
-        //         for (let i = 0; i < reading.length; i++) {
-        //             let pinyin = reading[i];
-        //             reading[i] = pinyin.slice(0, pinyin.indexOf("粵"))
-        //         }
-        //     }
-        // }
-        document.getElementById("read").textContent = reading;
+        let i = 0;
+        for (let property of ["kXHC1983", "kTGHZ2013", "kHanyuPinlu", "kSMSZD2003Readings", "kHanyuPinyin", "kMandarin", "kCantonese", "kTang", "kZhuang", "kVietnamese", "kJapanese", "kHangul", "kKorean"]) {
+            if (entry[property]) {
+                if (i > 5)
+                    document.getElementById("title1").textContent = property;
+                document.getElementById("read").textContent = entry[property];
+                break
+            }
+            ++i;
+        }
+
+        document.getElementById("title2").textContent = "Strokes:";
         document.getElementById("stroke").textContent = entry["kTotalStrokes"] || "N/A";
-        document.getElementById("def").textContent = entry["kDefinition"] || "(inenubilable)";
+
+        if (entry["kDefinition"]) {
+            document.getElementById("title3").textContent = "Definition:";
+            document.getElementById("def").textContent = entry["kDefinition"];
+        } else {
+            document.getElementById("title3").textContent = "Block:";
+            document.getElementById("def").textContent = name;
+        }
+
+        let ids = ids_map[char];
+        if (ids === undefined)
+            ids = [char];
+        else if (hideCDP)
+            for (component of ids) {
+                if (component.includes("&")) {
+                    ids = [char];
+                    break
+                }
+            }
+        document.getElementById("ids").textContent = ids;
+
+        document.getElementById("verbose").innerHTML = "";
         for (let [key, value] of Object.entries(entry)) {
             let cell = document.createElement("li");
             cell.innerHTML = `<i>${key}</i>: ${value}`;
             document.getElementById("verbose").appendChild(cell);
         }
     } else {
-        document.getElementById("read").textContent = "N/A";
-        document.getElementById("stroke").textContent = "N/A";
-        document.getElementById("def").textContent = "(inenubilable)";
+        document.getElementById("title1").textContent = "UTF-8:";
+        document.getElementById("title2").textContent = "UTF-16:";
+        document.getElementById("title3").textContent = "Name:";
+        let utf8, utf16;
+        if (code < 0x10000) {
+            // BMP range
+            utf16 = "\\u" + code.toString(16).toUpperCase().padStart(4, "0");
+
+            if (code < 0x80) {
+                // 1-byte UTF-8
+                utf8 = "0x" + code.toString(16).toUpperCase().padStart(2, "0");
+            } else if (code < 0x800) {
+                // 2-byte UTF-8
+                let b1 = 0xC0 | (code >> 6);
+                let b2 = 0x80 | (code & 0x3F);
+                utf8 = `0x${b1.toString(16).toUpperCase()} 0x${b2.toString(16).toUpperCase()}`;
+            } else {
+                // 3-byte UTF-8
+                let b1 = 0xE0 | (code >> 12);
+                let b2 = 0x80 | ((code >> 6) & 0x3F);
+                let b3 = 0x80 | (code & 0x3F);
+                utf8 = `0x${b1.toString(16).toUpperCase()} 0x${b2.toString(16).toUpperCase()} 0x${b3.toString(16).toUpperCase()}`;
+            }
+        } else {
+            // Astral plane (>= 0x10000)
+            let u = code - 0x10000; // 20-bit number
+            let high = u >> 10;     // top 10 bits
+            let low = u & 0x3FF;    // bottom 10 bits
+
+            // Surrogate pair for UTF-16
+            utf16 =
+                "\\u" +
+                (0xD800 | high).toString(16).toUpperCase().padStart(4, "0") +
+                "\\u" +
+                (0xDC00 | low).toString(16).toUpperCase().padStart(4, "0");
+
+            // 4-byte UTF-8
+            let b1 = 0xF0 | (code >> 18);
+            let b2 = 0x80 | ((code >> 12) & 0x3F);
+            let b3 = 0x80 | ((code >> 6) & 0x3F);
+            let b4 = 0x80 | (code & 0x3F);
+            utf8 = `0x${b1.toString(16).toUpperCase()} 0x${b2.toString(16).toUpperCase()} 0x${b3.toString(16).toUpperCase()} 0x${b4.toString(16).toUpperCase()}`;
+        }
+
+        document.getElementById("read").textContent = utf8;
+        document.getElementById("stroke").textContent = utf16;
+        document.getElementById("ids").textContent = char;
+        document.getElementById("def").textContent = name || "unassigned";
     }
 }
 
