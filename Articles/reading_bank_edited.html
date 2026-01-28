@@ -22,31 +22,144 @@
     .answer-choices ul {
       list-style-type: upper-alpha;
     }
-    
-    .sr-only {
+
+    /* .sr-only {
       position: absolute;
       width: 1px;
       height: 1px;
       padding: 0;
       margin: -1px;
       overflow: hidden;
-      clip: rect(0, 0, 0, 0);
-      white-space: nowrap;
+      clip: rect(0,0,0,0);
       border: 0;
+    } */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      left: -10000px;
+      top: auto;
+      overflow: hidden
     }
 
     .question-detail-info {
       margin: 10px 0;
       padding: 10px;
       background: rgba(188, 188, 3, 0.1);
-      border-left: 4px solid rgb(202, 231, 42)
+      border-left: 0.3rem solid rgb(202, 231, 42)
     }
 
-    .correct-answer, .rationale {
+    .correct-answer,
+    .rationale {
       margin: 10px 0;
       padding: 10px;
       background: rgba(58, 145, 63, 0.1);
-      border-left: 4px solid rgb(49, 134, 53)
+      border-left: 0.3rem solid rgb(49, 134, 53)
+    }
+
+    /* Filter UI styles (append to your existing <style>) */
+    .cb-btn {
+      background: rgb(50, 77, 199);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1em;
+      font-family: Roboto, sans-serif;
+      border-radius: 999px;
+    }
+
+    .cb-btn.outline {
+      background: transparent;
+      color: rgb(50, 77, 199);
+      border: 1px solid rgb(50, 77, 199);
+    }
+
+    .cb-btn.yellow {
+      background-color: rgb(254, 219, 0);
+      color: rgb(30, 30, 30);
+      border: 1px solid rgb(30, 30, 30);
+    }
+
+    /* Modal */
+    .filter-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .filter-modal[aria-hidden="false"] {
+      display: flex;
+    }
+
+    .filter-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.4);
+    }
+
+    .filter-modal-panel {
+      position: relative;
+      z-index: 2001;
+      width: min(880px, 96%);
+      max-height: 88%;
+      overflow: auto;
+      background: white;
+      padding: 18px;
+      border-radius: 8px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+      display: flex;
+      gap: 14px;
+      flex-direction: column;
+    }
+
+    /* groups */
+    .filter-group h4 {
+      margin: 0 0 6px 0;
+      font-size: 1rem;
+    }
+
+    .toggle-group {
+      background: transparent;
+      color: rgb(50, 77, 199);
+      border: none;
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 4px 0;
+      align-self: flex-start;
+      margin-bottom: 6px;
+    }
+
+    .checkbox-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+    }
+
+    /* each checkbox */
+    .checkbox-list label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 6px;
+      border: 1px solid #eee;
+      font-size: 0.95rem;
+    }
+
+    /* small responsive */
+    @media (max-width:700px) {
+      .filter-modal-panel {
+        padding: 12px;
+      }
+
+      .checkbox-list label {
+        font-size: 0.9rem;
+      }
     }
   </style>
 </head>
@@ -56,8 +169,48 @@
     <a href="https://tristan-g-tan.github.io/">Click to return to main page</a>.
   </p>
   <p>
-    All questions are scraped from <a href="https://satsuiteeducatorquestionbank.collegeboard.org/digital/search">collegeboard</a>.
-  </p
+    All questions are scraped from <a
+      href="https://satsuiteeducatorquestionbank.collegeboard.org/digital/search">collegeboard</a>.
+  </p>
+
+  <!-- FILTER CONTROLS - insert AFTER the "All questions are scraped..." <p> and BEFORE #printable-question-set -->
+  <div class="filter-bar" style="display:flex;gap:12px;align-items:center;margin:12px 0;">
+    <button id="add-filters-btn" class="cb-btn">Edit Filters</button>
+    <button id="apply-filters-btn" class="cb-btn yellow">Filter</button>
+    <div id="filter-summary" aria-live="polite" style="margin-left:8px;font-size:0.9em;color:#333;">Showing all
+      questions</div>
+  </div>
+
+  <!-- FILTER MODAL (hidden by default) -->
+  <div id="filter-modal" class="filter-modal" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="filter-modal-panel" role="document">
+      <h3 style="margin-top:0">Select Filters</h3>
+
+      <div class="filter-group" data-group="domain">
+        <h4>Domain</h4>
+        <button class="toggle-group" data-group="domain">Clear selection / select all</button>
+        <div class="checkbox-list" id="domain-list"></div>
+      </div>
+
+      <div class="filter-group" data-group="difficulty">
+        <h4>Difficulty</h4>
+        <button class="toggle-group" data-group="difficulty">Clear selection / select all</button>
+        <div class="checkbox-list" id="difficulty-list"></div>
+      </div>
+
+      <div class="filter-group" data-group="skill">
+        <h4>Skill</h4>
+        <button class="toggle-group" data-group="skill">Clear selection / select all</button>
+        <div class="checkbox-list" id="skill-list" style="max-height:240px;overflow:auto;"></div>
+      </div>
+
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+        <button id="reset-filters" class="cb-btn outline">Reset</button>
+        <button id="save-filters" class="cb-btn">Save</button>
+      </div>
+    </div>
+    <div class="filter-modal-backdrop" id="filter-backdrop"></div>
+  </div>
 
   <div id="printable-question-set" class="question-view">
     <div id="export-question-f1bfbed3" class="page row cb-white-bg question-info">
@@ -290,7 +443,8 @@
               incorrect. The text never suggests that the portrait miniature was popular for longer than historians
               thought—if anything, it suggests that the portrait miniature started losing its popularity
               <em>earlier</em> than historians thought. Choice D is incorrect. The text never suggests that portrait
-              painters shifted to become photographers.</p>
+              painters shifted to become photographers.
+            </p>
           </div>
           </p>
         </div>
@@ -1149,7 +1303,8 @@
               showed a wish for freedom and self-expression, and it acted as a kind of rebellion against what society
               expected of women at the time. Therefore, according to the text, historians think that the
               <em>pachuca</em> style was a way for Mexican women to express themselves and resist strict social
-              expectations.</p>
+              expectations.
+            </p>
             <p>Choice A is incorrect because the text explicitly describes the <em>pachuca</em> style as a distinctive
               look adopted during the World War II era. It does not indicate that the <em>pachuca </em>style influences
               fashion in the United States in the present day. Choice C is incorrect because the text does not indicate
@@ -1888,7 +2043,8 @@
               story as it alternates between two timelines in 1901 and 1958. But literary theorist Mikhail Bakhtin
               maintained that <em>fabula </em>and <em>syuzhet </em>are insufficient to completely describe a
               narrative—he held that systematic categorizations of artistic phenomena discount the subtle way in which
-              meaning is created by interactions between the artist, the work, and the audience.</p>
+              meaning is created by interactions between the artist, the work, and the audience.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -1957,7 +2113,8 @@
               <em>syuzhet</em> (a narrative’s arrangement and presentation of events). The primary focus of this text
               isn’t the structure of this film or of other narratives that are told out of chronological order;
               moreover, the text doesn’t consider whether such structures make it harder for audiences to understand
-              narratives.</p>
+              narratives.
+            </p>
           </div>
           </p>
         </div>
@@ -3729,7 +3886,8 @@
               the area it covered by 55% from 2009 to 2018, whereas <em>Deschampsia antarctica</em> increased the area
               it covered by 28% during the same period. It therefore follows that <em>Colobanthus quitensis</em> saw a
               greater expansion than <em>Deschampsia antarctica</em> did and that <em>Colobanthus quitensis</em>
-              increased the area of land it covered by more than half.</p>
+              increased the area of land it covered by more than half.
+            </p>
             <p>Choice A is incorrect because according to the table, <em>Deschampsia antarctica</em> covered 1,230
               square meters of land in 2009 and 1,576 square meters of land in 2018. <em>Deschampsia antarctica</em>
               therefore covered a larger, not a smaller, area of land in 2018 than in 2009. Moreover, there’s no
@@ -10052,7 +10210,8 @@
             <li>
               <div>
                 <p>Since 1984, new novels about young Latina characters by Latina authors have often been compared to
-                  <em>The House on Mango Street</em>.&nbsp;</p>
+                  <em>The House on Mango Street</em>.&nbsp;
+                </p>
               </div>
             </li>
           </ul>
@@ -11513,7 +11672,8 @@
                 miniata</em> sea stars, Laurent Formery <span data-ssml-sub-alias="et al">et al.</span> observed
               activity only in anterior genes across <em><span data-ssml-sub-alias="P">P.</span> miniata</em>’s entire
               body and some posterior genes limited to the edges, suggesting that <span
-                aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+                aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -11754,7 +11914,8 @@
               2014, these stories were copyrighted. The right to adapt was only available to those who could afford the
               copyright fee and gain approval from the strict copyright holders of Doyle’s estate. Some journalists
               predict that the number of Sherlock Holmes adaptations is likely to increase since the end of copyright
-              means that <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              means that <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -12132,7 +12293,8 @@
           <p>
           <div>
             <p>Choice A is the best answer. This choice provides evidence that directly links the presence of
-              <em>R</em>. <em>solanacearum</em>-inhibiting microbes in the soil to the health of tomato plants. </p>
+              <em>R</em>. <em>solanacearum</em>-inhibiting microbes in the soil to the health of tomato plants.
+            </p>
             <p>Choice B is incorrect. This choice would weaken the team’s conclusion. It suggests that the presence of
               the disease-causing bacteria had no effect on the health of the tomato plants. Choice C is incorrect. This
               choice doesn’t support the team’s conclusion. The conclusion is about microbes, not soil moisture. Choice
@@ -14428,7 +14590,8 @@
               increase the number of people who experience the work. If more people view Armajani’s drawing online than
               they do in person, this finding would support the student’s claim about the benefits of putting a work
               from the museum online. Thus, this finding would most directly support the claim because, if it were true,
-              more people would view <em>Mississippi Delta</em> online than would visit the entire museum in person.</p>
+              more people would view <em>Mississippi Delta</em> online than would visit the entire museum in person.
+            </p>
             <p>Choice A is incorrect because information about the museum having several works by Armajani wouldn’t
               address the student’s claim about how putting artworks online affects the number of people who experience
               them. The quantity of works by one artist that are held in a museum collection wouldn’t support a claim
@@ -14755,7 +14918,8 @@
               increase with habitat temperature. To evaluate this hypothesis for a 2021 study, Charlotte Probst and
               colleagues gathered data on mean bill surface area of species of North American thrashers (genus:
               <em>Toxostoma</em>) as well as on climate conditions of the birds’ native habitats. Based on their data,
-              Probst and colleagues concluded that the hypothesis was not fully supported.</p>
+              Probst and colleagues concluded that the hypothesis was not fully supported.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -15297,7 +15461,8 @@
               <div>
                 <p>Although the claim of a late ninth- through early eleventh-century composition date for
                   <em>Beowulf</em> has some plausibility, advocates for the claim have not compellingly addressed
-                  evidence suggesting an earlier date.</p>
+                  evidence suggesting an earlier date.
+                </p>
               </div>
             </li>
           </ul>
@@ -15324,7 +15489,8 @@
               explain why the poem’s fit with historical context should take precedence over the linguistic evidence,
               but they have not yet done so. Thus, the main idea of the text is that while there is some plausibility to
               the later composition date, advocates for the later date have not compellingly addressed evidence
-              suggestive of an earlier date.&nbsp;</p>
+              suggestive of an earlier date.&nbsp;
+            </p>
             <p>Choice A is incorrect because the text says that scholars who date the poem to the late ninth through
               early eleventh centuries have failed to account for the linguistic evidence that the poem may have been
               composed earlier, not that the evidence those scholars cite in favor of their view is unreliable or that
@@ -16213,7 +16379,8 @@
               misunderstood the ecology of the regions the Maya inhabited. Marketplaces typically emerge because
               different individuals or groups want to trade resources they control for resources they don’t control.
               Scholars seriously underestimated the ecological diversity of the Maya landscape and thus assumed that
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -16961,7 +17128,8 @@
               influence that the newsletter eventually had. Choice B is incorrect. While the content of <em>Gidra</em>
               was undoubtedly related to the newsletter’s influence, this information isn’t relevant to the specific
               hypothesis about monthly circulation numbers. Choice C is incorrect. Where the publishers of
-              <em>Gidra</em> were initially based doesn’t tell us about the newsletter’s overall influence. </p>
+              <em>Gidra</em> were initially based doesn’t tell us about the newsletter’s overall influence.
+            </p>
           </div>
           </p>
         </div>
@@ -18966,7 +19134,8 @@
               evidence of significant spikes in carbon dioxide levels coinciding with relevant periods in sauropod
               evolution, such as when the first large sauropods appeared, when several sauropod lineages underwent
               further evolution toward gigantism, or when sauropods reached their maximum known sizes, suggesting that
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -20109,7 +20278,8 @@
               state the main idea of the text. The text never says that Taylor finds it difficult to locate Arizona dock
               roots. Choice D is incorrect. This doesn’t state the main idea of the text. The text never says that
               <em>In the Path of the Four Seasons</em> is widely acclaimed. Rather, it discusses the rug to illustrate
-              the point made earlier in the passage: that Taylor uses local plants and vegetables to dye wool. </p>
+              the point made earlier in the passage: that Taylor uses local plants and vegetables to dye wool.
+            </p>
           </div>
           </p>
         </div>
@@ -22614,7 +22784,8 @@
               wall: <em>Instant Mural</em> isn’t a reflection of the social constraints placed on women specifically but
               instead is a reflection on the constraining aesthetic expectations placed on Chicano artists in general
               (that is, the limits resulting from the lack of recognition of Chicano artists of any gender who did not
-              create sociohistorical murals).</p>
+              create sociohistorical murals).
+            </p>
             <p>Choice A is incorrect. The text indicates that the art establishment in 1974 (and earlier) did recognize
               Chicano muralists to the exclusion of other Chicano artists, so there’s no reason to assume Asco’s work
               <em>Instant Mural</em> was intended to represent Chicano muralists’ frustration; it’s far more likely that
@@ -22629,7 +22800,8 @@
               understood as a critique of the content of any other artworks. The text doesn’t address how Chicano
               culture is depicted in sociohistorical murals; it discusses such murals only to make the point that in
               1974 (and earlier) the art establishment recognized Chicano artists who produced them to the exclusion of
-              Chicano nonmuralists, indicating a constraint all of Asco’s members faced, regardless of gender.</p>
+              Chicano nonmuralists, indicating a constraint all of Asco’s members faced, regardless of gender.
+            </p>
           </div>
           </p>
         </div>
@@ -24620,7 +24792,8 @@
               aspires to be comprehensive by, for example, including accounts from cast and crew members of every
               <em>Star Trek</em> television series and film to date. But while <em>The Fifty-Year Mission</em> is
               clearly a unique and valuable resource, it has a shortcoming common among oral histories: it lacks a clear
-              authorial point of view that could otherwise unite the various accounts into a cohesive whole.</p>
+              authorial point of view that could otherwise unite the various accounts into a cohesive whole.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -24634,7 +24807,8 @@
               <div>
                 <p>The compilers of <em>The Fifty-Year Mission</em> had lofty goals for their oral history of the
                   <em>Star Trek</em> franchise, but the published work lacks information about many key events in the
-                  franchise’s history.</p>
+                  franchise’s history.
+                </p>
               </div>
             </li>
             <li>
@@ -24687,7 +24861,8 @@
               the<em> Star Trek</em> franchise failed to participate in the book’s oral history project. The only
               mention of the scope of participation states that the book includes accounts "from cast and crew members
               of every <em>Star Trek</em> television series and film to date." This information implies a high level of
-              participation from relevant individuals, not a lack of participation.</p>
+              participation from relevant individuals, not a lack of participation.
+            </p>
           </div>
           </p>
         </div>
@@ -26444,7 +26619,8 @@
               <em>C. granosus</em>’s venom was found to inhibit the pathogen’s growth, it therefore follows that the
               venom provides protection for <em>C. granosus</em> against <em>E. coli</em> that its digestive system
               wouldn’t otherwise provide, making it reasonable to conclude that the trait may have spread through the
-              species because it mitigates risk during feeding.</p>
+              species because it mitigates risk during feeding.
+            </p>
             <p>Choice A is incorrect because a finding that <em>E. coli</em> doesn’t appear to be virulent, or
               dangerous, for <em>C. granosus</em> even when venom isn’t used would weaken rather than strengthen Gálvez
               and colleagues’ conclusion that a particular form of venom production spread in <em>C. granosus</em> in
@@ -26459,7 +26635,8 @@
                 granosus</em> venom in relation to the risk of <em>E. coli</em>, and a finding that the venom also
               inhibits nonpathogenic (not disease-causing) bacteria species, which presumably don’t pose a risk if
               consumed, wouldn’t be relevant to the conclusion that <em>C. granosus</em>’s particular form of venom
-              production spread in the species in part because it helps reduce risk during feeding.</p>
+              production spread in the species in part because it helps reduce risk during feeding.
+            </p>
           </div>
           </p>
         </div>
@@ -26876,7 +27053,8 @@
               and 2020. The team reached this conclusion by analyzing existing infrared imaging and spectroscopy data
               about the planet obtained from various instruments in different years<em>.</em> Of the team’s sources
               listed in the table, the earliest example of spectroscopy data included in the analysis was obtained in
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -27254,7 +27432,8 @@
               <div>
                 <p>a substantial increase in oxygenation in the Alboran Sea corresponded with the local decline in
                   <em>L. pertusa</em>, but the opposite relationship between oxygenation and <em>L. pertusa</em> was
-                  found near the Mauritanian coast.</p>
+                  found near the Mauritanian coast.
+                </p>
               </div>
             </li>
             <li>
@@ -27308,7 +27487,8 @@
               an association between the decrease in oxygenation and the decline in population of the coral. No such
               relationship is suggested around 11,000 years ago near the Mauritanian coast. So, oxygenation likely
               played a role in the <em>L. pertusa</em> decline in the Alboran Sea but not in the coral’s decline near
-              the Mauritanian coast.</p>
+              the Mauritanian coast.
+            </p>
             <p>Choice A is incorrect because it asserts the opposite of what the graph indicates regarding oxygenation
               in the Alboran Sea, and it misrepresents what the graph indicates about oxygenation near the Mauritanian
               coast. The graph indicates that at the time of the decline in <em>L. pertusa</em> (approximately 9,000
@@ -32784,7 +32964,8 @@
           <div>
             <p>Choice B is the best answer. If there are parasites that feed on both snakes and frogs, they could carry
               <em>BovB</em> from snakes to frogs. HT could occur “indirectly” through those encounters, which frogs are
-              more likely to survive than snake encounters. </p>
+              more likely to survive than snake encounters.
+            </p>
             <p>Choice A is incorrect. The team’s conclusion specifically argues that <em>BovB</em> is transmitted from
               snakes to frogs via HT, and this choice doesn’t mention snakes. Choice C is incorrect. The team argues
               that <em>BovB</em> is transmitted from snakes to frogs via HT, and this answer choice discusses a scenario
@@ -35222,14 +35403,16 @@
             <li>
               <div>
                 <p>Compared with pollinators belonging to the genus <em>Osmia</em>, pollinators belonging to the genus
-                  <em>Xylocopa</em> spent less time on damaged pin flowers but more time on damaged thrum flowers.</p>
+                  <em>Xylocopa</em> spent less time on damaged pin flowers but more time on damaged thrum flowers.
+                </p>
               </div>
             </li>
             <li>
               <div>
                 <p>Damage led to shorter times per thrum flower in three pollinator genera (<em>Osmia</em>,
                   <em>Pierid</em>, and <em>Xylocopa</em>), whereas it led to longer times per thrum flower in one
-                  pollinator genus (<em>Habropoda</em>).</p>
+                  pollinator genus (<em>Habropoda</em>).
+                </p>
               </div>
             </li>
             <li>
@@ -35269,7 +35452,8 @@
               flower has been damaged. Choice D is incorrect. While this statement is true based on the information in
               the table, it doesn’t provide evidence that supports the researchers’ conclusion that the effect of floral
               damage on time spent per flower varied by both floral morph and the genus of the pollinator because this
-              choice provides information only about how much time one pollinator genus spent on intact flowers.</p>
+              choice provides information only about how much time one pollinator genus spent on intact flowers.
+            </p>
           </div>
           </p>
         </div>
@@ -36342,7 +36526,8 @@
               character Arachne, a weaver who was changed into a spider, by welding bits of steel together into
               something that, although vaguely human, is strange and machine-like. And his large bronze sculpture
               <em>The Light of Truth</em> (2021) commemorates activist and journalist Ida B. Wells using mainly flowing,
-              curved pieces of metal that create stylized flame.</p>
+              curved pieces of metal that create stylized flame.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -40799,7 +40984,8 @@
               the strongest bites of any land animals in Earth’s history. Determining the bite force of extinct animals
               can be difficult, however, and paleontologists Paul Barrett and Emily Rayfield have suggested that an
               estimate of dinosaur bite force may be significantly influenced by the methodology used in generating that
-              estimate.</p>
+              estimate.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -41884,7 +42070,8 @@
               composed for <em>The Shining</em> was used in the film. But the soundtrack for <em>Tron</em> consists
               largely of music composed by Carlos, so it contains more of her original music than do the soundtracks for
               the other two films. Thus, the main idea of the text is that of the three films for which Carlos is
-              credited, <em>Tron </em>features the most original music from her.</p>
+              credited, <em>Tron </em>features the most original music from her.
+            </p>
             <p>Choice B is incorrect because it directly contradicts the text’s claim that "very little of what she and
               Rachel Elkind composed for <em>The Shining</em> was used in the film." Choice C is incorrect because the
               text doesn’t address the perceived quality of different composers, instead, it discusses how much of
@@ -42248,7 +42435,8 @@
               text, this progression from online usage to spoken language suggests that social media does more than just
               register or reflect changes in language—it can actively drive such changes. In the case of <em>meng</em>-,
               the text suggests, social media facilitated the movement of the affix from an online tag to part of spoken
-              Bahasa Indonesia.</p>
+              Bahasa Indonesia.
+            </p>
             <p>Choice A is incorrect because the text doesn’t differentiate between social media’s usefulness for
               studying informal versus formal or official language; it merely notes that Bahasa Indonesia is an official
               language. Choice B is incorrect because while the example given in the text focuses on changes in Bahasa
@@ -43761,7 +43949,8 @@
               <div>
                 <p>Other species in the Velloziaceae family are found in terrains with more soil but have root
                   structures similar to those of <em><span data-ssml-sub-alias="B">B.</span> tomentosa </em>and
-                  <em><span data-ssml-sub-alias="B">B.</span> macrantha</em>.</p>
+                  <em><span data-ssml-sub-alias="B">B.</span> macrantha</em>.
+                </p>
               </div>
             </li>
             <li>
@@ -45450,7 +45639,8 @@
               Allison J. Shultz and others have found that males in several species of the tanager genus
               <em>Ramphocelus</em> use microstructures in their feathers to manipulate light, creating the appearance of
               deeper saturation without the birds necessarily having to maintain a carotenoid-rich diet. These findings
-              suggest that <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              suggest that <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -46338,7 +46528,8 @@
               subject matters. For example, Quan Neloms’s students look for college-level vocabulary and historical
               events in rap songs. Researchers claim that in addition to developing students’ social justice awareness,
               <span role="region" aria-label="Referenced Content"><u>hip-hop pedagogy encourages student success by
-                  raising students’ interest and engagement.</u></span></p>
+                  raising students’ interest and engagement.</u></span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -50405,7 +50596,8 @@
               2016 and 2017. The data suggest that the intermediate-tourism sites experienced influxes of human
               wastewater. <span style="text-decoration: underline;" role="region"
                 aria-label="Referenced Content">However, the researchers concluded that this happened
-                intermittently.</span></p>
+                intermittently.</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -51565,7 +51757,8 @@
             <li>
               <div>
                 <p><em>The</em> <em>New York Times</em> had a 20% revenue change, while the <em>Denver Post</em> had a
-                  <span aria-hidden="true">−1%</span><span class="sr-only">negative 1%</span> revenue change.</p>
+                  <span aria-hidden="true">−1%</span><span class="sr-only">negative 1%</span> revenue change.
+                </p>
               </div>
             </li>
             <li>
@@ -54600,7 +54793,8 @@
               rubber. The tree produces a milky substance called latex that is used to make rubber. The bark of
               <em>Hevea brasiliensis</em> is helpful for the process of making rubber because it has a unique structure
               that makes it easy to collect latex. A network of tubes in the tree’s inner bark helps the latex to flow
-              out easily when people make small cuts into the bark.&nbsp;</p>
+              out easily when people make small cuts into the bark.&nbsp;
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -54890,7 +55084,8 @@
               inexpensive form of expression to share with a select audience. Zine creators often mix art with social
               commentary and challenge mainstream culture. At first, the internet appeared to replace the zine, but this
               old form persists. Today, there are enough zines in the United States to support annual zine festivals.
-              This suggests that <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              This suggests that <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -54999,7 +55194,8 @@
               Langston Hughes and Georgia Douglas Johnson. Writing in this way can be challenging and might seem as
               though it would produce awkward poems. However, reviewers praised <em>One Last Word</em> as a beautiful
               and powerful tribute to the poets who inspired it. This reaction suggests that <span
-                aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+                aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -55832,7 +56028,8 @@
               invasion, while some customs depicted are likely Spanish in origin. The implication is that some poems
               were composed before the invasion but the references to Spanish customs could have come about only after
               the invasion, and thus that the collection includes content that predates the invasion and also content
-              from after the invasion. </p>
+              from after the invasion.
+            </p>
             <p>Choice B is incorrect because the text clearly indicates that the collection is in Nahuatl, not Spanish,
               so the compilers’ unfamiliarity with Spanish is irrelevant to whether the collection contains material
               composed after the Spanish invasion. Choice C is incorrect because the text mentions only the Aztec Empire
@@ -56022,7 +56219,8 @@
               <div>
                 <p>uncertainty about the specificity of aptamer-based tests for pathogens in real-world foods may be due
                   to the similarity between <em><span data-ssml-sub-alias="E">E.</span> coli</em> O157:H7 and other
-                  <em><span data-ssml-sub-alias="E">E.</span> coli</em> strains.</p>
+                  <em><span data-ssml-sub-alias="E">E.</span> coli</em> strains.
+                </p>
               </div>
             </li>
             <li>
@@ -58529,7 +58727,8 @@
               poet Wace into the <em>Roman de Brut</em> in <span data-ssml-say-as="date">1155</span>. But Wace didn’t
               merely adapt <em>History</em>, he added to it as well, introducing the famous Round Table at which
               Arthur’s knights assembled, which suggests that <span aria-hidden="true">______</span><span
-                class="sr-only">blank</span></p>
+                class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -58586,7 +58785,8 @@
               <em>History</em>, Wace added "the famous Round Table" to it. If Wace introduced the idea of the Round
               Table in 1155, it logically follows that this element was not present in earlier works. This suggests that
               the Arthurian legends that informed <em>Vita Sancti Cadoci</em>, which was written before both Geoffrey’s
-              and Wace’s works, would not have featured the Round Table.</p>
+              and Wace’s works, would not have featured the Round Table.
+            </p>
             <p>Choice A is incorrect because the text discusses several works that include legends about a character,
               King Arthur, but doesn’t address the historical accuracy of the stories in those works or suggest that the
               creation of <em>Culhwch and Olwen</em> was relevant to any other works’ accuracy. Choice B is incorrect
@@ -62385,7 +62585,8 @@
               that resistance to <em><span data-ssml-sub-alias="P">P.</span> rettgeri</em>&nbsp;correlates
               with&nbsp;<em>DptA</em>&nbsp;activity but is not significantly affected by&nbsp;<em>DptB</em> activity,
               data in the graph of survival rates post–<em><span data-ssml-sub-alias="A">A.</span> sicerae</em>
-              infection suggest that <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              infection suggest that <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -62416,7 +62617,8 @@
             <li>
               <div>
                 <p>defense against <em><span data-ssml-sub-alias="A">A.</span> sicerae</em> is strongest when both
-                  <em>DptA</em> and <em>DptB</em> are present.</p>
+                  <em>DptA</em> and <em>DptB</em> are present.
+                </p>
               </div>
             </li>
           </ul>
@@ -62446,7 +62648,8 @@
               other fly types). In other words, when <em>DptA</em> activity was silenced, the flies showed relatively
               high survival rates, but when <em>DptB</em> activity was silenced, whether on its own or in conjunction
               with <em>DptA</em> activity being silenced, survival rates were low, suggesting that <em>DptB</em> may
-              have developed as a specific defense against <em>A. sicerae</em>.</p>
+              have developed as a specific defense against <em>A. sicerae</em>.
+            </p>
             <p>Choice A is incorrect. The graph suggests that <em>DptA</em> activity is associated with a low rate of
               survival, not a high one. Furthermore, the graph shows results for flies where <em>DptA</em> alone was
               silenced, <em>DptB</em> alone was silenced, and both were silenced and thus does not show any flies with
@@ -62459,7 +62662,8 @@
               further information to suggest one genetic type confers resistance to a greater number of pathogens than
               the other. Choice D is incorrect. The graph does not address flies with activity in both <em>DptA</em> and
               <em>DptB</em>. All flies represented in the graph had one or both of <em>DptA</em> and <em>DptB</em>
-              silenced, or inactive.</p>
+              silenced, or inactive.
+            </p>
           </div>
           </p>
         </div>
@@ -63552,7 +63756,8 @@
               messages from doctors (i.e., credentialed experts). One reason for this may be that the doctors’ status as
               credentialed experts wasn’t ignored but rather was outweighed by participants’ views of the experiential
               relevance of the two types of messengers; that is, participants may have reacted the way they did because
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -63737,7 +63942,8 @@
                 caninervis</em> specimens found beneath semitransparent quartz crystals with that of specimens found on
               the soil surface absent such crystals, but it doesn’t make a comparison among specimens growing beneath
               crystals of different degrees of thickness or consider how the relative thickness of the crystals affects
-              the growth of the moss. </p>
+              the growth of the moss.
+            </p>
           </div>
           </p>
         </div>
@@ -63920,7 +64126,8 @@
               <div>
                 <p>When the fermented beans were analyzed, they were found to contain two microorganisms,
                   <em>Lactobacillus casei</em>&nbsp;and&nbsp;<em>Lactobacillus plantarum</em>, that are theorized to
-                  increase the amount of nitrogen absorbed by the gut after eating beans.&nbsp;</p>
+                  increase the amount of nitrogen absorbed by the gut after eating beans.&nbsp;
+                </p>
               </div>
             </li>
             <li>
@@ -64900,7 +65107,8 @@
               <span data-ssml-sub-alias="et al">et al.</span> concluded that the coarse grains are sandstone, which
               tends to be deposited by flowing water, whereas the fine grains are mudstone, which is slowly deposited by
               settling out of suspension in low-flow water, leading the researchers to posit that <span
-                aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+                aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -64958,7 +65166,8 @@
               prolonged period but occasionally experienced drying and that there were periods in which one or more
               streams (flowing water) were present, since the extended existence of a lake would account for the
               abundance of fine grains, periods of drying would account for the cracks in the fine grains, and periods
-              with streams would account for the sections of coarse grains.</p>
+              with streams would account for the sections of coarse grains.
+            </p>
             <p>Choice A is incorrect because the text indicates that an abundance of fine grains of sediment was found
               at the Murray Formation site, which suggests that a low-flow water source (such as a lake) <em>was</em>
               present. Further, the text makes no mention of where the water at the site may have originated from.
@@ -65348,7 +65557,8 @@
               focusing on young artists. By having established musicians and composers serve as mentors, the AACM gives
               young artists the benefits of expert technical training and creative guidance. Numerous organizations
               offer similar kinds of support to new generations of painters, writers, and other artists, suggesting that
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -66493,7 +66703,8 @@
               In this context, "cited in" would mean referred to or mentioned in something. Although it’s reasonable to
               suggest that a proposal to raise a toll might not make any mention of drivers who think the toll is
               already too high, the text focuses on how those drivers and other people are likely to react to arguments
-              in favor of the proposal, not on whether those drivers would be cited in the proposal itself.</p>
+              in favor of the proposal, not on whether those drivers would be cited in the proposal itself.
+            </p>
           </div>
           </p>
         </div>
@@ -66767,7 +66978,8 @@
               <p>The baying of the wolves sounded nearer and nearer, as though they were closing round on us from every
                 side. I grew dreadfully afraid, and the horses shared my fear. The driver, however, was not in the least
                 <span role="region" aria-label="Referenced Content"><u>disturbed</u></span>; he kept turning his head to
-                left and right, but I could not see anything through the darkness.</p>
+                left and right, but I could not see anything through the darkness.
+              </p>
             </blockquote>
           </div>
         </div>
@@ -68351,7 +68563,8 @@
               notice. The text establishes that Hishida’s painting <em>Cat and Plum Blossoms</em> is a notable work of
               <em>Nihonga</em>, or classical Japanese painting, that features the traditional technique of applying
               color pigments to a silk scroll. It wouldn’t make sense to say that Hishida’s use of a traditional
-              Japanese approach to painting indicates that Hishida failed to notice those approaches.</p>
+              Japanese approach to painting indicates that Hishida failed to notice those approaches.
+            </p>
           </div>
           </p>
         </div>
@@ -69104,7 +69317,8 @@
               <em>W</em> boson were remarkable because they revealed the subatomic particle’s mass to be much greater
               ("seven standard deviations higher") than had been expected based on a standard model. This context
               conveys not only that the measurements differed from predictions but also that the extent of the
-              difference was very large.</p>
+              difference was very large.
+            </p>
             <p>Choice A is incorrect. Although the text indicates that there was a very large difference between the
               predicted mass and the actual measured mass of the subatomic particle, it doesn’t explain the cause of, or
               reason behind, that difference. Choice B is incorrect because it wouldn’t make sense to say that the
@@ -73134,7 +73348,8 @@
               great labor or effort. According to the text, the creation of the 1926 animated film <em>The Adventures of
                 Prince Achmed</em> took three years and was a painstaking process. Since the process was so long and
               required great efforts by Lotte Reiniger and her team, the creation of the film was therefore an arduous
-              process.</p>
+              process.
+            </p>
             <p>Choice A is incorrect because the text doesn’t indicate that the creation of Reiniger’s film was "a
               haphazard," or disorganized, process. In fact, the text suggests that the creation process was quite
               meticulous and the team worked hard together to produce the envisioned effects. Choice B is incorrect.
@@ -76644,7 +76859,8 @@
             <p>Beginning in the 1950s, Navajo Nation legislator Annie Dodge Wauneka continuously worked to promote
               public health; this <span aria-hidden="true">______</span><span class="sr-only">blank</span> effort
               involved traveling throughout the vast Navajo homeland and writing a medical dictionary for speakers of
-              <em>Diné bizaad</em>, the Navajo language.</p>
+              <em>Diné bizaad</em>, the Navajo language.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -79973,7 +80189,8 @@
                 and, flying wildly hither and thither, bowling every one out of the way, and scolding and exhorting all
                 day with her tremendous voice, Marija was too eager to see that others conformed to the proprieties to
                 <span style="text-decoration: underline;" role="region"
-                  aria-label="Referenced Content">consider</span><em> </em>them herself.</p>
+                  aria-label="Referenced Content">consider</span><em> </em>them herself.
+              </p>
             </blockquote>
           </div>
         </div>
@@ -80415,7 +80632,8 @@
                 than not he did so, for he was inclined to be passive and naïve; it was difficult for him to say no.
                 Those who exhibited his work, who praised and purchased it, and who demanded its proliferation began to
                 <span style="text-decoration: underline;" role="region" aria-label="Referenced Content">determine</span>
-                it.</p>
+                it.
+              </p>
             </blockquote>
             <p style="text-align: right;"><span class="dap_copyright">©1989 by N. Scott Momaday</span></p>
           </div>
@@ -81285,7 +81503,8 @@
             <p>To develop a method for measuring snow depth with laser beams, NASA physicist Yongxiang Hu relied on
               <span aria-hidden="true">______</span><span class="sr-only">blank</span>; identifying broad similarities
               between&nbsp;two seemingly different phenomena, Hu used information about how ants move inside colonies to
-              calculate how the particles of light that make up laser beams travel through snow.</p>
+              calculate how the particles of light that make up laser beams travel through snow.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -82040,7 +82259,8 @@
               be used for empirical testing of hypotheses regarding the frequency of typical word usage. If one has a
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> that the word “get” has a high
               incidence in English, for example, an analysis of a corpus can support that hypothesis by showing that
-              “get” is the fifth most commonly used verb.</p>
+              “get” is the fifth most commonly used verb.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -82477,7 +82697,8 @@
             <p>Whether Carmen Lomas Garza is creating small paintings and illustrations or large public artworks—such as
               <em>Baile</em>, a copper cutout of traditional Mexican dance in the San Francisco International
               Airport—she is <span aria-hidden="true">______</span><span class="sr-only">blank</span> direct experience,
-              drawing from memories of her childhood in Texas or details of her current surroundings in California.</p>
+              drawing from memories of her childhood in Texas or details of her current surroundings in California.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -83137,7 +83358,8 @@
               did not hesitate to publish reviews that went against popular opinion. One of her most divisive works was
               an essay questioning the idea of photography as an emerging medium for fine art: in the essay, Eastlake
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> that the value of photographs was
-              informational rather than creative.</p>
+              informational rather than creative.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -84395,7 +84617,8 @@
               <em>Blind Spot </em>consists of original photographs as well as poetic prose—two elements that correspond
               to Cole’s passions, identified in the text, for photography and the written word. This context suggests
               that Cole’s excitement about photography and writing led him to create a book that successfully combines
-              the two mediums. </p>
+              the two mediums.
+            </p>
             <p>Choice A is incorrect because describing Cole as feeling “indifference to” his two passions wouldn’t make
               sense in context. If Cole is indifferent to his passions, that would mean he doesn’t care about
               photography or writing—in which case they wouldn’t be his passions at all. Choice C is incorrect because
@@ -86416,7 +86639,8 @@
               small photo that cost little to make. <span lang="fr"><em>Carte de visite</em></span> photos helped to
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> photography: they made it easy
               and enjoyable for everyday people to have their pictures taken, and people at the time loved exchanging
-              these small<em> </em>photos with friends and family.</p>
+              these small<em> </em>photos with friends and family.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -88519,7 +88743,8 @@
               this factually questionable description likely persists because it functions as a "founding myth" that
               reinforces a widespread belief in the profoundly transformative nature of the invention of film. This
               indicates that the author of Text 2 would likely see the description in Text 1 as motivated primarily by
-              cultural perceptions about film’s significance rather than by documented historical facts.</p>
+              cultural perceptions about film’s significance rather than by documented historical facts.
+            </p>
             <p>Choice B is incorrect because the author of Text 2 doesn’t suggest that film historians regard the view
               about film’s transformative nature as naïve. On the contrary, Text 2 states that the story of the first
               showing of <em>Arrival of the Train</em> has become "canonical, even among film historians," indicating
@@ -90791,7 +91016,8 @@
           <div>
             <p>Choice D is the best answer. The text starts by introducing Mitchell’s philosophy about using simple,
               repetitive language in books for young children. Then it describes a book influenced by that philosophy,
-              <em>Goodnight Moon</em>. </p>
+              <em>Goodnight Moon</em>.
+            </p>
             <p>Choice A is incorrect. Although two authors are mentioned in the text, they both agree about the type of
               language that should be contained in books for young children. Choice B is incorrect. The text never
               discusses the evaluation of children’s literature. It does provide one view of how children’s books should
@@ -91051,7 +91277,8 @@
             <p>It is by no means <span aria-hidden="true">______</span><span class="sr-only">blank</span> to recognize
               the influence of Dutch painter Hieronymus Bosch on Ali Banisadr’s paintings; indeed, Banisadr himself
               cites Bosch as an inspiration. However, some scholars have suggested that the ancient Mesopotamian poem
-              <em>Epic of Gilgamesh</em> may have had a far greater impact on Banisadr’s work.</p>
+              <em>Epic of Gilgamesh</em> may have had a far greater impact on Banisadr’s work.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -92162,7 +92389,8 @@
         <div class="prompt cb-margin-top-16">
           <div>
             <p>The following text is adapted from Ida <span data-ssml-sub-alias="B">B.</span> Wells’s 1970 autobiography
-              <em>A Crusade for Justice.</em> Mr. Watts is a reference to George Frederic Watts, an English painter.</p>
+              <em>A Crusade for Justice.</em> Mr. Watts is a reference to George Frederic Watts, an English painter.
+            </p>
             <blockquote>
               <p>[Manchester’s] art galleries are so&nbsp;<span style="text-decoration: underline;" role="region"
                   aria-label="Referenced Content">arranged</span>&nbsp;that the name of every picture is plainly seen
@@ -92863,7 +93091,8 @@
           <div>
             <p>Choice A is the best answer. "Speculate" means "to form a theory or guess without any clear evidence."
               This makes sense because, due to the lack of "clear evidence," the archaeologists can only guess how the
-              <em>pessoi</em> set might have come to be there.</p>
+              <em>pessoi</em> set might have come to be there.
+            </p>
             <p>Choice B is incorrect. "Dismiss" can mean "send away" or "treat as unworthy of consideration." The text
               implies that the archaeologists are trying to figure out the truth—they wouldn’t "dismiss" what really
               happened. Choice C is incorrect. "Expand on" means "give more details about," but there aren’t any details
@@ -93495,7 +93724,8 @@
             <li>
               <div>
                 <p>By conceding that Woolf’s talents were best suited to serious novels but asserting that the humor in
-                  <em>Orlando </em>is often effective</p>
+                  <em>Orlando </em>is often effective
+                </p>
               </div>
             </li>
             <li>
@@ -95258,7 +95488,8 @@
             <p>Some researchers believe that the genes that enable groundhogs and certain other mammals to hibernate
               through the winter by slowing their breathing and heart rates and lowering their body temperature may be
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> in humans: present yet having
-              essentially no effect on our bodily processes.</p>
+              essentially no effect on our bodily processes.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -96023,7 +96254,8 @@
               which encouraged inventive strategies by the intended recipient to avoid payment. To improve this system,
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> were proposed in 1837, including
               the use of a postage stamp, a small receipt pasted to the mail indicating that delivery costs had been
-              paid by the sender.</p>
+              paid by the sender.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -98456,7 +98688,8 @@
               <em>The House That Will Not Stand</em> had an “all-female cast” that stands in some relationship to “an
               array of female characters” in the play. Because all cast members are female, the characters must be
               played by these female cast members; therefore the cast constitutes, or comprises, the collection of
-              characters. </p>
+              characters.
+            </p>
             <p>Choice A is incorrect. In this context, “engulfs” would mean encloses or overwhelms, and although it is
               fairly common to describe an actor as embodying (or personifying realistically) a character, there is
               nothing in the text to suggest that the cast members enclosed or overwhelmed the characters they played.
@@ -98528,7 +98761,8 @@
         <div class="question cb-margin-top-16">
           <div>
             <p>Which choice best describes a difference in how the authors of Text 1 and Text 2 view Barbara Tuchman’s
-              <em>The Guns of August</em>?</p>
+              <em>The Guns of August</em>?
+            </p>
           </div>
         </div>
         <div class="answer-choices cb-margin-top-8">
@@ -98585,7 +98819,8 @@
               weakness of Tuchman’s interpretation of events, but it also praises her analysis of primary sources.
               Choice D is incorrect. This doesn’t accurately describe the difference. Text 1 actually says that Tuchman
               "fails to address" the influence of events in Eastern Europe, while Text 2 says that Tuchman’s thesis was
-              that European powers (not Eastern European leaders) were committed to military plans.</p>
+              that European powers (not Eastern European leaders) were committed to military plans.
+            </p>
           </div>
           </p>
         </div>
@@ -99312,7 +99547,8 @@
             <p>A tiny, unusual fossil in a piece of 99-million-year-old amber is of the extinct species
               <em>Oculudentavis khaungraae</em>. The <em>O. khaungraae </em>fossil consists of a rounded skull with a
               thin snout and a large eye socket. Because these features look like they are avian, or related to birds,
-              researchers initially thought that the fossil might be the smallest avian dinosaur ever found.</p>
+              researchers initially thought that the fossil might be the smallest avian dinosaur ever found.
+            </p>
             <p>&nbsp;</p>
             <p><span aria-level="2" role="heading"><strong>Text 2</strong></span></p>
             <p>Paleontologists were excited to discover a second small fossil that is similar to the strange <em>O.
@@ -99333,7 +99569,8 @@
             <li>
               <div>
                 <p>It is understandable because the fossil does look like it could be related to birds, even though
-                  <em>O. khaungraae </em>is probably a lizard.</p>
+                  <em>O. khaungraae </em>is probably a lizard.
+                </p>
               </div>
             </li>
             <li>
@@ -99385,7 +99622,8 @@
               make sense for the paleontologists in Text 2 to say that the researchers in Text 1 mistakenly assumed that
               <em>O. khaungraae</em> must be a lizard. Choice D is incorrect. Although the paleontologists in Text 2
               might agree that the initial thought of the researchers in Text 1 was reasonable, nothing in Text 2
-              suggests that the two skulls were shaped differently. </p>
+              suggests that the two skulls were shaped differently.
+            </p>
           </div>
           </p>
         </div>
@@ -100123,7 +100361,8 @@
             <p>The fashion resale market, in which consumers purchase secondhand clothing from stores and online
               sellers, generated nearly $30 billion globally in 2019. Expecting to see continued growth, some analysts
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> that revenues will more than
-              double by 2028. </p>
+              double by 2028.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -100871,7 +101110,8 @@
                 aria-hidden="true">______</span><span class="sr-only">blank</span> group, but paleontologist Zhe-Xi
               Luo’s research suggests that early mammals living in the shadow of dinosaurs weren’t all ground-dwelling
               insectivores. Fossils of various plant-eating mammals have been found in China, including species like
-              <em>Vilevolodon diplomylos</em>, which Luo says could glide like a flying squirrel.</p>
+              <em>Vilevolodon diplomylos</em>, which Luo says could glide like a flying squirrel.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -101144,7 +101384,8 @@
               writing process affected the two authors. Choice D is incorrect because in this context,
               “commercialization” would mean writing a literary work in such a way as to ensure its commercial appeal,
               but the text never discusses commercial appeal as a factor in the writing of <em>The Mule Bone
-              </em>specifically or the writing of collaborative works more generally. </p>
+              </em>specifically or the writing of collaborative works more generally.
+            </p>
           </div>
           </p>
         </div>
@@ -101303,7 +101544,8 @@
               <span role="region" aria-label="Referenced Content"><u>This work demonstrates a vast amount of topographic
                   knowledge, as the map features specific names of mountains and rivers, as well as the first-known
                   sketch of the drainage network of the Missouri River.</u></span> The map is especially notable because
-              Ac Ko Mok Ki also included details about the numerous tribes that lived in the area.</p>
+              Ac Ko Mok Ki also included details about the numerous tribes that lived in the area.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -105146,7 +105388,8 @@
               effect on something’s development. The text indicates that there is a connection between Thomas’s work and
               the flowers and trees in her home’s garden, giving the example of Thomas’s brushstrokes being inspired by
               light shining through the leaves of a tree in front of her house. This context conveys that Thomas’s work
-              was influenced by the flowers and trees in the garden.</p>
+              was influenced by the flowers and trees in the garden.
+            </p>
             <p>Choice A is incorrect because the text conveys that Thomas drew inspiration for her work from the plants
               in her garden, which suggests that the flowers and trees contributed positively to her work, not that they
               "restricted," or limited, her work. Choice B is incorrect because it wouldn’t make sense to suggest that
@@ -105616,7 +105859,8 @@
           <div>
             <p>Archaeologists studying an ancient amphitheater in Switzerland believe that it dates back to the fourth
               century CE. Their discoveries of a coin made between 337 and 341 CE and era-appropriate building materials
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span> evidence for this theory.</p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span> evidence for this theory.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -106145,7 +106389,8 @@
               for seeds to germinate in the first place. Local birds that dig nests in the ground seem to be of help:
               <span role="region" aria-label="Referenced Content"><u>they churn the soil, exposing buried seeds to
                   moisture and nutrients</u></span>. Indeed, in 2016 Cristina Rengifo Faiffer found that mounds of soil
-              dug up by birds were far more fertile and supported more seedlings than soil in undisturbed areas.</p>
+              dug up by birds were far more fertile and supported more seedlings than soil in undisturbed areas.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -107044,7 +107289,8 @@
                   across centuries and continents.</u></span> Around 2001, <em><span data-ssml-sub-alias="B">B.</span>
                 terrenus</em> was introduced in southeastern North America near where botanist Shu-Mei Chang and
               colleagues had been monitoring mimosa trees. Within a year, 93 percent of the trees had been attacked by
-              the beetles.</p>
+              the beetles.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -107057,7 +107303,8 @@
             <li>
               <div>
                 <p>It states the hypothesis that Chang and colleagues had set out to investigate using mimosa trees and
-                  <em><span data-ssml-sub-alias="B">B.</span> terrenus</em>.</p>
+                  <em><span data-ssml-sub-alias="B">B.</span> terrenus</em>.
+                </p>
               </div>
             </li>
             <li>
@@ -108337,7 +108584,8 @@
             <p>The province of Xoconochco was situated on the Pacific coast, hundreds of kilometers southeast of
               Tenochtitlan, the capital of the Aztec Empire. Because Xoconochco’s location within the empire was so
               <span aria-hidden="true">______</span><span class="sr-only">blank</span>, cacao and other trade goods
-              produced there could reach the capital only after a long overland journey.</p>
+              produced there could reach the capital only after a long overland journey.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -109094,7 +109342,8 @@
               the show can be updated to include more contemporary dance styles, and provides an example of one such
               modernized version, <em>Hot Chocolate Nutcracker</em>. Hence, the author of Text 2 would most likely
               respond to the underlined claim in Text 1 by suggesting that dance companies should consider offering
-              revised versions of <em>The Nutcracker</em> instead of completely rejecting the show.</p>
+              revised versions of <em>The Nutcracker</em> instead of completely rejecting the show.
+            </p>
             <p>Choice A is incorrect because the author of Text 2 advocates for using creative ways to update <em>The
                 Nutcracker</em> and therefore wouldn’t respond to the underlined claim by rejecting the suggestion that
               contemporary audiences would enjoy an updated version. Choice B is incorrect because although the authors
@@ -109104,7 +109353,8 @@
               Choice C is incorrect because although Text 2 provides an example of a contemporized version of <em>The
                 Nutcracker</em>, the text doesn’t suggest that offering modernized versions is a way to increase income
               for most dance companies. Rather, the author of Text 2 suggests that offering modernized versions is a way
-              to make the ballet discussed in Text 1 feel less outdated.</p>
+              to make the ballet discussed in Text 1 feel less outdated.
+            </p>
           </div>
           </p>
         </div>
@@ -111264,7 +111514,8 @@
           <div>
             <p>The student wants to introduce Cathryn Halverson’s book to an audience already familiar with the
               <em>Atlantic Monthly</em>. Which choice most effectively uses relevant information from the notes to
-              accomplish this goal?</p>
+              accomplish this goal?
+            </p>
           </div>
         </div>
         <div class="answer-choices cb-margin-top-8">
@@ -111291,7 +111542,8 @@
             <li>
               <div>
                 <p>An author discussed by Cathryn Halverson is Juanita Harrison, whose autobiography appeared in the
-                  <em>Atlantic Monthly</em> in the early 1900s.</p>
+                  <em>Atlantic Monthly</em> in the early 1900s.
+                </p>
               </div>
             </li>
           </ul>
@@ -113269,7 +113521,8 @@
             <p>In the 1880s, inventor Lewis Latimer improved upon Thomas Edison’s design for the electric light bulb.
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> Latimer made the light bulb more
               durable by placing cardboard around its carbon filament. With this innovation, Latimer became the first
-              Black inventor to contribute to the electrification of the world.</p>
+              Black inventor to contribute to the electrification of the world.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -114360,7 +114613,8 @@
               rather than a similarity. Choice B is incorrect. Contrasting the respective sizes of <em>Uros Island</em>
               and <em>Fortuna</em>, the sentence emphasizes a difference between the two sculptures rather than a
               similarity. Choice C is incorrect. While the sentence describes <em>Uros Island</em>, it doesn’t mention
-              <em>Fortuna</em> or emphasize any similarity between the two sculptures.</p>
+              <em>Fortuna</em> or emphasize any similarity between the two sculptures.
+            </p>
           </div>
           </p>
         </div>
@@ -116502,7 +116756,8 @@
                   History of Oxfordshire.</em></li>
               <li>Plot earned a reputation for being the first person to have discovered dinosaur remains.</li>
               <li>In 1990, archaeologists in Lesotho, in southern Africa, discovered a fossilized phalanx of a
-                <em>Massospondylus carinatus</em> dinosaur in a cave once inhabited by humans.</li>
+                <em>Massospondylus carinatus</em> dinosaur in a cave once inhabited by humans.
+              </li>
               <li>Indigenous Khoesan and Basotho peoples had inhabited the cave beginning around 1100 CE.</li>
               <li>According to paleontologist Julien Benoit, these peoples may have found the phalanx and brought it to
                 the cave centuries before Plot’s descriptions.</li>
@@ -118292,7 +118547,8 @@
               <em>pašrūtum </em>(“unwinding”), they found that it had a mild taste and inspired a sense of calm. <span
                 aria-hidden="true">______</span><span class="sr-only">blank</span> the researchers, knowing that dishes
               were sometimes named after their intended effects, theorized that the dish’s name, “unwinding,” referred
-              to its function: to help ancient diners relax.</p>
+              to its function: to help ancient diners relax.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -119569,7 +119825,8 @@
             <li>
               <div>
                 <p>Jordan Bennett’s 2017 exhibition <em>Wije’wi </em>was followed a year later by his exhibition
-                  <em>Ketu’elmita’jik. </em></p>
+                  <em>Ketu’elmita’jik. </em>
+                </p>
               </div>
             </li>
             <li>
@@ -119581,7 +119838,8 @@
             <li>
               <div>
                 <p>Mi’Kmaq visual artist Jordan Bennett has displayed his work in over 75 exhibitions, including
-                  <em>Wije’wi </em>and <em>Ketu’elmita’jik.</em></p>
+                  <em>Wije’wi </em>and <em>Ketu’elmita’jik.</em>
+                </p>
               </div>
             </li>
             <li>
@@ -122495,7 +122753,8 @@
             <p>In 1933, the Twentieth Amendment to the US Constitution was ratified. The amendment mandates that
               presidential inaugurations be held on January 20, approximately ten weeks after the November election.
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> this amendment requires newly
-              elected US senators and representatives to be sworn into their respective offices on January 3.</p>
+              elected US senators and representatives to be sworn into their respective offices on January 3.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -122621,7 +122880,8 @@
             <li>
               <div>
                 <p>A partial dinosaur skeleton found in Egypt’s Dakhla Oasis belonged to a species named
-                  <em>Mansourasaurus</em>.</p>
+                  <em>Mansourasaurus</em>.
+                </p>
               </div>
             </li>
             <li>
@@ -122720,7 +122980,8 @@
             <li>
               <div>
                 <p>In 2012, director and visual effects artist Freddie Wong launched a new action-comedy web series:
-                  <em>Video Game High School.</em></p>
+                  <em>Video Game High School.</em>
+                </p>
               </div>
             </li>
             <li>
@@ -123342,7 +123603,8 @@
               directions from descriptive notations, typically in Italian, that appear alongside the musical notes.
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> these descriptive terms might
               guide the performer to sing <span lang="it"><em>giocoso</em></span> (playfully) or <span
-                lang="it"><em>lento</em></span> (at a slow tempo).</p>
+                lang="it"><em>lento</em></span> (at a slow tempo).
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -124742,7 +125004,8 @@
           <div>
             <p>Choice D is the best answer. “For example” logically signals that the information in this sentence—that
               <em>The Emperor’s Babe</em> is a novel conveyed in lines of poetry—exemplifies the claim in the previous
-              sentence about hybrid works that incorporate elements of both novels and poems. </p>
+              sentence about hybrid works that incorporate elements of both novels and poems.
+            </p>
             <p>Choice A is incorrect because “by contrast” illogically signals that the information in this sentence
               contrasts with the claim about hybrid works in the previous sentence. Instead, the information
               demonstrates that Evaristo’s novel is an example of a hybrid work.&nbsp;Choice B is incorrect because
@@ -126132,7 +126395,8 @@
           <div>
             <p>Choice B is the best answer. The sentence emphasizes a similarity between the sculptures
               <em>Recognition</em> and <em>Students Aspire</em>, noting that both sculptures show African American
-              figures in poses that symbolize supportive relationships.</p>
+              figures in poses that symbolize supportive relationships.
+            </p>
             <p>Choice A is incorrect. The sentence describes one of the sculptures; it doesn’t emphasize a similarity
               between the two sculptures. Choice C is incorrect. The sentence specifies the different years the
               sculptures were completed in; it doesn’t emphasize a similarity between the two sculptures. Choice D is
@@ -130755,7 +131019,8 @@
               <li>He is best known as a poet and novelist of the Harlem Renaissance, a literary and cultural movement of
                 the 1920s and 1930s.</li>
               <li>His most famous works include the poetry collection <em>Harlem Shadows</em> (1922) and the novel
-                <em>Home to Harlem</em> (1928).</li>
+                <em>Home to Harlem</em> (1928).
+              </li>
             </ul>
           </div>
         </div>
@@ -133351,13 +133616,15 @@
           <div>
             <p>Choice C is the best answer. The sentence effectively introduces the poetry collection
               <em>Precario/Precarious</em>, noting that it is a collection by Vicuña that was published in 1983 by Tanam
-              Press.</p>
+              Press.
+            </p>
             <p>Choice A is incorrect. While the sentence mentions the 1983 poetry collection
               <em>Precario/Precarious</em>, it focuses mainly on Vicuña’s visual art. Choice B is incorrect. The
               sentence doesn’t introduce the 1983 poetry collection <em>Precario/Precarious</em>; instead, it introduces
               Vicuña. Choice D is incorrect. The sentence emphasizes the location of Vicuña’s 1971 exhibition
               <em>Pinturas, poemas y explicaciones</em>; it doesn’t introduce the 1983 poetry collection
-              <em>Precario/Precarious</em><em>.</em></p>
+              <em>Precario/Precarious</em><em>.</em>
+            </p>
           </div>
           </p>
         </div>
@@ -135505,7 +135772,8 @@
             <p>A firefly uses specialized muscles to draw oxygen into its lower abdomen through narrow tubes, triggering
               a chemical reaction whereby the oxygen combines with chemicals in the firefly’s abdomen to produce a glow.
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> when the firefly stops drawing in
-              oxygen, the reaction—and the glow—cease.</p>
+              oxygen, the reaction—and the glow—cease.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -136440,7 +136708,8 @@
               mathematicians may have traditionally worked alone, evidence points to a shift in the opposite direction.
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> mathematicians are choosing to
               collaborate with their peers—a trend illustrated by a rise in the number of mathematics publications
-              credited to multiple authors.</p>
+              credited to multiple authors.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -137399,7 +137668,8 @@
             <li>
               <div>
                 <p>Known for making many other accordion-style folded books called leporellos, Adnan created
-                  <em>December from My Window</em> in 1993.</p>
+                  <em>December from My Window</em> in 1993.
+                </p>
               </div>
             </li>
             <li>
@@ -138243,7 +138513,8 @@
             <li>
               <div>
                 <p>A woman who had used a pseudonym to conceal her identity later revealed herself as the real author of
-                  <em>Adam Bede.</em></p>
+                  <em>Adam Bede.</em>
+                </p>
               </div>
             </li>
           </ul>
@@ -138352,7 +138623,8 @@
             <li>
               <div>
                 <p>Wong Fei-hung’s abilities as a kung fu master are depicted in many media, including the 1991 film
-                  <em>Once Upon a Time in China</em>.</p>
+                  <em>Once Upon a Time in China</em>.
+                </p>
               </div>
             </li>
           </ul>
@@ -139151,7 +139423,8 @@
               hormone. ABA triggers a slowdown in the biological processes of most plants. <span
                 aria-hidden="true">______</span><span class="sr-only">blank</span> when the mustard plant
               <em>Schrenkiella parvula</em> produces ABA in response to an environmental stressor, the hormone triggers
-              accelerated growth. &nbsp;</p>
+              accelerated growth. &nbsp;
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -140508,7 +140781,8 @@
               <li>Each line of the poem ends with one of six end words, which alternate according to a set pattern.</li>
               <li>“Forage Sestina” is a sestina by Marilyn Hacker.</li>
               <li>Its end words are <em>words</em>, <em>structure</em>, <em>wire</em>, <em>beam</em>, <em>wall</em>, and
-                <em>room</em>.</li>
+                <em>room</em>.
+              </li>
               <li>“Towards Autumn” is a sestina by Marilyn Hacker.</li>
               <li>Its end words are <em>daughter</em>, <em>friend</em>, <em>bread</em>, <em>mother</em>, <em>lover</em>,
                 and <em>myself</em>.</li>
@@ -140533,7 +140807,8 @@
               <div>
                 <p>As a sestina, “Towards Autumn” contains thirty-nine lines and six end words—in this case,
                   <em>daughter</em>, <em>friend</em>, <em>bread</em>, <em>mother</em>, <em>lover</em>, and
-                  <em>myself</em>—that alternate in a set pattern.</p>
+                  <em>myself</em>—that alternate in a set pattern.
+                </p>
               </div>
             </li>
             <li>
@@ -140547,7 +140822,8 @@
               <div>
                 <p>Hacker has used the sestina form multiple times, as in “Towards Autumn,” which contains these six
                   words: <em>words</em>, <em>structure</em>, <em>wire</em>, <em>beam</em>, <em>wall</em>, and
-                  <em>room</em>.</p>
+                  <em>room</em>.
+                </p>
               </div>
             </li>
           </ul>
@@ -141692,7 +141968,8 @@
               movement. In January of that year, she won an antidiscrimination case in the California Supreme Court.
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> in April, she wrote an open
               letter criticizing her local board of education for discrimination. Both actions are remembered today as
-              historic stands against racism.</p>
+              historic stands against racism.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -142121,7 +142398,8 @@
               each actor. <span aria-hidden="true">______</span><span class="sr-only">blank</span> for the film
               <em>Sunshine</em>, in which astronauts must reignite a dying Sun, she designed a golden spacesuit and had
               a factory reproduce it in a few standard sizes; lacking a tailor-made quality, the final creations
-              reflected the ungainliness of actual spacesuits.</p>
+              reflected the ungainliness of actual spacesuits.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -143747,7 +144025,8 @@
             <li>
               <div>
                 <p>As part of efforts to breed a local variety of sugarcane, an imported sugarcane species called
-                  <em>Saccharum officinarum </em>was crossbred with grasses native to India.</p>
+                  <em>Saccharum officinarum </em>was crossbred with grasses native to India.
+                </p>
               </div>
             </li>
           </ul>
@@ -146257,7 +146536,8 @@
             <li>
               <div>
                 <p>A 2017 study compared the lengths of eggs produced by an array of different bird species, such as
-                  <em>Gygis alba</em> and <em>Gavia stellata</em>.</p>
+                  <em>Gygis alba</em> and <em>Gavia stellata</em>.
+                </p>
               </div>
             </li>
             <li>
@@ -147478,7 +147758,8 @@
             <p>On April 5, 1977, Kitty Cone and 150 other disability rights activists entered a San Francisco federal
               building. After pleading for years—to no effect—for the passage of key antidiscrimination legislation,
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> until their demands were
-              addressed. Finally, on April 28, the legislation was signed.</p>
+              addressed. Finally, on April 28, the legislation was signed.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -149779,7 +150060,8 @@
           <div>
             <p>Entomologists Yash Sondhi and Samuel Fabian have tried to explain why moths fly erratically around light
               sources at night. Knowing that flying insects keep their backs pointed toward sunlight during the day,
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span></p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span>
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -150289,7 +150571,8 @@
             <p><em>Rabinal Ach</em><em>í</em> is a precolonial Maya dance drama performed annually in Rabinal, a town in
               the Guatemalan highlands. Based on events that occurred when Rabinal was a city-state ruled by a king,
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> had once been an ally of the king
-              but was later captured while leading an invading force against him.</p>
+              but was later captured while leading an invading force against him.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -151185,7 +151468,8 @@
           <div>
             <p>Atoms in a synchrotron, a type of circular particle accelerator, travel faster and faster until they
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> a desired energy level, at which
-              point they are diverted to collide with a target, smashing the atoms.</p>
+              point they are diverted to collide with a target, smashing the atoms.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -154273,7 +154557,8 @@
             <p>Midway through her 1968 jazz album <em>A Monastic Trio</em>, Alice Coltrane switches instruments,
               swapping the piano for the harp. With the same fluid style that Coltrane was famous for on piano, she
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> her fingers across the harp
-              strings and creates a radiant sound.</p>
+              strings and creates a radiant sound.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -154971,7 +155256,8 @@
             <p>The Mesoamerican city of Teotihuacan featured a uniquely egalitarian urban housing infrastructure. Built
               between the first and seventh centuries CE, Teotihuacan housed its residents (as many as 200,000, by some
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> in a complex of comfortable
-              apartments of comparable size.</p>
+              apartments of comparable size.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -155660,7 +155946,8 @@
             <p>Solarpunk is an art movement that imagines renewable energy–powered technology infused complementarily
               into nature. In Paolo Bacigalupi’s solarpunk short story “Efficiency,” an artificial intelligence that
               absorbs sustainable energies, redistributing them through intricate networks of weights and generators,
-              <span aria-hidden="true">______</span><span class="sr-only">blank</span> Chicago’s energy grid.</p>
+              <span aria-hidden="true">______</span><span class="sr-only">blank</span> Chicago’s energy grid.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -156760,7 +157047,8 @@
             <p>Psychophysicist Howard Moskowitz was hired by a soda company to determine how much artificial sweetener
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> After conducting consumer taste
               tests, he found that no such ideal existed: participants expressed a wide range of preferences for
-              different blends of sweetener, carbonization, and flavoring.</p>
+              different blends of sweetener, carbonization, and flavoring.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -157350,7 +157638,8 @@
             <p>In 2008, two years after the death of science fiction writer Octavia Butler, the Huntington Library in
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> received a collection of more
               than 8,000 items, including Butler’s private notes, research materials, manuscripts, photos, and drawings.
-              Today, the Octavia E. Butler Collection is one of the most researched archives at the library.</p>
+              Today, the Octavia E. Butler Collection is one of the most researched archives at the library.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -157751,7 +158040,8 @@
               categorization that one scientist assigned them the name <em>Ornithorhynchus</em><em>
               </em><em>paradoxus</em>: “paradoxical bird-snout.” The animal,<em> </em>which lays eggs but also nurses
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> young with milk, has since been
-              classified as belonging to the monotremes group.</p>
+              classified as belonging to the monotremes group.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -157850,7 +158140,8 @@
             <p><em>Butterfly</em> is a 1988 painting by the Japanese artist Ay-O. Like many of Ay-O’s paintings,
               <em>Butterfly</em>, which portrays a swimmer performing the butterfly stroke, attempts to make use of the
               entire visual light <span aria-hidden="true">______</span><span class="sr-only">blank</span> sporting
-              rainbow-striped goggles, the rainbow-hued swimmer splashes through a wavy rainbow of water.</p>
+              rainbow-striped goggles, the rainbow-hued swimmer splashes through a wavy rainbow of water.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -158454,7 +158745,8 @@
             <p>In her two major series “Memory Test” and “Autobiography,” painter Howardena Pindell explored themes
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> healing, self-discovery, and
               memory by cutting and sewing back together pieces of canvas and inserting personal artifacts, such as
-              postcards, into some of the paintings.</p>
+              postcards, into some of the paintings.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -158648,7 +158940,8 @@
             <p>Archaeologists have estimated that the pre-Columbian Native American city of Cahokia, located across the
               Mississippi River from modern-day St. Louis, Missouri, had as many as 20,000 inhabitants in the year 1150
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> it one of the largest cities in
-              North America at the time.</p>
+              North America at the time.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -163273,7 +163566,8 @@
               that fossil with a high degree of precision. When radioactive elements aren’t present, scientists turn to
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> analysis of Earth’s sediment
               layers (strata)—to estimate how old a fossil is based on the age of the strata in which the fossil is
-              found.</p>
+              found.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -163971,7 +164265,8 @@
           <div>
             <p>What makes the theremin a unique musical instrument? You play it without touching it. When you place your
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> the pitch will shift as your
-              hands move through the air.</p>
+              hands move through the air.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -164264,7 +164559,8 @@
             <p>Novelist Jane Austen greatly admired the work of Fanny Burney, a popular English author. In fact,
               scholars believe that a passage from the last chapter of <em>Cecilia</em>, a 1782 novel by Burney, likely
               inspired the title of one of <span aria-hidden="true">______</span><span class="sr-only">blank</span>
-              <em>Pride and Prejudice</em>.</p>
+              <em>Pride and Prejudice</em>.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -166492,7 +166788,8 @@
               Theobald claimed that his drama was based on a little-known play by William Shakespeare,
               <em>Cardenio</em>. Many, including poet Alexander Pope, were <span aria-hidden="true">______</span><span
                 class="sr-only">blank</span> historians have determined that Shakespeare’s company did perform a play
-              called <em>Cardenio</em> in 1613.</p>
+              called <em>Cardenio</em> in 1613.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -167095,7 +167392,8 @@
             <p>Food and the sensation of taste are central to Monique Truong’s novels. In <em>The Book of Salt</em>, for
               example, the exiled character of Bình connects to his native Saigon through the food he prepares, while in
               <em>Bitter in the Mouth</em>, the character of Linda <span aria-hidden="true">______</span><span
-                class="sr-only">blank</span> a form of synesthesia whereby the words she hears evoke tastes. </p>
+                class="sr-only">blank</span> a form of synesthesia whereby the words she hears evoke tastes.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -167583,7 +167881,8 @@
             <p>The poem <em>Beowulf</em> begins with the word “<span lang="ang">hwæt</span>,” which is an Old English
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> as “hark!” or “listen!” in some
               versions, the word was playfully rendered as “bro!” by Maria Dahvana Headley in her 2020 translation of
-              the poem.</p>
+              the poem.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -168290,7 +168589,8 @@
               <em>Marie Joséphine Charlotte du Val d’Ognes</em> gained fresh attention in the 1990s when art historians
               discovered that the painting—which depicts a solitary young woman sketching—was actually the work of
               little-known French portrait <span aria-hidden="true">______</span><span class="sr-only">blank</span>
-              Marie-Denise Villers (1774–1821).</p>
+              Marie-Denise Villers (1774–1821).
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -169151,7 +169451,8 @@
               run-on sentence, an error caused when two independent clauses are joined without punctuation or
               appropriate conjunctions. Since both the clause before the blank ("In 2000…settings") and the clause after
               the blank ("she…professionals") are independent, a comma would be required in addition to the coordinating
-              conjunction "and."</p>
+              conjunction "and."
+            </p>
           </div>
           </p>
         </div>
@@ -171368,7 +171669,8 @@
             <p>Former First Lady of the United States Eleanor Roosevelt and Indian activist and educator Hansa Mehta
               were instrumental in drafting the United Nations’ Universal Declaration of Human Rights, a document that
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> the basic freedoms to which all
-              people are entitled.</p>
+              people are entitled.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -172558,7 +172860,8 @@
             <p>In 1930, Japanese American artist Chiura Obata depicted the natural beauty of Yosemite National Park in
               two memorable woodcuts: <em>Evening at Carl Inn </em>and <em>Lake Basin in the High Sierra</em>. In 2019,
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> exhibited alongside 150 of
-              Obata’s other works in a single-artist show at the Smithsonian American Art Museum.</p>
+              Obata’s other works in a single-artist show at the Smithsonian American Art Museum.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -173255,7 +173558,8 @@
             <p>Photographer Ansel Adams’s landscape portraits are iconic pieces of American art. However, many of the
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> of landscapes were intended not
               as art but as marketing; a concessions company at Yosemite National Park had hired Adams to take pictures
-              of the park for restaurant menus and brochures.</p>
+              of the park for restaurant menus and brochures.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -173371,13 +173675,15 @@
             <li>
               <div>
                 <p>the transport of nutrients is possible through the entanglement of pine trees’ roots and the fungus
-                  <em>Tricholoma matsutake</em>’s fungal hyphae.</p>
+                  <em>Tricholoma matsutake</em>’s fungal hyphae.
+                </p>
               </div>
             </li>
             <li>
               <div>
                 <p>nutrients can be transported through the entanglement of pine trees’ roots and the fungus
-                  <em>Tricholoma matsutake</em>’s fungal hyphae.</p>
+                  <em>Tricholoma matsutake</em>’s fungal hyphae.
+                </p>
               </div>
             </li>
             <li>
@@ -174755,7 +175061,8 @@
               Her broad singing repertoire—which included traditional forms, such as the Arabic <em>qasida</em> and
               <em>maqam</em>, alongside modern pop and jazz styles—lent Fairuz a timeless, cross-generational appeal,
               <span aria-hidden="true">______</span><span class="sr-only">blank</span>&nbsp;her the moniker “the soul of
-              Lebanon.”</p>
+              Lebanon.”
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -175954,7 +176261,8 @@
             <p>In 1899, Swedish chemist Svante Arrhenius developed an equation to answer a long-standing question: why
               do chemical reactions speed up at higher temperatures? The Arrhenius equation, named for its creator,
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> an important concept in modern
-              chemistry.</p>
+              chemistry.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -178629,7 +178937,8 @@
             <p>The relationship between genomes and epigenomes reveals how cells with identical DNA develop different
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> whereas the genome in each cell
               contains a complete DNA sequence, the epigenome consists of chemical compounds that determine which traits
-              in the sequence will be expressed.</p>
+              in the sequence will be expressed.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -178925,7 +179234,8 @@
           <div>
             <p>Botanists recognize over fifty different species of sunflower. One species, the silverleaf sunflower,
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> both an early-flowering ecotype
-              that tends to grow in coastal areas and a late-flowering ecotype that grows inland.</p>
+              that tends to grow in coastal areas and a late-flowering ecotype that grows inland.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -181791,7 +182101,8 @@
             <p>With its towering, six-spired exterior of granitelike quartz monzonite, the Salt Lake Temple is one of
               the most instantly recognizable structures in the state of Utah. However, many people do not know that
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> built over the course of forty
-              years, with construction beginning in 1853 and ending in 1893.</p>
+              years, with construction beginning in 1853 and ending in 1893.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -182195,7 +182506,8 @@
           <div>
             <p>One of the earliest known maps is a Babylonian clay tablet thought to be almost 4,500 years old. The map
               <span aria-hidden="true">______</span><span class="sr-only">blank</span> the area of a plot of land, shows
-              a river valley, and includes the cardinal directions.</p>
+              a river valley, and includes the cardinal directions.
+            </p>
           </div>
         </div>
         <div class="question cb-margin-top-16">
@@ -182455,18 +182767,163 @@
   </div>
 
   <script>
-    let id = 0;
-    for (let header of document.getElementsByClassName("question-header")) {
-      header.title = `${id + 1} of 1590 (page ${1 + Math.floor(id / 10)} of 159)`;
-      ++id;
-    }
-    for (let blank of document.querySelectorAll('span[aria-hidden="true"]')) {
-      if (blank.innerHTML === "______")
-        blank.style.fontFamily = "Arial";
-      // else
-      //   console.log(blank.parentNode.innerHTML);
-    }
+    document.addEventListener('DOMContentLoaded', () => {
+      /* --- original page tweaks (keeps current behavior) --- */
+      for (let difficulty of document.querySelectorAll('.sr-only')) {
+        if (["Easy", "Medium", "Hard"].includes(difficulty.innerHTML))
+          difficulty.className = "column-content";
+      }
+      for (let blank of document.querySelectorAll('span[aria-hidden="true"]')) {
+        if (blank.innerHTML === "______")
+          blank.style.fontFamily = "Arial";
+      }
+      let id = 0;
+      for (let header of document.getElementsByClassName("question-header")) {
+        header.title = `${id + 1} of 1590 (page ${1 + Math.floor(id / 10)} of 159)`;
+        ++id;
+      }
+
+      /* --- FILTER IMPLEMENTATION --- */
+
+      // Lists (use the lists you supplied; they are all checked by default)
+
+      const DOMAIN_OPTIONS = [
+        "Information and Ideas",
+        "Craft and Structure",
+        "Expression of Ideas",
+        "Standard English Conventions"
+      ];
+
+      const DIFFICULTY_OPTIONS = ["Easy", "Medium", "Hard"];
+
+      const SKILL_OPTIONS = [
+        "Central Ideas and Details",
+        "Inferences",
+        "Command of Evidence",
+        "Words in Context",
+        "Text Structure and Purpose",
+        "Cross-Text Connections",
+        "Rhetorical Synthesis",
+        "Transitions",
+        "Boundaries",
+        "Form, Structure, and Sense"
+      ];
+
+      // utility: create checkbox inputs inside a container
+      function populateCheckList(containerId, options, groupName) {
+        const container = document.getElementById(containerId);
+        container.innerHTML = '';
+        options.forEach(opt => {
+          const id = `chk-${groupName}-${cssSafe(opt)}`;
+          const label = document.createElement('label');
+          label.innerHTML = `<input type="checkbox" checked data-group="${groupName}" value="${escapeQuotes(opt)}" id="${id}"> ${opt}`;
+          container.appendChild(label);
+        });
+      }
+
+      function cssSafe(s) { return s.replace(/\s+/g, '-').replace(/[^\w\-]/g, ''); }
+      function escapeQuotes(s) { return s.replace(/"/g, '&quot;'); }
+
+      populateCheckList('domain-list', DOMAIN_OPTIONS, 'domain');
+      populateCheckList('difficulty-list', DIFFICULTY_OPTIONS, 'difficulty');
+      populateCheckList('skill-list', SKILL_OPTIONS, 'skill');
+
+      // modal controls
+      const addBtn = document.getElementById('add-filters-btn');
+      const applyBtn = document.getElementById('apply-filters-btn');
+      const modal = document.getElementById('filter-modal');
+      const backdrop = document.getElementById('filter-backdrop');
+      const saveBtn = document.getElementById('save-filters');
+      const resetBtn = document.getElementById('reset-filters');
+      const toggleButtons = document.querySelectorAll('.toggle-group');
+      const filterSummary = document.getElementById('filter-summary');
+
+      function openModal() {
+        modal.setAttribute('aria-hidden', 'false');
+        // focus first checkbox
+        const first = modal.querySelector('input[type="checkbox"]');
+        if (first) first.focus();
+      }
+      function closeModal() {
+        modal.setAttribute('aria-hidden', 'true');
+      }
+
+      addBtn.addEventListener('click', openModal);
+      backdrop.addEventListener('click', closeModal);
+      // keyboard: Esc closes
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeModal();
+      });
+
+      // Toggle select all / clear selection for each group
+      toggleButtons.forEach(btn => {
+        btn.addEventListener('click', (ev) => {
+          const group = btn.dataset.group;
+          const checks = modal.querySelectorAll(`input[type="checkbox"][data-group="${group}"]`);
+          const anyUnchecked = Array.from(checks).some(c => !c.checked);
+          checks.forEach(c => c.checked = anyUnchecked); // if any unchecked => set all checked; else uncheck all
+          btn.textContent = anyUnchecked ? 'Clear selection / select all' : 'Clear selection / select all';
+        });
+      });
+
+      // Reset filters -> check all
+      resetBtn.addEventListener('click', (ev) => {
+        modal.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+      });
+
+      // Extract selected values
+      function getSelectedValues(group) {
+        return Array.from(document.querySelectorAll(`input[type="checkbox"][data-group="${group}"]:checked`))
+          .map(i => i.value.trim().toLowerCase());
+      }
+
+      // The main filter function
+      function applyFilter() {
+        const selectedDomains = getSelectedValues('domain');
+        const selectedDifficulties = getSelectedValues('difficulty');
+        const selectedSkills = getSelectedValues('skill');
+
+        const questions = Array.from(document.querySelectorAll('.page.question-info'));
+        let visibleCount = 0;
+        for (const q of questions) {
+          let banner = q.getElementsByClassName("question-banner row")[0].children;
+          let domain = banner[2].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
+          let skill = banner[3].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
+          let difficulty = banner[4].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
+          // for example... Questions d72b325e and f0ae0da3 test skill "Cross-text Connections" instead of "Cross-Text Connections"
+
+          const domainOk = selectedDomains.length === 0 ? false : selectedDomains.includes(domain);
+          const skillOk = selectedSkills.length === 0 ? false : selectedSkills.includes(skill);
+          const difficultyOk = selectedDifficulties.length === 0 ? false : selectedDifficulties.includes(difficulty);
+
+          if (domainOk && skillOk && difficultyOk) {
+            q.style.display = '';
+            visibleCount++;
+          } else {
+            q.style.display = 'none';
+          }
+        }
+
+        // Update summary text
+        const total = questions.length;
+        filterSummary.textContent = visibleCount === total ? `Showing all questions (${total})` : `Showing ${visibleCount} of ${total} questions`;
+        // Optionally, scroll to top of results
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Save button applies/records selections (in this simple version we immediately apply on Save)
+      saveBtn.addEventListener('click', () => {
+        closeModal();
+      });
+
+      // Apply button applies without opening modal (useful for repeated filters)
+      applyBtn.addEventListener('click', applyFilter);
+
+      // initialize summary
+      filterSummary.textContent = `Showing all questions (${document.querySelectorAll('.page.question-info').length})`;
+    });
   </script>
+
 </body>
 
 </html>
