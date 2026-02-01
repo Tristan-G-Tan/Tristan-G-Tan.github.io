@@ -1,4 +1,4 @@
-let inactive = new Set([
+const inactive = new Set([
   "f1bfbed3",
   "87aa7bab",
   "d748c3fd",
@@ -593,163 +593,161 @@ let inactive = new Set([
   "78b88c04"
 ]);
 
-document.addEventListener('DOMContentLoaded', () => {
-  /* --- original page tweaks (keeps current behavior) --- */
-  for (let difficulty of document.querySelectorAll('.sr-only')) {
-    if (["Easy", "Medium", "Hard"].includes(difficulty.innerHTML))
-      difficulty.className = "column-content";
-  }
-  for (let blank of document.querySelectorAll('span[aria-hidden="true"]')) {
-    if (blank.innerHTML === "______")
-      blank.style.fontFamily = "Arial";
-  }
-  let id = 0;
-  for (let header of document.getElementsByClassName("question-header")) {
-    header.title = `${id + 1} of 1590 (page ${1 + Math.floor(id / 10)} of 159)`;
-    ++id;
-  }
+/* --- original page tweaks (keeps current behavior) --- */
+for (let difficulty of document.querySelectorAll('.sr-only')) {
+  if (["Easy", "Medium", "Hard"].includes(difficulty.innerHTML))
+    difficulty.className = "column-content";
+}
+for (let blank of document.querySelectorAll('span[aria-hidden="true"]')) {
+  if (blank.innerHTML === "______")
+    blank.style.fontFamily = "Arial";
+}
+let id = 0;
+for (let header of document.getElementsByClassName("question-header")) {
+  header.title = `${id + 1} of 1590 (page ${1 + Math.floor(id / 10)} of 159)`;
+  ++id;
+}
 
-  /* --- FILTER IMPLEMENTATION --- */
+/* --- FILTER IMPLEMENTATION --- */
 
-  // Lists (use the lists you supplied; they are all checked by default)
+// Lists (use the lists you supplied; they are all checked by default)
 
-  const DOMAIN_OPTIONS = [
-    "Information and Ideas",
-    "Craft and Structure",
-    "Expression of Ideas",
-    "Standard English Conventions"
-  ];
+const DOMAIN_OPTIONS = [
+  "Information and Ideas",
+  "Craft and Structure",
+  "Expression of Ideas",
+  "Standard English Conventions"
+];
 
-  const DIFFICULTY_OPTIONS = ["Easy", "Medium", "Hard"];
+const DIFFICULTY_OPTIONS = ["Easy", "Medium", "Hard"];
 
-  const SKILL_OPTIONS = {
-    "Information and Ideas": [
+const SKILL_OPTIONS = {
+  "Information and Ideas": [
     "Central Ideas and Details",
     "Inferences",
     "Command of Evidence"],
-    "Craft and Structure": [
+  "Craft and Structure": [
     "Words in Context",
     "Text Structure and Purpose",
     "Cross-Text Connections"],
-    "Expression of Ideas": [
+  "Expression of Ideas": [
     "Rhetorical Synthesis",
     "Transitions"],
-    "Standard English Conventions": [
+  "Standard English Conventions": [
     "Boundaries",
     "Form, Structure, and Sense"]
-  };
+};
 
-  // utility: create checkbox inputs inside a container
-  // function populateCheckList(containerId, options, groupName) {
-  //   const container = document.getElementById(containerId);
-  //   container.innerHTML = '';
-  //   options.forEach(opt => {
-  //     const id = `chk-${groupName}-${cssSafe(opt)}`;
-  //     const label = document.createElement('label');
-  //     label.innerHTML = `<input type="checkbox" checked data-group="${groupName}" value="${escapeQuotes(opt)}" id="${id}"> ${opt}`;
-  //     container.appendChild(label);
-  //   });
-  // }
+// utility: create checkbox inputs inside a container
+// function populateCheckList(containerId, options, groupName) {
+//   const container = document.getElementById(containerId);
+//   container.innerHTML = '';
+//   options.forEach(opt => {
+//     const id = `chk-${groupName}-${cssSafe(opt)}`;
+//     const label = document.createElement('label');
+//     label.innerHTML = `<input type="checkbox" checked data-group="${groupName}" value="${escapeQuotes(opt)}" id="${id}"> ${opt}`;
+//     container.appendChild(label);
+//   });
+// }
 
-  // function cssSafe(s) { return s.replace(/\s+/g, '-').replace(/[^\w\-]/g, ''); }
-  // function escapeQuotes(s) { return s.replace(/"/g, '&quot;'); }
+// function cssSafe(s) { return s.replace(/\s+/g, '-').replace(/[^\w\-]/g, ''); }
+// function escapeQuotes(s) { return s.replace(/"/g, '&quot;'); }
 
-  // populateCheckList('domain-list', DOMAIN_OPTIONS, 'domain');
-  // populateCheckList('difficulty-list', DIFFICULTY_OPTIONS, 'difficulty');
-  // populateCheckList('skill-list', SKILL_OPTIONS, 'skill');
+// populateCheckList('domain-list', DOMAIN_OPTIONS, 'domain');
+// populateCheckList('difficulty-list', DIFFICULTY_OPTIONS, 'difficulty');
+// populateCheckList('skill-list', SKILL_OPTIONS, 'skill');
 
-  // modal controls
-  const addBtn = document.getElementById('add-filters-btn');
-  const applyBtn = document.getElementById('apply-filters-btn');
-  const modal = document.getElementById('filter-modal');
-  const backdrop = document.getElementById('filter-backdrop');
-  const saveBtn = document.getElementById('save-filters');
-  const resetBtn = document.getElementById('reset-filters');
-  const toggleButtons = document.querySelectorAll('.toggle-group');
-  const filterSummary = document.getElementById('filter-summary');
+// modal controls
+const addBtn = document.getElementById('add-filters-btn');
+const applyBtn = document.getElementById('apply-filters-btn');
+const modal = document.getElementById('filter-modal');
+const backdrop = document.getElementById('filter-backdrop');
+const saveBtn = document.getElementById('save-filters');
+const resetBtn = document.getElementById('reset-filters');
+const toggleButtons = document.querySelectorAll('.toggle-group');
+const filterSummary = document.getElementById('filter-summary');
 
-  function openModal() {
-    modal.setAttribute('aria-hidden', 'false');
-    // focus first checkbox
-    const first = modal.querySelector('input[type="checkbox"]');
-    if (first) first.focus();
-  }
-  function closeModal() {
-    modal.setAttribute('aria-hidden', 'true');
-  }
+function openModal() {
+  modal.setAttribute('aria-hidden', 'false');
+  // focus first checkbox
+  const first = modal.querySelector('input[type="checkbox"]');
+  if (first) first.focus();
+}
+function closeModal() {
+  modal.setAttribute('aria-hidden', 'true');
+}
 
-  addBtn.addEventListener('click', openModal);
-  backdrop.addEventListener('click', closeModal);
-  // keyboard: Esc closes
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal();
-  });
-
-  // Toggle select all / clear selection for each group
-  toggleButtons.forEach(btn => {
-    btn.addEventListener('click', (ev) => {
-      const group = btn.dataset.group;
-      const checks = modal.querySelectorAll(`input[type="checkbox"][data-group="${group}"]`);
-      const anyUnchecked = Array.from(checks).some(c => !c.checked);
-      checks.forEach(c => c.checked = anyUnchecked); // if any unchecked => set all checked; else uncheck all
-      btn.textContent = anyUnchecked ? 'Clear selection / select all' : 'Clear selection / select all';
-    });
-  });
-
-  // Reset filters -> check all
-  resetBtn.addEventListener('click', (ev) => {
-    modal.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
-  });
-
-  // Extract selected values
-  function getSelectedValues(group) {
-    return Array.from(document.querySelectorAll(`input[type="checkbox"][data-group="${group}"]:checked`))
-      .map(i => i.value.trim().toLowerCase());
-  }
-
-  // The main filter function
-  function applyFilter() {
-    const selectedDomains = getSelectedValues('domain');
-    const selectedDifficulties = getSelectedValues('difficulty');
-    const selectedSkills = getSelectedValues('skill');
-
-    const questions = Array.from(document.querySelectorAll('.page.question-info'));
-    let visibleCount = 0;
-    for (const q of questions) {
-      let banner = q.getElementsByClassName("question-banner row")[0].children;
-      let domain = banner[2].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
-      let skill = banner[3].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
-      let difficulty = banner[4].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
-      // for example... Questions d72b325e and f0ae0da3 test skill "Cross-text Connections" instead of "Cross-Text Connections"
-
-      const activeOk = document.getElementById("chk-active").checked ? inactive.has(q.id.slice(-8)) : true;
-      const domainOk = selectedDomains.length === 0 ? false : selectedDomains.includes(domain);
-      const skillOk = selectedSkills.length === 0 ? false : selectedSkills.includes(skill);
-      const difficultyOk = selectedDifficulties.length === 0 ? false : selectedDifficulties.includes(difficulty);
-
-      if (activeOk && domainOk && skillOk && difficultyOk) {
-        q.style.display = '';
-        visibleCount++;
-      } else {
-        q.style.display = 'none';
-      }
-    }
-
-    // Update summary text
-    const total = questions.length;
-    filterSummary.textContent = visibleCount === total ? `Showing all questions (${total})` : `Showing ${visibleCount} of ${total} questions`;
-    // Optionally, scroll to top of results
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  // Save button applies/records selections (in this simple version we immediately apply on Save)
-  saveBtn.addEventListener('click', () => {
-    closeModal();
-  });
-
-  // Apply button applies without opening modal (useful for repeated filters)
-  applyBtn.addEventListener('click', applyFilter);
-
-  // initialize summary
-  filterSummary.textContent = `Showing all questions (${document.querySelectorAll('.page.question-info').length})`;
+addBtn.addEventListener('click', openModal);
+backdrop.addEventListener('click', closeModal);
+// keyboard: Esc closes
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
 });
+
+// Toggle select all / clear selection for each group
+toggleButtons.forEach(btn => {
+  btn.addEventListener('click', (ev) => {
+    const group = btn.dataset.group;
+    const checks = modal.querySelectorAll(`input[type="checkbox"][data-group="${group}"]`);
+    const anyUnchecked = Array.from(checks).some(c => !c.checked);
+    checks.forEach(c => c.checked = anyUnchecked); // if any unchecked => set all checked; else uncheck all
+    btn.textContent = anyUnchecked ? 'Clear selection / select all' : 'Clear selection / select all';
+  });
+});
+
+// Reset filters -> check all
+resetBtn.addEventListener('click', (ev) => {
+  modal.querySelectorAll('input[type="checkbox"]').forEach(c => c.checked = true);
+});
+
+// Extract selected values
+function getSelectedValues(group) {
+  return Array.from(document.querySelectorAll(`input[type="checkbox"][data-group="${group}"]:checked`))
+    .map(i => i.value.trim().toLowerCase());
+}
+
+// The main filter function
+function applyFilter() {
+  const selectedDomains = getSelectedValues('domain');
+  const selectedDifficulties = getSelectedValues('difficulty');
+  const selectedSkills = getSelectedValues('skill');
+
+  const questions = Array.from(document.getElementsByClassName('question-info'));
+  let visibleCount = 0;
+  for (const q of questions) {
+    let banner = q.getElementsByClassName("question-banner row")[0].children;
+    let domain = banner[2].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
+    let skill = banner[3].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
+    let difficulty = banner[4].getElementsByClassName("column-content")[0].innerHTML.toLowerCase();
+    // for example... Questions d72b325e and f0ae0da3 test skill "Cross-text Connections" instead of "Cross-Text Connections"
+
+    const activeOk = document.getElementById("chk-active").checked ? inactive.has(q.id.slice(-8)) : true;
+    const domainOk = selectedDomains.length === 0 ? false : selectedDomains.includes(domain);
+    const skillOk = selectedSkills.length === 0 ? false : selectedSkills.includes(skill);
+    const difficultyOk = selectedDifficulties.length === 0 ? false : selectedDifficulties.includes(difficulty);
+
+    if (activeOk && domainOk && skillOk && difficultyOk) {
+      q.style.display = '';
+      visibleCount++;
+    } else {
+      q.style.display = 'none';
+    }
+  }
+
+  // Update summary text
+  const total = questions.length;
+  filterSummary.textContent = visibleCount === total ? `Showing all questions (${total})` : `Showing ${visibleCount} of ${total} questions`;
+  // Optionally, scroll to top of results
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Save button applies/records selections (in this simple version we immediately apply on Save)
+saveBtn.addEventListener('click', () => {
+  closeModal();
+});
+
+// Apply button applies without opening modal (useful for repeated filters)
+applyBtn.addEventListener('click', applyFilter);
+
+// initialize summary
+filterSummary.textContent = `Showing all questions (${document.querySelectorAll('.page.question-info').length})`;
