@@ -2,39 +2,60 @@
 <meta charset="UTF-8">
 
 <html>
-    <head>
-        <title>
-            Inenubilable Website
-        </title>
 
-        <style>
-            body {
-                font-family: Arial;
-                font-size: 50px;
+<head>
+    <title>
+        Inenubilable Website
+    </title>
+
+    <style>
+        body {
+            font-family: Arial;
+            font-size: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <ol>
+        <li>supercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianism
+        </li>
+        <li>supercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianismsupercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianism
+        </li>
+        <li>supercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianismsupercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianismsupercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianism</a>
+        </li>
+        <li>THIS IS WITHOUT the meta tag</li>
+        <li><a href="Articles/gre_list.html">GRE vocabulary list</a></li>
+        <li><a href="CJKdecomposition/index.html">Decomposition sequence lookup and search for CJK characters</a></li>
+    </ol>
+
+    <div id="nice" onclick="copy(window.navigator.userAgent);"></div>
+</body>
+
+<script>
+    const copy = async txt => {
+        try {
+            await navigator.clipboard.writeText(txt);
+        } catch (e) {
+            // old fallback method, for HUAWEI
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = txt;
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+            } catch (err) {
+                alert('Copy failed: ' + (err && err.message ? err.message : err));
             }
-        </style>
-    </head>
+        }
+    }
+    // document.addEventListener('copy', function (e) {
+    //     e.preventDefault(); // block the default copy behavior
+    //     // optionally do nothing, or write something else
+    // });
+    alert(window.navigator.userAgent);
+    document.getElementById("nice").innerHTML = window.navigator.userAgent;
+</script>
 
-    <body>
-        <ol>
-            <li>supercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianism</li>
-            <li>supercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianismsupercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianism</li>
-            <li>supercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianismsupercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianismsupercalifragilisticexpialodociouscircumlocutionbragadocioeleemosynarypulchritudinouspneumonoultramicroscopicsilicovolcanoconiosishippopotomonstrosesquipedaliophobiaantidisestablishmentarianism</a></li>
-            <li>THIS IS WITHOUT the meta tag</li>
-            <li><a href="Articles/gre_list.html">GRE vocabulary list</a></li>
-            <li><a href="CJKdecomposition/index.html">Decomposition sequence lookup and search for CJK characters</a></li>
-        </ol>
-
-        <div id="nice"></div>
-    </body>
-
-    <script>
-        document.addEventListener('copy', function(e) {
-  e.preventDefault(); // block the default copy behavior
-  // optionally do nothing, or write something else
-});
-alert(window.navigator.userAgent);
-document.getElementById("nice").innerHTML = window.navigator.userAgent;
-document.get
-    </script>
 </html>
