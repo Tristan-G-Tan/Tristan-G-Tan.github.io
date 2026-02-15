@@ -1,0 +1,75 @@
+<meta charset="utf-8">
+<html>
+
+<head>
+    <script src="AP.js"></script>
+
+    <style>
+        @font-face {
+            font-family: "LATEX";
+            src: url("https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2/MathJax_Main-Regular.woff") format("woff");
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        math {
+            font-family: "LATEX";
+        }
+
+        body {
+            font-family: Roboto;
+        }
+
+        /* input[type="file"] {
+            display: none;
+        } */
+
+        /* .custom-file-upload {
+            border: 1px solid black;
+            background-color: rgb(240, 240, 240);
+            display: inline-block;
+            padding: 6px;
+            cursor: pointer;
+        } */
+
+        .question {
+            border-top: 1px solid black;
+            margin-top: 5px;
+        }
+
+        .correct {
+            border: 1px solid rgb(49, 134, 53);
+            background-color: rgba(58, 145, 63, .1);
+            margin-bottom: 5px;
+        }
+
+        .incorrect {
+            /* border: 1px solid rgb(231, 91, 107); */
+            /* background-color: rgba(145, 39, 37, 0.1); */
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <ol>
+        <li>Open AP classroom.</li>
+        <li>During the gray loading screen, open dev tools network tab (and also make sure the "Preserve log" option is
+            checked).</li>
+        <li>Wait until questionresponses appear.</li>
+        <li>Click the "Export HAR" button (looks like down arrow with underline) just below "Preserve log".</li>
+        <li>
+            Upload
+            <!-- <label for="file-upload" class="custom-file-upload" id="label"> -->
+                your HAR file.
+            <!-- </label> -->
+            <input id="file-upload" type="file" onchange="upload(this.files[0])"/>
+        </li>
+        <li>Profit.</li>
+        <li>Worship Nice.</li>
+    </ol>
+
+    <ol id="results"></ol>
+</body>
+
+</html>
