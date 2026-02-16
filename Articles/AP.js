@@ -3,7 +3,6 @@
 let mode = "HAR";
 let VALUABLE;
 let err;
-
 function upload(f) {
     let reader = new FileReader();
 
@@ -13,6 +12,20 @@ function upload(f) {
         VALUABLE = [];
         let i = 0;
         switch (mode) {
+            case "video":
+                results.innerHTML = '';
+                for (let entry of response.log.entries) {
+                    let url = entry.request.url;
+                    if (url.endsWith(".ts")) {
+                        let li = document.createElement("li");
+                        let link = document.createElement("a");
+                        link.href = url.slice(0, 89) + "p4";
+                        link.innerHTML = "link";
+                        li.appendChild(link);
+                        results.appendChild(li);
+                    }
+                }
+                break;
             case "activity": // TODO: THIS IS STILL ACCEPTING JS NOT JSON
                 for (let q of response.data.apiActivity.items) {
                     ++i;
@@ -34,8 +47,11 @@ function upload(f) {
                     let content = entry.response.content;
                     if (content.size > 0) {
                         let txt = content.text;
-                        try {
-                            if (txt.includes("Incorrect. ")) {
+                        try { // TODO
+                            // MICRO and OLCBC doesn't all have answers
+                            // same for LANG2 Q10 to 22, but somehow LANG2 works
+                            if (true) { // CORRECT FOR MICRO, TOO MUCH FOR OLDBC
+                                // if (txt.includes("Incorrect. ")) { // UNDERCOUNTING FOR MICRO, RIGHT FOR OLDBC
                                 // VALUABLE.push(entry);
                                 let data = JSON.parse(txt).data;
                                 if (data.apiActivity)
@@ -63,45 +79,69 @@ function upload(f) {
                                     // document.body.appendChild(document.createElement("br"));
 
 
+                                    let li = document.createElement("li");
+                                    li.className = "question";
+                                    
+                                    for (let f of q.features) {
+                                        let d = document.createElement("div");
+                                        d.innerHTML = f.content;
+                                        li.appendChild(d);
+                                    }
                                     for (let subq of q.questions) {
                                         // err.push(subq);
-                                        let li = document.createElement("li");
-                                        li.className = "question";
 
                                         let stimulus = document.createElement("div");
                                         stimulus.innerHTML = subq.stimulus;
                                         li.appendChild(stimulus);
 
-                                        let options = document.createElement("ol")
-                                        options.style.listStyleType = "upper-alpha";
-                                        options.style.marginBottom = "4em";
-                                        for (let option of subq.options) {
-                                            let letter = document.createElement("li");
-                                            letter.innerHTML = option.label;
-                                            options.appendChild(letter);
+                                        let validation_map = {};
+                                        let correctIndex = 0;
+                                        if (subq.options) {
+                                            let options = document.createElement("ol")
+                                            options.style.listStyleType = "upper-alpha";
+                                            options.style.marginBottom = "4em";
+                                            let alphabet = "ABCDE";
+                                            let index = 0;
+                                            for (let option of subq.options) {
+                                                let letter = document.createElement("li");
+                                                letter.innerHTML = option.label;
+                                                letter.title = option.value;
+                                                if (option.value === subq.validation.valid_response.value[0]) {
+                                                    correctIndex = index;
+                                                }
+                                                validation_map[option.value] = alphabet[index++];
+                                                options.appendChild(letter);
+                                            }
+                                            li.appendChild(options);
                                         }
-                                        li.appendChild(options);
 
-                                        let correct = document.createElement("div");
-                                        let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
-                                        correct.innerHTML = `Correct answer: ${key} (option ${String.fromCharCode(key.charCodeAt(1) - 0x31 + 0x41)})`;
-                                        li.appendChild(correct);
+                                        if (subq.validation) {
+                                            let correct = document.createElement("div");
+                                            let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
+                                            correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
+                                            li.appendChild(correct);
+                                        }
 
-                                        let answers = document.createElement("ol");
-                                        answers.style.listStyleType = "upper-alpha";
                                         let answer = subq.metadata;
                                         answer = answer.distractor_rationale_response_level || answer.custom_distractor_rationale_response_level;
-                                        for (let a of answer) {
-                                            let letter = document.createElement("li");
-                                            if (a.includes("Correct. ")) {
-                                                letter.className = "correct";
-                                            } else {
-                                                letter.className = "incorrect";
+
+                                        if (answer) {
+                                            let answers = document.createElement("ol");
+                                            answers.style.listStyleType = "upper-alpha";
+                                            let index = 0;
+                                            for (let a of answer) {
+                                                let letter = document.createElement("li");
+                                                // if (a.includes("Correct. ")) {
+                                                if (correctIndex === index++) {
+                                                    letter.className = "correct";
+                                                } else {
+                                                    letter.className = "incorrect";
+                                                }
+                                                letter.innerHTML = a;
+                                                answers.append(letter);
                                             }
-                                            letter.innerHTML = a;
-                                            answers.append(letter);
+                                            li.appendChild(answers);
                                         }
-                                        li.appendChild(answers);
 
                                         results.appendChild(li);
                                     }

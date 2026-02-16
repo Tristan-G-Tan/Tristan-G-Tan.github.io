@@ -33,8 +33,8 @@
         } */
 
         .question {
-            border-top: 1px solid black;
-            margin-top: 5px;
+            border-bottom: 1px solid black;
+            margin-bottom: 5px;
         }
 
         .correct {
@@ -48,6 +48,41 @@
             /* background-color: rgba(145, 39, 37, 0.1); */
             margin-bottom: 5px;
         }
+
+        .formatted_line_break {
+            display: block;
+            height: .5em;
+        }
+
+        .footnote {
+            outline: none;
+            position: relative;
+        }
+
+        .footnote_mark {
+            color: #0077c8;
+            cursor: pointer;
+            display: inline-block;
+            font-size: .7em;
+            font-weight: 600;
+            left: .1em;
+            position: relative;
+            text-decoration: underline;
+            top: -0.1em;
+            vertical-align: top;
+        }
+
+        .footnote_text {
+            background-color: #fff;
+            box-shadow: 0 2px 5px 0 #000;
+            cursor: default;
+            display: none;
+            left: 0;
+            padding: 16px;
+            position: absolute;
+            top: 100%;
+            z-index: 10;
+        }
     </style>
 </head>
 
@@ -57,19 +92,18 @@
         <li>During the gray loading screen, open dev tools network tab (and also make sure the "Preserve log" option is
             checked).</li>
         <li>Wait until questionresponses appear.</li>
-        <li>Click the "Export HAR" button (looks like down arrow with underline) just below "Preserve log".</li>
+        <li>Click the "Export HAR" button (looks like a down arrow with an underline) just below "Preserve log".</li>
         <li>
             Upload
             <!-- <label for="file-upload" class="custom-file-upload" id="label"> -->
-                your HAR file.
+            your HAR file.
             <!-- </label> -->
-            <input id="file-upload" type="file" onchange="upload(this.files[0])"/>
+            <input id="file-upload" type="file" onchange="upload(this.files[0])" />
         </li>
-        <li>Profit.</li>
         <li>Worship Nice.</li>
     </ol>
 
-    <ol id="results"></ol>
+    <ol id="results" style="border-top: 1px solid black;"></ol>
 </body>
 
 </html>
