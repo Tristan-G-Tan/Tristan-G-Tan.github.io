@@ -83,13 +83,19 @@
             top: 100%;
             z-index: 10;
         }
+
+        pre {
+            padding: 12px;
+            background-color: rgb(246, 246, 246);
+        }
     </style>
 </head>
 
 <body>
+    <a href="javascript:window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Click to scroll to the bottom.</a>
     <ol>
-        <li>Open AP classroom.</li>
-        <li>During the gray loading screen, open dev tools network tab (and also make sure the "Preserve log" option is
+        <li>Open AP classroom using Google Chrome or Microsoft Edge.</li>
+        <li>During the gray loading screen (or even a little earlier than that), open the developer tools network tab (and also make sure the "Preserve log" option is
             checked).</li>
         <li>Wait until questionresponses appear.</li>
         <li>Click the "Export HAR" button (looks like a down arrow with an underline) just below "Preserve log".</li>
@@ -104,6 +110,19 @@
     </ol>
 
     <ol id="results" style="border-top: 1px solid black;"></ol>
+
+    <ul>
+        <li>Answer key:
+            <pre><code id="key">Please upload your HAR file.</code></pre>
+            <button onclick="copy(document.getElementById('key').textContent);">Copy</button>
+        </li>
+        <li>JavaScript for autocompletion:
+            <pre><code id="code">Please upload your HAR file.</code></pre>
+            <button onclick="copy(document.getElementById('code').textContent);">Copy</button>
+        </li>
+    </ul>
+    
+    <a href="javascript:window.scrollTo({ top: 0, behavior: 'smooth' })">Click to scroll to the top</a>. <a href="https://tristan-g-tan.github.io/">Click to return to main page</a>
 </body>
 
 </html>

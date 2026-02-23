@@ -1,5 +1,23 @@
+const alphabet = "ABCDE";
+const copy = async txt => {
+    try {
+        await navigator.clipboard.writeText(txt);
+    } catch (e) {
+        // old fallback method, for HUAWEI
+        try {
+            const ta = document.createElement('textarea');
+            ta.value = txt;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+        } catch (err) {
+            alert('Copy failed: ' + (err && err.message ? err.message : err));
+        }
+    }
+}
 
-// const mode = "activity";
+// const mode = "video";
 let mode = "HAR";
 let VALUABLE;
 let err;
@@ -43,6 +61,7 @@ function upload(f) {
                 break;
             case "HAR":
                 results.innerHTML = '';
+                let answerKey = [];
                 for (let entry of response.log.entries) {
                     let content = entry.response.content;
                     if (content.size > 0) {
@@ -81,12 +100,12 @@ function upload(f) {
 
                                     let li = document.createElement("li");
                                     li.className = "question";
-                                    
-                                    for (let f of q.features) {
-                                        let d = document.createElement("div");
-                                        d.innerHTML = f.content;
-                                        li.appendChild(d);
-                                    }
+
+                                    // for (let f of q.features) {
+                                    //     let d = document.createElement("div");
+                                    //     d.innerHTML = f.content;
+                                    //     li.appendChild(d);
+                                    // }
                                     for (let subq of q.questions) {
                                         // err.push(subq);
 
@@ -100,7 +119,6 @@ function upload(f) {
                                             let options = document.createElement("ol")
                                             options.style.listStyleType = "upper-alpha";
                                             options.style.marginBottom = "4em";
-                                            let alphabet = "ABCDE";
                                             let index = 0;
                                             for (let option of subq.options) {
                                                 let letter = document.createElement("li");
@@ -108,6 +126,7 @@ function upload(f) {
                                                 letter.title = option.value;
                                                 if (option.value === subq.validation.valid_response.value[0]) {
                                                     correctIndex = index;
+                                                    answerKey.push(index);
                                                 }
                                                 validation_map[option.value] = alphabet[index++];
                                                 options.appendChild(letter);
@@ -120,6 +139,8 @@ function upload(f) {
                                             let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
                                             correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
                                             li.appendChild(correct);
+                                        } else {
+                                            answerKey.push(-1);
                                         }
 
                                         let answer = subq.metadata;
@@ -155,6 +176,25 @@ function upload(f) {
                         }
                     }
                 }
+                document.getElementById("key").textContent = answerKey.map((correct, index) => `${index + 1}. ${correct < 0 ? "Free-response" : alphabet[correct]}`).join("\n");
+                document.getElementById("code").textContent = `let i = 0;
+let questions = document.querySelector(".slides-control").children;
+let answerKey = [${answerKey}];
+function doOneMore() {
+    if (answerKey[i] < 0) {
+        console.log(\`Question \${++i} is free-response.\`);
+    } else {
+        const choices = questions[i].querySelectorAll("input");
+        choices[answerKey[i]].click();
+        console.log(\`Completed question \${++i}.\`);
+    }
+  document.querySelector("button[data-test-id=next-button]").click();
+  if (i < questions.length)
+    setTimeout(doOneMore, 900);
+  else
+    console.log("NICE");
+}
+doOneMore();`;
                 break;
         }
     };

@@ -1,0 +1,36 @@
+<meta charset="utf-8">
+<html>
+
+<head>
+    <title>
+        Press any Keys
+    </title>
+
+    <style>
+        body {
+            background-color: black;
+        }
+
+        div {
+            font-size: 40px;
+            color: teal;
+        }
+    </style>
+</head>
+
+<body>    
+    <script>
+        let div = document.createElement("div");
+        div.id = "output";
+        div.style.fontSize = "40px";
+
+        let count = 0;
+        onkeydown = ev => {
+            div.innerHTML = `${ev.key}<br>${++count} keys pressed in total`;
+        }
+
+        document.body.appendChild(div);
+    </script>
+</body>
+
+</html>
