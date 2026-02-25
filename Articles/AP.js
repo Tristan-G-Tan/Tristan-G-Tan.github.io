@@ -1,4 +1,5 @@
 const alphabet = "ABCDE";
+const showFeatures = true;
 const copy = async txt => {
     try {
         await navigator.clipboard.writeText(txt);
@@ -17,167 +18,106 @@ const copy = async txt => {
     }
 }
 
-// const mode = "video";
-let mode = "HAR";
-let VALUABLE;
-let err;
-function upload(f) {
-    let reader = new FileReader();
+function handle1response(txt) {
+    let data;
+    try { // TODO: this code is ugly. Move to another function.
+        data = JSON.parse(txt).data; // error 1: not json
+        if (data.apiActivity)
+            data = data.apiActivity; // if the HAR is loaded before question completion, it is always an activity link and has apiActivity
+        if (data.items)
+            data = data.items; // error 2: not a response about questions
+        data[0].questions[0]; // error 3: error response (data is iterable, but each q is a simple object {error: 10005, id: "something"})
+    } catch (e) {
+        return; // these errors don't matter
+    }
 
-    let display_file = (e) => {
-        let response = JSON.parse(e.target.result);
-        err = [];
-        VALUABLE = [];
-        let i = 0;
-        switch (mode) {
-            case "video":
-                results.innerHTML = '';
-                for (let entry of response.log.entries) {
-                    let url = entry.request.url;
-                    if (url.endsWith(".ts")) {
-                        let li = document.createElement("li");
-                        let link = document.createElement("a");
-                        link.href = url.slice(0, 89) + "p4";
-                        link.innerHTML = "link";
-                        li.appendChild(link);
-                        results.appendChild(li);
-                    }
+    try {
+        for (let q of data) {
+            let li = document.createElement("li");
+            li.className = "question";
+
+            if (showFeatures) // usually a sharedpassage if there are features
+                for (let f of q.features) {
+                    let d = document.createElement("div");
+                    d.innerHTML = f.content;
+                    li.appendChild(d);
                 }
-                break;
-            case "activity": // TODO: THIS IS STILL ACCEPTING JS NOT JSON
-                for (let q of response.data.apiActivity.items) {
-                    ++i;
-                    for (let subq of q.questions) {
-                        let q = document.createElement("div");
-                        q.innerHTML = [i + "", ". ", subq.stimulus].concat(subq.options.map(option => option.label)).join("");
-                        document.body.appendChild(q);
 
-                        let a = document.createElement("div");
-                        a.innerHTML = subq.metadata.distractor_rationale_response_level.join("");
-                        document.body.appendChild(a);
+            let subq = q.questions[0];
+            if (subq.type === "mcq") {
+                let stimulus = document.createElement("div");
+                stimulus.innerHTML = subq.stimulus;
+                li.appendChild(stimulus);
+
+                let validation_map = {};
+                let correctIndex = 0;
+
+                // options
+                let options = document.createElement("ol")
+                options.style.listStyleType = "upper-alpha";
+                options.style.marginBottom = "4em";
+                let index = 0;
+                for (let option of subq.options) {
+                    let letter = document.createElement("li");
+                    letter.innerHTML = option.label;
+                    letter.title = option.value;
+                    if (option.value === subq.validation.valid_response.value[0]) {
+                        correctIndex = index;
+                        answerKey.push(index);
                     }
-                    document.body.appendChild(document.createElement("br"));
+                    validation_map[option.value] = alphabet[index++];
+                    options.appendChild(letter);
                 }
-                break;
-            case "HAR":
-                results.innerHTML = '';
-                let answerKey = [];
-                for (let entry of response.log.entries) {
-                    let content = entry.response.content;
-                    if (content.size > 0) {
-                        let txt = content.text;
-                        try { // TODO
-                            // MICRO and OLCBC doesn't all have answers
-                            // same for LANG2 Q10 to 22, but somehow LANG2 works
-                            if (true) { // CORRECT FOR MICRO, TOO MUCH FOR OLDBC
-                                // if (txt.includes("Incorrect. ")) { // UNDERCOUNTING FOR MICRO, RIGHT FOR OLDBC
-                                // VALUABLE.push(entry);
-                                let data = JSON.parse(txt).data;
-                                if (data.apiActivity)
-                                    data = data.apiActivity;
-                                if (data.items)
-                                    data = data.items;
-                                for (let q of data) {
-                                    // ++i;
-                                    // for (let subq of q.questions) {
-                                    //     let q = document.createElement("div");
-                                    //     q.innerHTML = [i + "", ". ", subq.stimulus].concat(subq.options.map(option => option.label)).join("");
-                                    //     document.body.appendChild(q);
+                li.appendChild(options);
 
-                                    //     try {
-                                    //         let a = document.createElement("div");
-                                    //         let answer = subq.metadata;
-                                    //         answer = answer.distractor_rationale_response_level || answer.custom_distractor_rationale_response_level;
-                                    //         a.innerHTML = answer.join("");
-                                    //         document.body.appendChild(a);
-                                    //     } catch {
-                                    //         err.push(subq)
-                                    //         // err.push(entry);
-                                    //     }
-                                    // }
-                                    // document.body.appendChild(document.createElement("br"));
+                // correct answer
+                let correct = document.createElement("div");
+                let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
+                correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
+                li.appendChild(correct);
 
-
-                                    let li = document.createElement("li");
-                                    li.className = "question";
-
-                                    // for (let f of q.features) {
-                                    //     let d = document.createElement("div");
-                                    //     d.innerHTML = f.content;
-                                    //     li.appendChild(d);
-                                    // }
-                                    for (let subq of q.questions) {
-                                        // err.push(subq);
-
-                                        let stimulus = document.createElement("div");
-                                        stimulus.innerHTML = subq.stimulus;
-                                        li.appendChild(stimulus);
-
-                                        let validation_map = {};
-                                        let correctIndex = 0;
-                                        if (subq.options) {
-                                            let options = document.createElement("ol")
-                                            options.style.listStyleType = "upper-alpha";
-                                            options.style.marginBottom = "4em";
-                                            let index = 0;
-                                            for (let option of subq.options) {
-                                                let letter = document.createElement("li");
-                                                letter.innerHTML = option.label;
-                                                letter.title = option.value;
-                                                if (option.value === subq.validation.valid_response.value[0]) {
-                                                    correctIndex = index;
-                                                    answerKey.push(index);
-                                                }
-                                                validation_map[option.value] = alphabet[index++];
-                                                options.appendChild(letter);
-                                            }
-                                            li.appendChild(options);
-                                        }
-
-                                        if (subq.validation) {
-                                            let correct = document.createElement("div");
-                                            let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
-                                            correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
-                                            li.appendChild(correct);
-                                        } else {
-                                            answerKey.push(-1);
-                                        }
-
-                                        let answer = subq.metadata;
-                                        answer = answer.distractor_rationale_response_level || answer.custom_distractor_rationale_response_level;
-
-                                        if (answer) {
-                                            let answers = document.createElement("ol");
-                                            answers.style.listStyleType = "upper-alpha";
-                                            let index = 0;
-                                            for (let a of answer) {
-                                                let letter = document.createElement("li");
-                                                // if (a.includes("Correct. ")) {
-                                                if (correctIndex === index++) {
-                                                    letter.className = "correct";
-                                                } else {
-                                                    letter.className = "incorrect";
-                                                }
-                                                letter.innerHTML = a;
-                                                answers.append(letter);
-                                            }
-                                            li.appendChild(answers);
-                                        }
-
-                                        results.appendChild(li);
-                                    }
-                                }
-
-                                VALUABLE.push(entry);
-                            }
-                        } catch (e) {
-                            err.push(entry);
-                            console.log(e);
+                // rationales
+                let answer = subq.metadata;
+                answer = answer.distractor_rationale_response_level || answer.custom_distractor_rationale_response_level;
+                if (answer) {
+                    let answers = document.createElement("ol");
+                    answers.style.listStyleType = "upper-alpha";
+                    let index = 0;
+                    for (let a of answer) {
+                        let letter = document.createElement("li");
+                        if (correctIndex === index++) {
+                            letter.className = "correct";
+                        } else {
+                            letter.className = "incorrect";
                         }
+                        letter.innerHTML = a;
+                        answers.append(letter);
                     }
+                    li.appendChild(answers);
                 }
-                document.getElementById("key").textContent = answerKey.map((correct, index) => `${index + 1}. ${correct < 0 ? "Free-response" : alphabet[correct]}`).join("\n");
-                document.getElementById("code").textContent = `let i = 0;
+            } else { // TODO: FIGURE OUT HOW TO ACCESS FRQ RUBRIC
+                answerKey.push(-1);
+
+                for (subq of q.questions) {
+                    let stimulus = document.createElement("div");
+                    stimulus.innerHTML = subq.stimulus;
+                    li.appendChild(stimulus);
+                }
+            }
+
+            results.appendChild(li);
+        }
+
+        return 0xBEEF;
+    } catch (e) {
+        console.log(e);
+        return 0xDEADBEEF;
+    }
+}
+
+function autocompleter() {
+    document.getElementById("key").textContent = answerKey.map((correct, index) => `${index + 1}. ${correct < 0 ? "Free-response" : alphabet[correct]}`).join("\n");
+    document.getElementById("code").textContent = `let i = 0;
 let questions = document.querySelector(".slides-control").children;
 let answerKey = [${answerKey}];
 function doOneMore() {
@@ -195,15 +135,72 @@ function doOneMore() {
     console.log("NICE");
 }
 doOneMore();`;
-                break;
-        }
+}
+
+// const mode = "video";
+let mode = "HAR";
+let VALUABLE;
+let err;
+let answerKey;
+let uploadedText;
+
+function upload(f) {
+    let reader = new FileReader();
+
+    let display_file = (e) => {
+        uploadedText = e.target.result;
     };
 
-    let on_reader_load = (fl) => {
+    let on_reader_load = fl => {
         return display_file; // a function
     };
 
     // Closure to capture the file information.
     reader.onload = on_reader_load(f);
     reader.readAsText(f);
+}
+
+function parse() {
+    let response;
+    err = [];
+    VALUABLE = [];
+    answerKey = [];
+    results.innerHTML = '';
+    switch (parseMode.value) {
+        case "video":
+            response = JSON.parse(uploadedText);
+            for (let entry of response.log.entries) {
+                let url = entry.request.url;
+                if (url.endsWith(".ts")) {
+                    let li = document.createElement("li");
+                    let link = document.createElement("a");
+                    link.href = url.slice(0, 89) + "p4";
+                    link.innerHTML = "link";
+                    li.appendChild(link);
+                    results.appendChild(li);
+                }
+            }
+            break;
+        case "activity": // TODO: THIS IS STILL ACCEPTING JS NOT JSON. after cleaning up handle1response, implement this.
+            response = prompt("Paste in the response from the learnosity activity:");
+            handle1response(response);
+            autocompleter();
+            break;
+        case "HAR":
+            response = JSON.parse(uploadedText);
+            for (let entry of response.log.entries) {
+                let content = entry.response.content;
+                if (content.size > 0) {
+                    let parsed = handle1response(content.text);
+                    if (parsed === 0xDEADBEEF) {
+                        err.push(entry);
+                    } else if (parsed === 0xBEEF) {
+                        VALUABLE.push(entry);
+                    }
+                }
+            }
+
+            autocompleter();
+            break;
+    }
 }

@@ -34,7 +34,7 @@
 
         .question {
             border-bottom: 1px solid black;
-            margin-bottom: 5px;
+            padding: 5px;
         }
 
         .correct {
@@ -106,7 +106,12 @@
             <!-- </label> -->
             <input id="file-upload" type="file" onchange="upload(this.files[0])" />
         </li>
-        <li>Worship Nice.</li>
+        <li><button onclick="parse();">Load</button> the answers. Or, if you know what you're doing, change the mode: <select id="parseMode">
+            <option value="HAR" selected>HAR</option>
+            <option value="activity">activity</option>
+            <option value="video">video</option>
+        </select></li>
+        <li>Enjoy the Niceness.</li>
     </ol>
 
     <ol id="results" style="border-top: 1px solid black;"></ol>
