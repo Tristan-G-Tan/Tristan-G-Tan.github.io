@@ -13,6 +13,16 @@
                 font-family: Arial;
                 font-size: 30px;
             }
+
+            table {
+                /* border-spacing: 5px; */
+                border-collapse: collapse;
+            }
+
+            td {
+                padding: 5px;
+                border: 1px solid black;
+            }
         </style>
     </head>
 
@@ -37,5 +47,14 @@
             <li><a href="Unicode/zalgo.html">Zalgo generator</a></li>
             <li><a href="Articles/iframe.html">Iframe tester</a></li>
         </ol>
+
+        <table>
+            <tbody>
+                <tr><td>1</td><td colspan="2" rowspan="3">3</td><td>4</td></tr>
+                <tr><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+                <tr><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+                <tr><td>1</td><td>2</td><td>3</td><td>4</td></tr>
+            </tbody>
+        </table>
     </body>
 </html>

@@ -20,12 +20,15 @@ const copy = async txt => {
 
 function handle1response(txt) {
     let data;
-    try { // TODO: this code is ugly. Move to another function.
+    try {
         data = JSON.parse(txt).data; // error 1: not json
-        if (data.apiActivity)
+        if (data.apiActivity) {
+            document.title = `SG ${data.request.name}`; // if HAR is taken after completion, the assignment name just says "Questions Preview"
             data = data.apiActivity; // if the HAR is loaded before question completion, it is always an activity link and has apiActivity
-        if (data.items)
+        }
+        if (data.items) {
             data = data.items; // error 2: not a response about questions
+        }
         data[0].questions[0]; // error 3: error response (data is iterable, but each q is a simple object {error: 10005, id: "something"})
     } catch (e) {
         return; // these errors don't matter
@@ -181,7 +184,7 @@ function parse() {
                 }
             }
             break;
-        case "activity": // TODO: THIS IS STILL ACCEPTING JS NOT JSON. after cleaning up handle1response, implement this.
+        case "activity":
             response = prompt("Paste in the response from the learnosity activity:");
             handle1response(response);
             autocompleter();
