@@ -140,8 +140,6 @@ function doOneMore() {
 doOneMore();`;
 }
 
-// const mode = "video";
-let mode = "HAR";
 let VALUABLE;
 let err;
 let answerKey;
