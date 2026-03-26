@@ -20,16 +20,21 @@ const copy = async txt => {
 
 function handle1response(txt) {
     let data;
-    try {
+    try { // TODO: figure out which files to parse. activity for pr-submission, but what about post-submission? init or items or questionresponses? there are duplicate questions
         data = JSON.parse(txt).data; // error 1: not json
-        if (data.apiActivity) {
-            document.title = `SG ${data.request.name}`; // if HAR is taken after completion, the assignment name just says "Questions Preview"
-            data = data.apiActivity; // if the HAR is loaded before question completion, it is always an activity link and has apiActivity
+        if (data[0]?.data?._internal?.questions_json) {
+            data = Object.values(data[0].data._internal.questions_json); // init, not activity not items
+            VALUABLE.push(data);
+        } else {
+            if (data.apiActivity) {
+                document.title = `SG ${data.request.name}`; // if HAR is taken after completion, the assignment name just says "Questions Preview"
+                data = data.apiActivity; // if the HAR is loaded before question completion, it is always an activity link and has apiActivity
+            }
+            if (data.items) {
+                data = data.items; // error 2: not a response about questions
+            }
+            data[0].questions[0]; // error 3: error response (data is iterable, but each q is a simple object {error: 10005, id: "something"})
         }
-        if (data.items) {
-            data = data.items; // error 2: not a response about questions
-        }
-        data[0].questions[0]; // error 3: error response (data is iterable, but each q is a simple object {error: 10005, id: "something"})
     } catch (e) {
         return; // these errors don't matter
     }
@@ -39,14 +44,14 @@ function handle1response(txt) {
             let li = document.createElement("li");
             li.className = "question";
 
-            if (showFeatures) // usually a sharedpassage if there are features
+            if (showFeatures && q.features) // usually a sharedpassage if there are features
                 for (let f of q.features) {
                     let d = document.createElement("div");
                     d.innerHTML = f.content;
                     li.appendChild(d);
                 }
 
-            let subq = q.questions[0];
+            let subq = q.questions ? q.questions[0] : q; // TODO: awkward. Only added to parse init response
             if (subq.type === "mcq") {
                 let stimulus = document.createElement("div");
                 stimulus.innerHTML = subq.stimulus;
