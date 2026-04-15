@@ -20,11 +20,11 @@ const copy = async txt => {
 
 function handle1response(txt) {
     let data;
-    try { // TODO: figure out which files to parse. activity for pr-submission, but what about post-submission? init or items or questionresponses? there are duplicate questions
+    try { // TODO:  pre-submission: activity; post-submission: init (loads all questions but no features/sharedpassages; for instance: "The position as a function of time for two objects moving along a straight line is shown in the graph." does not show up in AP Physics 1 1.1 init), or activity or items or questionresponses (but there are duplicate questions). FOR SCORING: items (has scoring guide) prevails over activity (only questions, no scoring guides)
         data = JSON.parse(txt).data; // error 1: not json
         if (data[0]?.data?._internal?.questions_json) {
             data = Object.values(data[0].data._internal.questions_json); // init, not activity not items
-            VALUABLE.push(data);
+            // VALUABLE.push(data);
         } else {
             if (data.apiActivity) {
                 document.title = `SG ${data.request.name}`; // if HAR is taken after completion, the assignment name just says "Questions Preview"
@@ -188,7 +188,10 @@ function parse() {
             }
             break;
         case "activity":
-            response = prompt("Paste in the response from the learnosity activity:");
+            if (uploadedText)
+                response = uploadedText;
+            else
+                response = prompt("Paste in the response from the learnosity activity:");
             handle1response(response);
             autocompleter();
             break;
