@@ -20,8 +20,22 @@
             font-family: 'Arial';
         }
 
+        body.dark {
+            font-family: 'Arial';
+            background-color: black;
+            color: white;
+        }
+
+        a.dark {
+            color: #ffa31a;
+        }
+
         #results {
             font-family: 'Minion Pro', 'Roboto Slab', 'Roboto', 'Arial';
+        }
+
+        #results.dark {
+            font-family: 'Arial';
         }
 
         table {
@@ -78,12 +92,18 @@
             margin-bottom: 5px;
         }
 
+        .correct {
+            border: 1px solid rgb(49, 134, 53);
+            background-color: rgba(58, 145, 63, .1);
+            margin-bottom: 5px;
+        }
+
         .incorrect {
             /* border: 1px solid rgb(231, 91, 107); */
             /* background-color: rgba(145, 39, 37, 0.1); */
             margin-bottom: 5px;
         }
-
+        
         .formatted_line_break {
             display: block;
             height: .5em;
@@ -117,7 +137,7 @@
             position: absolute;
             top: 100%;
             z-index: 10;
-        }
+        }        
 
         pre {
             padding: 12px;
@@ -128,10 +148,55 @@
             padding: 4px;
             background-color: rgb(246, 246, 246);
         }
+
+        pre.dark {
+            padding: 12px;
+            background-color: #151515;
+            color: #c6c6c6;
+        }
+
+        code.dark {
+            padding: 4px;
+            background-color: #151515;
+            color: #c6c6c6;
+        }
+
+        img.dark {
+            background-color: white;
+        }
+
+        .hub {
+            display: none;
+        }
+
+        .hub.dark {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 7vw;
+            display: flex;
+            justify-content: center; /* Horizontal */
+        }
+
+        .hub.dark span:nth-child(2) {
+            background: #FF9900;
+            color: #000000;
+            border-radius: 1vw;
+            padding: 0 1vw 0vw 1vw;
+            display: inline-block;
+            margin-left: 1vw;
+        }
+        
+        .correctAnswer.dark {
+            color: #ffa31a;
+        }
     </style>
 </head>
 
 <body>
+    <div class="hub">
+        <span>Physics</span>
+        <span>hub</span>
+    </div>
     <a href="javascript:window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Click to scroll to the bottom.</a>
     <ol>
         <li><strong>Open</strong> a AP classroom assignment using Google Chrome or Microsoft Edge.</li>
@@ -147,17 +212,20 @@
             <option value="activity">activity</option>
             <option value="video">video</option>
         </select></li>
-        <li><strong>Love</strong>, <strong>admire</strong>, <strong>adore</strong>, <strong>cherish</strong>, <strong>treasure</strong>, <strong>prize</strong>, <strong>crave</strong>, <strong>covet</strong>, <strong>idolize</strong>, <strong>revere</strong>, <strong>venerate</strong>, <strong>exalt</strong>, <strong>extol</strong>, <strong>enshrine</strong>, <strong>consecrate</strong>, <strong>canonize</strong>, <strong>deify</strong>, <strong>worship</strong>, <strong>apotheosize</strong>, and <strong>yearn</strong> for Nice.</li>
+        <!-- <li><strong>Love</strong>, <strong>admire</strong>, <strong>adore</strong>, <strong>cherish</strong>, <strong>treasure</strong>, <strong>prize</strong>, <strong>crave</strong>, <strong>covet</strong>, <strong>idolize</strong>, <strong>revere</strong>, <strong>venerate</strong>, <strong>exalt</strong>, <strong>extol</strong>, <strong>enshrine</strong>, <strong>consecrate</strong>, <strong>canonize</strong>, <strong>deify</strong>, <strong>worship</strong>, <strong>apotheosize</strong>, and <strong>yearn</strong> for Nice.</li> -->
+        <li><strong onclick="togglePhub();">Phub</strong>.</li>
     </ol>
 
     <ol id="results" style="border-top: 1px solid black;"></ol>
 
     <ul>
-        <li>Answer key:
+        <li>
+            <div>Answer key:</div>
             <pre id="key">Please upload your HAR file.</pre>
             <button onclick="copy(document.getElementById('key').textContent);">Copy</button>
         </li>
-        <li>JavaScript for autocompletion:
+        <li>
+            <div>JavaScript for autocompletion:</div>
             <pre id="code">Please upload your HAR file.</pre>
             <button onclick="copy(document.getElementById('code').textContent);">Copy</button>
         </li>

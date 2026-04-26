@@ -82,6 +82,8 @@ function handle1response(txt) {
                 let correct = document.createElement("div");
                 let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
                 correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
+                // correct.style.color = "#ffa31a";
+                correct.className = "correctAnswer"
                 li.appendChild(correct);
 
                 // rationales
@@ -211,5 +213,19 @@ function parse() {
 
             autocompleter();
             break;
+    }
+
+    
+    /* TODO: FIRST PHUB THEN LOAD BREAKS THE THEME; also: random rationales have the inline declaration color:black; not sure if this is the best fix for this */
+    for (let black of document.querySelectorAll('span[style*="color:black"], span[style*="color:rgb(0,0,0)"]')) {
+        black.style.removeProperty("color");
+    }
+}
+
+
+function togglePhub() {
+    document.body.classList.toggle("dark");
+    for (let e of document.querySelectorAll("pre, code, a, img, #results, .hub, .correctAnswer")) {
+        e.classList.toggle("dark");
     }
 }
