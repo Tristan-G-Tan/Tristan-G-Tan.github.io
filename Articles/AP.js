@@ -18,6 +18,9 @@ const copy = async txt => {
     }
 }
 
+let highlightCorrect = false;
+// TODO: showMCQ, showFRQ, showFRQbody, etc.
+
 function handle1response(txt) {
     let data;
     try { // TODO:  pre-submission: activity; post-submission: init (loads all questions but no features/sharedpassages; for instance: "The position as a function of time for two objects moving along a straight line is shown in the graph." does not show up in AP Physics 1 1.1 init), or activity or items or questionresponses (but there are duplicate questions). FOR SCORING: items (has scoring guide) prevails over activity (only questions, no scoring guides)
@@ -83,7 +86,7 @@ function handle1response(txt) {
                 let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
                 correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
                 // correct.style.color = "#ffa31a";
-                correct.className = "correctAnswer"
+                correct.className = "heading"
                 li.appendChild(correct);
 
                 // rationales
@@ -147,6 +150,199 @@ function doOneMore() {
 doOneMore();`;
 }
 
+// https://mokaoai.com/dashboard
+// TODO: only handling AP FRQ from getExamReport. COMPLETE BEFORE 15 July 2026
+function handleMokao(txt) {
+    let data = JSON.parse(txt).data;
+
+    for (let q of data.mcqAnswerInfoJsonList) {
+        let li = document.createElement("li");
+        li.className = "question";
+
+        let stimulus = document.createElement("div");
+        stimulus.innerHTML = q.questionContent + q.options.join("");
+        li.appendChild(stimulus);
+
+        // correct answer
+        let correctIndex = q.correctAnswer[0];
+        answerKey.push(correctIndex);
+        let correct = document.createElement("div");
+        correct.innerHTML = `Correct answer: ${alphabet[correctIndex]}`;
+        correct.className = "heading"
+        li.appendChild(correct);
+
+        // rationales
+        if (q.aiAnalysis) {
+            JSON.parse(q.aiAnalysis)
+        }
+
+        results.appendChild(li);
+    }
+
+    // TODO: figure out diff between parsed frqAnswerJson (AP模考) and frqAnswerJsonList (both AP练习 and AP模考). there seems to be no diff.
+    // if (data.frqAnswerJson) {
+    //     data = JSON.parse(data.frqAnswerJson);
+    // } else {
+    //     data = data.frqAnswerJsonList;
+    // }
+    for (let q of data.frqAnswerJsonList) {
+        let li = document.createElement("li");
+        li.className = "question";
+
+        // TB
+        let stimulus = document.createElement("div");
+        stimulus.innerHTML = JSON.parse(q.questionContent).join("");
+        li.appendChild(stimulus);
+        answerKey.push(-1);
+
+        // SG
+        for (let part of JSON.parse(q.analysisAndScoringGuidelinesJson)) {
+            let partHeading = document.createElement("div");
+            partHeading.innerHTML = part.title;
+            partHeading.className = "heading";
+            li.appendChild(partHeading);
+
+            let d = document.createElement("div");
+            let criteria = part.categoryList;
+            d.innerHTML = part.content + criteria[criteria.length - 1].description;
+            li.appendChild(d);
+        }
+        results.appendChild(li);
+    }
+}
+
+// https://mock.lumiclass.com/dashboard
+// EXPIRED in 7 days. TODO: ADD MATHJAX
+function handleLumi(txt) {
+    let data = JSON.parse(txt).data;
+    data = data.question_details || data;
+    results.innerHTML = '';
+
+    for (let q of data) {
+        let li = document.createElement("li");
+        li.className = "question";
+
+        if (q.question_type === "MCQ") {
+            let stimulus = document.createElement("div");
+            // Parse images and LaTeX in question_content
+            stimulus.innerHTML = parseImagesAndLatex(q.question_content);
+            li.appendChild(stimulus);
+
+            // options
+            let options = document.createElement("ol");
+            options.style.listStyleType = "upper-alpha";
+            options.style.marginBottom = "4em";
+
+            for (let option of Object.values(q.options_json)) {
+                let letter = document.createElement("li");
+                letter.innerHTML = parseImagesAndLatex(option);
+                options.appendChild(letter);
+            }
+            li.appendChild(options);
+
+            // correct answer
+            let correct = document.createElement("div");
+            let key = q.correct_answer;
+            answerKey.push(key.charCodeAt(0) - 65);
+            correct.innerHTML = `Correct answer: ${key}`;
+            correct.className = "heading";
+            li.appendChild(correct);
+
+            // rationale
+            let explanation = document.createElement("div");
+            explanation.innerHTML = parseImagesAndLatex(q.explanation);
+            li.appendChild(explanation);
+        } else {
+            let stimulus = document.createElement("div");
+            stimulus.innerHTML = parseImagesAndLatex(q.question_content);
+            li.appendChild(stimulus);
+
+            // correct answer
+            if (q.correct_answer.length > 4) {
+                let correctHeading = document.createElement("div");
+                correctHeading.innerHTML = `Correct answer:`;
+                correctHeading.className = "heading";
+                li.appendChild(correctHeading);
+                let correct = document.createElement("div");
+                correct.innerHTML = parseImagesAndLatex(q.correct_answer);
+                li.appendChild(correct);
+            }
+
+            // explanation
+            if (q.explanation.length > 4) {
+                let expHeading = document.createElement("div");
+                expHeading.innerHTML = `Explanation:`;
+                expHeading.className = "heading";
+                li.appendChild(expHeading);
+                let explanation = document.createElement("div");
+                explanation.innerHTML = parseImagesAndLatex(q.explanation);
+                li.appendChild(explanation);
+            }
+
+            // rubric
+            let rubric = document.createElement("div");
+            rubric.innerHTML = parseImagesAndLatex(`Rubric: ${q.rubric}`);
+            li.appendChild(rubric);
+        }
+
+        results.appendChild(li);
+    }
+
+    // IMPORTANT: Wait for MathJax to be ready and then process
+    // if (window.MathJax) {
+    //     // Small delay to ensure DOM is updated
+    //     setTimeout(() => {
+    //         window.MathJax.typesetPromise([results])
+    //             .then(() => console.log('MathJax rendering complete'))
+    //             .catch(err => console.log('MathJax error:', err));
+    //     }, 100);
+    // } else {
+    //     console.error('MathJax not loaded yet!');
+    // }
+    MathJax.typesetPromise([results])
+}
+
+// Helper function to replace image syntax with img tags for lumi
+function parseImagesAndLatex(text) {
+    if (!text) return '';
+
+    // First, protect LaTeX from being broken by HTML replacement
+    // Temporarily replace LaTeX delimiters with placeholders
+    // let latexBlocks = [];
+    // let protectedText = text.replace(/\$\$([\s\S]*?)\$\$/g, (match) => {
+    //     latexBlocks.push(match);
+    //     return `%%LATEX_BLOCK_${latexBlocks.length - 1}%%`;
+    // });
+
+    // protectedText = protectedText.replace(/\$([^\$]+?)\$/g, (match) => {
+    //     latexBlocks.push(match);
+    //     return `%%LATEX_INLINE_${latexBlocks.length - 1}%%`;
+    // });
+
+    // Replace image syntax: ![图片](url) or any alt text
+    let withImages = text.replace(
+        /!\[([^\]]*)\]\(([^)]+)\)/g,
+        (match, altText, imageUrl) => {
+            // Validate and sanitize the URL
+            const safeUrl = imageUrl.replace(/[<>'"]/g, '');
+            return `<img src="${safeUrl}" alt="${altText || '图片'}" class="har-image" 
+                         onerror="this.style.display='none'; console.warn('Failed to load: ${safeUrl}')" 
+                         loading="lazy" />`;
+        }
+    );
+
+    // Restore LaTeX blocks
+    // withImages = withImages.replace(/%%LATEX_BLOCK_(\d+)%%/g, (match, index) => {
+    //     return latexBlocks[parseInt(index)];
+    // });
+
+    // withImages = withImages.replace(/%%LATEX_INLINE_(\d+)%%/g, (match, index) => {
+    //     return latexBlocks[parseInt(index)];
+    // });
+
+    return withImages;
+}
+
 let VALUABLE;
 let err;
 let answerKey;
@@ -168,7 +364,7 @@ function upload(f) {
     reader.readAsText(f);
 }
 
-function parse() {
+async function parse() {
     let response;
     err = [];
     VALUABLE = [];
@@ -202,7 +398,13 @@ function parse() {
             for (let entry of response.log.entries) {
                 let content = entry.response.content;
                 if (content.size > 0) {
-                    let parsed = handle1response(content.text);
+                    let text = content.text;
+                    if (content.encoding === "base64") {
+                        let response = await fetch(`data:application/octet-stream;base64,${text}`);
+                        text = await response.text();
+                    }
+                    
+                    let parsed = handle1response(text);
                     if (parsed === 0xDEADBEEF) {
                         err.push(entry);
                     } else if (parsed === 0xBEEF) {
@@ -213,19 +415,50 @@ function parse() {
 
             autocompleter();
             break;
+        case "mokaoai":
+            response = JSON.parse(uploadedText);
+            for (let entry of response.log.entries) {
+                let content = entry.response.content;
+                if (content.size > 0) {
+                    let parsed = handleMokao(content.text);
+                    if (parsed === 0xDEADBEEF) {
+                        err.push(entry);
+                    } else if (parsed === 0xBEEF) {
+                        VALUABLE.push(entry);
+                    }
+                }
+            }
+            autocompleter();
+            break;
+        case "lumi":
+            response = JSON.parse(uploadedText);
+            for (let entry of response.log.entries) {
+                let content = entry.response.content;
+                if (content.size > 0) {
+                    let parsed = handleLumi(content.text);
+                    if (parsed === 0xDEADBEEF) {
+                        err.push(entry);
+                    } else if (parsed === 0xBEEF) {
+                        VALUABLE.push(entry);
+                    }
+                }
+            }
+            break;
     }
 
-    
+
     /* TODO: FIRST PHUB THEN LOAD BREAKS THE THEME; also: random rationales have the inline declaration color:black; not sure if this is the best fix for this */
-    for (let black of document.querySelectorAll('span[style*="color:black"], span[style*="color:rgb(0,0,0)"]')) {
+    // for (let black of document.querySelectorAll('span[style*="color:black"], span[style*="color:rgb(0,0,0)"]')) {
+    for (let black of results.querySelectorAll('*')) {
         black.style.removeProperty("color");
+        black.style.removeProperty("background-color");
     }
 }
 
 
 function togglePhub() {
     document.body.classList.toggle("dark");
-    for (let e of document.querySelectorAll("pre, code, a, img, #results, .hub, .correctAnswer")) {
+    for (let e of document.querySelectorAll("pre, code, a, img, #results, .hub, .heading")) {
         e.classList.toggle("dark");
     }
 }

@@ -161,7 +161,12 @@
             color: #c6c6c6;
         }
 
+        img {
+            display: block;
+        }
+
         img.dark {
+            display: block;
             background-color: white;
         }
 
@@ -170,7 +175,7 @@
         }
 
         .hub.dark {
-            font-family: sans-serif;
+            font-family: 'Arial', sans-serif;
             font-weight: bold;
             font-size: 7vw;
             display: flex;
@@ -178,7 +183,7 @@
         }
 
         .hub.dark span:nth-child(2) {
-            background: #FF9900;
+            background: #FF9000;
             color: #000000;
             border-radius: 1vw;
             padding: 0 1vw 0vw 1vw;
@@ -186,10 +191,22 @@
             margin-left: 1vw;
         }
         
-        .correctAnswer.dark {
-            color: #ffa31a;
+        .heading.dark {
+            color: #f90;
+            /* TODO: figure out when to use #f90 (a, activeLine) or #ff9000 (hamburgerIcon, main logo) or #ffa31a (headerUpgradePremiumBtn) */
         }
     </style>
+
+    <script>
+        MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']],
+                processEscapes: true // Allows \$ to print a literal dollar sign
+            }
+        };
+    </script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/mathjax@4/tex-chtml.js" defer></script> -->
 </head>
 
 <body>
@@ -208,15 +225,20 @@
             <input id="file-upload" type="file" onchange="upload(this.files[0])" />
         </li>
         <li><button onclick="parse();"><strong>Load</strong></button> the answers. Or, if you know what you're doing, change the mode: <select id="parseMode">
-            <option value="HAR" selected>HAR</option>
+            <option value="HAR">HAR</option>
             <option value="activity">activity</option>
             <option value="video">video</option>
+            <option value="mokaoai" selected>mokaoai</option>
+            <option value="lumi">lumi</option>
         </select></li>
         <!-- <li><strong>Love</strong>, <strong>admire</strong>, <strong>adore</strong>, <strong>cherish</strong>, <strong>treasure</strong>, <strong>prize</strong>, <strong>crave</strong>, <strong>covet</strong>, <strong>idolize</strong>, <strong>revere</strong>, <strong>venerate</strong>, <strong>exalt</strong>, <strong>extol</strong>, <strong>enshrine</strong>, <strong>consecrate</strong>, <strong>canonize</strong>, <strong>deify</strong>, <strong>worship</strong>, <strong>apotheosize</strong>, and <strong>yearn</strong> for Nice.</li> -->
         <li><strong onclick="togglePhub();">Phub</strong>.</li>
     </ol>
-
+    
+    <p>
+        
     <ol id="results" style="border-top: 1px solid black;"></ol>
+    </p>
 
     <ul>
         <li>
