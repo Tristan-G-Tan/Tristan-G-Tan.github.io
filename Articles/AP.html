@@ -215,7 +215,7 @@
         <span>hub</span>
     </div>
     <a href="javascript:window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Click to scroll to the bottom.</a>
-    <ol>
+    <ol id="menu">
         <li><strong>Open</strong> a AP classroom assignment using Google Chrome or Microsoft Edge.</li>
         <li><strong>Open</strong> the developer tools network tab</li>
         <li><strong>Wait</strong> until <code>activity</code>, <code>init</code>, <code>items</code>, or <code>questionresponses</code> appear.</li>
@@ -225,10 +225,10 @@
             <input id="file-upload" type="file" onchange="upload(this.files[0])" />
         </li>
         <li><button onclick="parse();"><strong>Load</strong></button> the answers. Or, if you know what you're doing, change the mode: <select id="parseMode">
-            <option value="HAR">HAR</option>
+            <option value="HAR" selected>HAR</option>
             <option value="activity">activity</option>
             <option value="video">video</option>
-            <option value="mokaoai" selected>mokaoai</option>
+            <option value="mokaoai">mokaoai</option>
             <option value="lumi">lumi</option>
         </select></li>
         <!-- <li><strong>Love</strong>, <strong>admire</strong>, <strong>adore</strong>, <strong>cherish</strong>, <strong>treasure</strong>, <strong>prize</strong>, <strong>crave</strong>, <strong>covet</strong>, <strong>idolize</strong>, <strong>revere</strong>, <strong>venerate</strong>, <strong>exalt</strong>, <strong>extol</strong>, <strong>enshrine</strong>, <strong>consecrate</strong>, <strong>canonize</strong>, <strong>deify</strong>, <strong>worship</strong>, <strong>apotheosize</strong>, and <strong>yearn</strong> for Nice.</li> -->
@@ -254,7 +254,7 @@
     </ul>
     
     <a href="javascript:window.scrollTo({ top: 0, behavior: 'smooth' })">Click to scroll to the top</a>.
-    <a href="https://tristan-g-tan.github.io/">Click to return to main page</a>
+    <a href="https://tristan-g-tan.github.io/" id="websiteLink">Click to return to main page</a>
 </body>
 
 </html>

@@ -1,5 +1,4 @@
 const alphabet = "ABCDE";
-const showFeatures = true;
 const copy = async txt => {
     try {
         await navigator.clipboard.writeText(txt);
@@ -18,8 +17,24 @@ const copy = async txt => {
     }
 }
 
-let highlightCorrect = false;
-// TODO: showMCQ, showFRQ, showFRQbody, etc.
+let darkMode = false;
+let show = {
+    mcq: {
+        atAll: true,
+        stimulus: true,
+        correct: true,
+        rationale: true,
+        correctHighlight: false
+    },
+
+    frq: {
+        atAll: true,
+        stimulus: true,
+        sg: true
+    },
+
+    features: true
+}
 
 function handle1response(txt) {
     let data;
@@ -44,71 +59,95 @@ function handle1response(txt) {
 
     try {
         for (let q of data) {
+            let subq = q.questions ? q.questions[0] : q; // TODO: awkward. Only added to parse init response
+            if (subq.type === "mcq") {
+                if (!show.mcq.atAll) {
+                    continue;
+                }
+            } else { // NOT "frq"; could be "longtextV2"
+                if (!show.frq.atAll) {
+                    continue;
+                }
+            }
+
             let li = document.createElement("li");
             li.className = "question";
 
-            if (showFeatures && q.features) // usually a sharedpassage if there are features
+            if (show.features && q.features) // usually a sharedpassage if there are features
                 for (let f of q.features) {
                     let d = document.createElement("div");
                     d.innerHTML = f.content;
                     li.appendChild(d);
                 }
 
-            let subq = q.questions ? q.questions[0] : q; // TODO: awkward. Only added to parse init response
             if (subq.type === "mcq") {
-                let stimulus = document.createElement("div");
-                stimulus.innerHTML = subq.stimulus;
-                li.appendChild(stimulus);
+                let key = subq.validation.valid_response.value[0];  // TODO: MANY VALUES?
+                if (show.mcq.stimulus) {
+                    let stimulus = document.createElement("div");
+                    stimulus.innerHTML = subq.stimulus;
+                    li.appendChild(stimulus);
+                }
 
                 let validation_map = {};
-                let correctIndex = 0;
+                let correctIndex = -1;
 
-                // options
-                let options = document.createElement("ol")
-                options.style.listStyleType = "upper-alpha";
-                options.style.marginBottom = "4em";
+                let options;
+                if (show.mcq.stimulus) {
+                    options = document.createElement("ol")
+                    options.style.listStyleType = "upper-alpha";
+                    options.style.marginBottom = "4em";
+                }
                 let index = 0;
                 for (let option of subq.options) {
-                    let letter = document.createElement("li");
-                    letter.innerHTML = option.label;
-                    letter.title = option.value;
-                    if (option.value === subq.validation.valid_response.value[0]) {
+                    validation_map[option.value] = alphabet[index];
+                    if (option.value === key) {
                         correctIndex = index;
                         answerKey.push(index);
                     }
-                    validation_map[option.value] = alphabet[index++];
-                    options.appendChild(letter);
-                }
-                li.appendChild(options);
 
-                // correct answer
-                let correct = document.createElement("div");
-                let key = subq.validation.valid_response.value[0]; // TODO: MANY VALUES?
-                correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
-                // correct.style.color = "#ffa31a";
-                correct.className = "heading"
-                li.appendChild(correct);
-
-                // rationales
-                let answer = subq.metadata;
-                answer = answer.distractor_rationale_response_level || answer.custom_distractor_rationale_response_level;
-                if (answer) {
-                    let answers = document.createElement("ol");
-                    answers.style.listStyleType = "upper-alpha";
-                    let index = 0;
-                    for (let a of answer) {
+                    if (show.mcq.stimulus) {
                         let letter = document.createElement("li");
-                        if (correctIndex === index++) {
+                        letter.innerHTML = option.label;
+                        letter.title = option.value;
+                        if (show.mcq.correctHighlight && correctIndex == index)
                             letter.className = "correct";
-                        } else {
-                            letter.className = "incorrect";
-                        }
-                        letter.innerHTML = a;
-                        answers.append(letter);
+                        options.appendChild(letter);
                     }
-                    li.appendChild(answers);
+
+                    ++index;
                 }
-            } else { // TODO: FIGURE OUT HOW TO ACCESS FRQ RUBRIC
+                if (show.mcq.stimulus) {
+                    li.appendChild(options);
+                }
+
+                if (show.mcq.correct) {
+                    let correct = document.createElement("div");
+                    correct.innerHTML = `Correct answer: ${key} (option ${validation_map[key]})`;
+                    correct.className = "heading"
+                    li.appendChild(correct);
+                }
+
+                if (show.mcq.rationale) {
+                    let answer = subq.metadata;
+                    answer = answer.distractor_rationale_response_level || answer.custom_distractor_rationale_response_level;
+                    if (answer) {
+                        let answers = document.createElement("ol");
+                        answers.style.listStyleType = "upper-alpha";
+                        let index = 0;
+                        for (let a of answer) {
+                            let letter = document.createElement("li");
+                            if (correctIndex === index++) {
+                                letter.className = "correct";
+                            } else {
+                                letter.className = "incorrect";
+                            }
+                            letter.innerHTML = a;
+                            answers.append(letter);
+                        }
+                        li.appendChild(answers);
+                    }
+                }
+            } else if (show.frq.stimulus) { // TODO: FIGURE OUT HOW TO ACCESS FRQ RUBRIC
                 answerKey.push(-1);
 
                 for (subq of q.questions) {
@@ -123,7 +162,7 @@ function handle1response(txt) {
 
         return 0xBEEF;
     } catch (e) {
-        console.log(e);
+        console.error(e);
         return 0xDEADBEEF;
     }
 }
@@ -151,33 +190,52 @@ doOneMore();`;
 }
 
 // https://mokaoai.com/dashboard
-// TODO: only handling AP FRQ from getExamReport. COMPLETE BEFORE 15 July 2026
+// TODO: COMPLETE BEFORE 15 July 2026
 function handleMokao(txt) {
     let data = JSON.parse(txt).data;
 
-    for (let q of data.mcqAnswerInfoJsonList) {
-        let li = document.createElement("li");
-        li.className = "question";
+    if (show.mcq.atAll)
+        for (let q of data.mcqAnswerInfoJsonList) {
+            let li = document.createElement("li");
+            li.className = "question";
+            let correctIndex = q.correctAnswer[0];
+            answerKey.push(correctIndex);
 
-        let stimulus = document.createElement("div");
-        stimulus.innerHTML = q.questionContent + q.options.join("");
-        li.appendChild(stimulus);
+            if (show.mcq.stimulus) {
+                let stimulus = document.createElement("div");
+                stimulus.innerHTML = q.questionContent;
+                li.appendChild(stimulus);
 
-        // correct answer
-        let correctIndex = q.correctAnswer[0];
-        answerKey.push(correctIndex);
-        let correct = document.createElement("div");
-        correct.innerHTML = `Correct answer: ${alphabet[correctIndex]}`;
-        correct.className = "heading"
-        li.appendChild(correct);
+                let index = 0;
+                for (let option of q.options) {
+                    let letter = document.createElement("div");
+                    letter.innerHTML = option;
+                    if (show.mcq.correctHighlight && correctIndex == index)
+                        letter.className = "correct";
 
-        // rationales
-        if (q.aiAnalysis) {
-            JSON.parse(q.aiAnalysis)
+                    li.appendChild(letter);
+                    ++index;
+                }
+            }
+
+            if (show.mcq.correct) {
+                let correct = document.createElement("div");
+                correct.innerHTML = `Correct answer: ${alphabet[correctIndex]}`;
+                correct.className = "heading"
+                li.appendChild(correct);
+            }
+
+            // rationales
+            // TODO: figure out aiAnalysis (unparsed JSON) vs aiAnalysisVO (parsed JSON). PE: both appear, progress check: neither appear. aiAnalysisEn, aiAnalysisEnVO never appear.
+            if (show.mcq.rationale && q.aiAnalysisVO) {
+                // JSON.parse(q.aiAnalysis)
+                let explanation = document.createElement("div");
+                explanation.innerHTML = q.aiAnalysisVO.analysis + q.aiAnalysisVO.correct_answer;
+                li.appendChild(explanation);
+            }
+
+            results.appendChild(li);
         }
-
-        results.appendChild(li);
-    }
 
     // TODO: figure out diff between parsed frqAnswerJson (AP模考) and frqAnswerJsonList (both AP练习 and AP模考). there seems to be no diff.
     // if (data.frqAnswerJson) {
@@ -185,104 +243,132 @@ function handleMokao(txt) {
     // } else {
     //     data = data.frqAnswerJsonList;
     // }
-    for (let q of data.frqAnswerJsonList) {
-        let li = document.createElement("li");
-        li.className = "question";
+    if (show.frq.atAll)
+        for (let q of data.frqAnswerJsonList) {
+            answerKey.push(-1);
+            let li = document.createElement("li");
+            li.className = "question";
 
-        // TB
-        let stimulus = document.createElement("div");
-        stimulus.innerHTML = JSON.parse(q.questionContent).join("");
-        li.appendChild(stimulus);
-        answerKey.push(-1);
+            if (show.frq.stimulus) {
+                let stimulus = document.createElement("div");
+                stimulus.innerHTML = JSON.parse(q.questionContent).join("");
+                stimulus.style.marginBottom = "4em";
+                li.appendChild(stimulus);
+            }
 
-        // SG
-        for (let part of JSON.parse(q.analysisAndScoringGuidelinesJson)) {
-            let partHeading = document.createElement("div");
-            partHeading.innerHTML = part.title;
-            partHeading.className = "heading";
-            li.appendChild(partHeading);
+            if (show.frq.sg) {
+                for (let part of JSON.parse(q.analysisAndScoringGuidelinesJson)) {
+                    let partHeading = document.createElement("div");
+                    partHeading.innerHTML = part.title;
+                    partHeading.className = "heading";
+                    li.appendChild(partHeading);
 
-            let d = document.createElement("div");
-            let criteria = part.categoryList;
-            d.innerHTML = part.content + criteria[criteria.length - 1].description;
-            li.appendChild(d);
+                    let d = document.createElement("div");
+                    let criteria = part.categoryList;
+                    // part.content = "Select a point value to view scoring criteria, solutions, and/or examples and to score the response."
+                    d.innerHTML = part.content + criteria[criteria.length - 1].description;
+                    li.appendChild(d);
+                }
+                results.appendChild(li);
+            }
         }
-        results.appendChild(li);
-    }
 }
 
 // https://mock.lumiclass.com/dashboard
-// EXPIRED in 7 days. TODO: ADD MATHJAX
+// EXPIRED in 7 days.
 function handleLumi(txt) {
     let data = JSON.parse(txt).data;
     data = data.question_details || data;
     results.innerHTML = '';
 
     for (let q of data) {
+        if (q.type === "mcq") {
+            if (!show.mcq.atAll) {
+                continue;
+            }
+        } else { // NOT "frq"; could be "longtextV2"
+            if (!show.frq.atAll) {
+                continue;
+            }
+        }
+
         let li = document.createElement("li");
         li.className = "question";
 
         if (q.question_type === "MCQ") {
-            let stimulus = document.createElement("div");
-            // Parse images and LaTeX in question_content
-            stimulus.innerHTML = parseImagesAndLatex(q.question_content);
-            li.appendChild(stimulus);
-
-            // options
-            let options = document.createElement("ol");
-            options.style.listStyleType = "upper-alpha";
-            options.style.marginBottom = "4em";
-
-            for (let option of Object.values(q.options_json)) {
-                let letter = document.createElement("li");
-                letter.innerHTML = parseImagesAndLatex(option);
-                options.appendChild(letter);
-            }
-            li.appendChild(options);
-
-            // correct answer
             let correct = document.createElement("div");
-            let key = q.correct_answer;
-            answerKey.push(key.charCodeAt(0) - 65);
-            correct.innerHTML = `Correct answer: ${key}`;
-            correct.className = "heading";
-            li.appendChild(correct);
+            let key = q.correct_answer.charCodeAt(0) - 65;
+            answerKey.push(key);
 
-            // rationale
-            let explanation = document.createElement("div");
-            explanation.innerHTML = parseImagesAndLatex(q.explanation);
-            li.appendChild(explanation);
-        } else {
-            let stimulus = document.createElement("div");
-            stimulus.innerHTML = parseImagesAndLatex(q.question_content);
-            li.appendChild(stimulus);
+            if (show.mcq.stimulus) {
+                let stimulus = document.createElement("div");
+                stimulus.innerHTML = parseImagesAndLatex(q.question_content);
+                li.appendChild(stimulus);
 
-            // correct answer
-            if (q.correct_answer.length > 4) {
-                let correctHeading = document.createElement("div");
-                correctHeading.innerHTML = `Correct answer:`;
-                correctHeading.className = "heading";
-                li.appendChild(correctHeading);
-                let correct = document.createElement("div");
-                correct.innerHTML = parseImagesAndLatex(q.correct_answer);
+                let options = document.createElement("ol");
+                options.style.listStyleType = "upper-alpha";
+                options.style.marginBottom = "4em";
+
+                let index = 0;
+                for (let option of Object.values(q.options_json)) {
+                    let letter = document.createElement("li");
+                    letter.innerHTML = parseImagesAndLatex(option);
+
+                    if (show.mcq.correctHighlight && key == index)
+                        letter.className = "correct";
+
+                    options.appendChild(letter);
+                    ++index;
+                }
+                li.appendChild(options);
+            }
+
+            if (show.mcq.correct) {
+                correct.innerHTML = `Correct answer: ${q.correct_answer}`;
+                correct.className = "heading";
                 li.appendChild(correct);
             }
 
-            // explanation
-            if (q.explanation.length > 4) {
-                let expHeading = document.createElement("div");
-                expHeading.innerHTML = `Explanation:`;
-                expHeading.className = "heading";
-                li.appendChild(expHeading);
+            if (show.mcq.rationale) {
                 let explanation = document.createElement("div");
                 explanation.innerHTML = parseImagesAndLatex(q.explanation);
                 li.appendChild(explanation);
             }
+        } else {
+            if (show.frq.stimulus) {
+                let stimulus = document.createElement("div");
+                stimulus.innerHTML = parseImagesAndLatex(q.question_content);
+                li.appendChild(stimulus);
+            }
 
-            // rubric
-            let rubric = document.createElement("div");
-            rubric.innerHTML = parseImagesAndLatex(`Rubric: ${q.rubric}`);
-            li.appendChild(rubric);
+            if (show.frq.sg) {
+                // correct answer
+                if (q.correct_answer.length > 4) {
+                    let correctHeading = document.createElement("div");
+                    correctHeading.innerHTML = `Correct answer:`;
+                    correctHeading.className = "heading";
+                    li.appendChild(correctHeading);
+                    let correct = document.createElement("div");
+                    correct.innerHTML = parseImagesAndLatex(q.correct_answer);
+                    li.appendChild(correct);
+                }
+
+                // explanation
+                if (q.explanation.length > 4) {
+                    let expHeading = document.createElement("div");
+                    expHeading.innerHTML = `Explanation:`;
+                    expHeading.className = "heading";
+                    li.appendChild(expHeading);
+                    let explanation = document.createElement("div");
+                    explanation.innerHTML = parseImagesAndLatex(q.explanation);
+                    li.appendChild(explanation);
+                }
+
+                // rubric
+                let rubric = document.createElement("div");
+                rubric.innerHTML = parseImagesAndLatex(`Rubric: ${q.rubric}`);
+                li.appendChild(rubric);
+            }
         }
 
         results.appendChild(li);
@@ -403,7 +489,7 @@ async function parse() {
                         let response = await fetch(`data:application/octet-stream;base64,${text}`);
                         text = await response.text();
                     }
-                    
+
                     let parsed = handle1response(text);
                     if (parsed === 0xDEADBEEF) {
                         err.push(entry);
@@ -453,12 +539,55 @@ async function parse() {
         black.style.removeProperty("color");
         black.style.removeProperty("background-color");
     }
+
+    if (darkMode) {
+        for (let e of document.querySelectorAll("pre, code, a, img, #results, .hub, .heading")) {
+            e.classList.toggle("dark");
+        }
+    }
 }
 
 
 function togglePhub() {
+    darkMode = !darkMode;
     document.body.classList.toggle("dark");
     for (let e of document.querySelectorAll("pre, code, a, img, #results, .hub, .heading")) {
         e.classList.toggle("dark");
+    }
+}
+
+function toggleVisibility(e) {
+}
+
+onkeydown = ev => {
+    // console.log(ev.key);
+
+    switch (ev.key) {
+        case "P":
+            togglePhub();
+            break;
+        case "O":
+            websiteLink.style.display = (websiteLink.style.display === "none") ? "inline" : "none";
+            menu.style.display = (menu.style.display === "none") ? "block" : "none";
+            break;
+        case "H":
+            parseMode.value = "HAR";
+            break;
+        case "A":
+            parseMode.value = "activity";
+            break;
+        case "V":
+            parseMode.value = "video";
+            break;
+        case "M":
+            parseMode.value = "mokaoai";
+            break;
+        case "L":
+            parseMode.value = "lumi";
+            break;
+        case "Enter":
+            if (ev.shiftKey)
+                parse();
+            break;
     }
 }
