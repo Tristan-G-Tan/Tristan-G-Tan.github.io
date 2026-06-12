@@ -56,7 +56,6 @@
             unicode-bidi: isolate;
         }
 
-
         .sr-only {
             position: absolute;
             width: 1px;
@@ -137,7 +136,11 @@
             position: absolute;
             top: 100%;
             z-index: 10;
-        }        
+        }
+
+        .footnote:hover .footnote_text {
+            display: block;
+        }
 
         pre {
             padding: 12px;
@@ -195,6 +198,26 @@
             color: #f90;
             /* TODO: figure out when to use #f90 (a, activeLine) or #ff9000 (hamburgerIcon, main logo) or #ffa31a (headerUpgradePremiumBtn) */
         }
+
+        .formatted_text[class*="font_style:italic"] {
+            font-style: italic;
+        }
+
+        .formatted_text[class*="font_weight:bold"] {
+            font-weight: bold;
+        }
+
+        .formatted_text[class*="font_weight:normal"] {
+            font-weight: normal;
+        }
+
+        .formatted_text[class*="text_decoration:underline"] {
+            text-decoration: underline;
+        }
+
+        .formatted_text[class*="font_variant:normal"] {
+            font-variant: normal;
+        }
     </style>
 
     <script>
@@ -211,7 +234,7 @@
 
 <body>
     <div class="hub">
-        <span>Physics</span>
+        <span>AP</span>
         <span>hub</span>
     </div>
     <a href="javascript:window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Click to scroll to the bottom.</a>
@@ -229,7 +252,8 @@
             <option value="activity">activity</option>
             <option value="video">video</option>
             <option value="mokaoai">mokaoai</option>
-            <option value="lumi">lumi</option>
+            <option value="lumiAP">lumi AP</option>
+            <option value="lumiSAT">lumi SAT</option>
         </select></li>
         <!-- <li><strong>Love</strong>, <strong>admire</strong>, <strong>adore</strong>, <strong>cherish</strong>, <strong>treasure</strong>, <strong>prize</strong>, <strong>crave</strong>, <strong>covet</strong>, <strong>idolize</strong>, <strong>revere</strong>, <strong>venerate</strong>, <strong>exalt</strong>, <strong>extol</strong>, <strong>enshrine</strong>, <strong>consecrate</strong>, <strong>canonize</strong>, <strong>deify</strong>, <strong>worship</strong>, <strong>apotheosize</strong>, and <strong>yearn</strong> for Nice.</li> -->
         <li><strong onclick="togglePhub();">Phub</strong>.</li>

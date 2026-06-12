@@ -24,7 +24,8 @@ let show = {
         stimulus: true,
         correct: true,
         rationale: true,
-        correctHighlight: false
+        correctHighlight: false,
+        rationaleHighlight: true
     },
 
     frq: {
@@ -35,17 +36,26 @@ let show = {
 
     features: true
 }
+let assignmentName
 
 function handle1response(txt) {
     let data;
-    try { // TODO:  pre-submission: activity; post-submission: init (loads all questions but no features/sharedpassages; for instance: "The position as a function of time for two objects moving along a straight line is shown in the graph." does not show up in AP Physics 1 1.1 init), or activity or items or questionresponses (but there are duplicate questions). FOR SCORING: items (has scoring guide) prevails over activity (only questions, no scoring guides)
+    try { // TODO:  pre-submission: activity; post-submission: activity?&a=get&c (best for lang but takes a while to show up) or init (loads all questions but no features/sharedpassages; for instance: "The position as a function of time for two objects moving along a straight line is shown in the graph." does not show up in AP Physics 1 1.1 init), or activity+items or questionresponses (but there are duplicate questions). FOR SCORING: items (has scoring guide) prevails over activity (only questions, no scoring guides)
+        /**
+         * pre-submission: activity with visible headers ?&a=get&c
+         * post-submission: click into any of the questions THEN activity with visible headeres ?&a=get&c
+         * next best: init (no duplicates but missing features)
+         * then bare activity + items
+         * then questionresponses
+         */
         data = JSON.parse(txt).data; // error 1: not json
         if (data[0]?.data?._internal?.questions_json) {
             data = Object.values(data[0].data._internal.questions_json); // init, not activity not items
             // VALUABLE.push(data);
         } else {
             if (data.apiActivity) {
-                document.title = `SG ${data.request.name}`; // if HAR is taken after completion, the assignment name just says "Questions Preview"
+                assignmentName = data.request.name;
+                document.title = `SG ${assignmentName}`; // if HAR is taken after completion, the assignment name just says "Questions Preview"
                 data = data.apiActivity; // if the HAR is loaded before question completion, it is always an activity link and has apiActivity
             }
             if (data.items) {
@@ -85,6 +95,9 @@ function handle1response(txt) {
                 if (show.mcq.stimulus) {
                     let stimulus = document.createElement("div");
                     stimulus.innerHTML = subq.stimulus;
+                    if (assignmentName) {
+                        stimulus.title = assignmentName;
+                    }
                     li.appendChild(stimulus);
                 }
 
@@ -136,13 +149,16 @@ function handle1response(txt) {
                         let index = 0;
                         for (let a of answer) {
                             let letter = document.createElement("li");
-                            if (correctIndex === index++) {
-                                letter.className = "correct";
-                            } else {
-                                letter.className = "incorrect";
+                            if (show.mcq.rationaleHighlight) {
+                                if (correctIndex === index) {
+                                    letter.className = "correct";
+                                } else {
+                                    letter.className = "incorrect";
+                                }
                             }
                             letter.innerHTML = a;
                             answers.append(letter);
+                            ++index;
                         }
                         li.appendChild(answers);
                     }
@@ -153,6 +169,9 @@ function handle1response(txt) {
                 for (subq of q.questions) {
                     let stimulus = document.createElement("div");
                     stimulus.innerHTML = subq.stimulus;
+                    if (assignmentName) {
+                        stimulus.title = assignmentName;
+                    }
                     li.appendChild(stimulus);
                 }
             }
@@ -411,7 +430,7 @@ function parseImagesAndLatex(text) {
         (match, altText, imageUrl) => {
             // Validate and sanitize the URL
             const safeUrl = imageUrl.replace(/[<>'"]/g, '');
-            return `<img src="${safeUrl}" alt="${altText || '图片'}" class="har-image" 
+            return `<img src="${safeUrl}" alt="${altText || '图片' || 'Image'}" class="har-image" 
                          onerror="this.style.display='none'; console.warn('Failed to load: ${safeUrl}')" 
                          loading="lazy" />`;
         }
@@ -516,7 +535,7 @@ async function parse() {
             }
             autocompleter();
             break;
-        case "lumi":
+        case "lumiAP":
             response = JSON.parse(uploadedText);
             for (let entry of response.log.entries) {
                 let content = entry.response.content;
@@ -529,6 +548,69 @@ async function parse() {
                     }
                 }
             }
+            // autocompleterLumi();
+            break;
+        case "lumiSAT": // filter in the network tab for /questions|report/
+            response = JSON.parse(uploadedText);
+
+            sectionModuleList = [];
+            for (let entry of response.log.entries) {
+                if (entry.request.url.endsWith("questions")) {
+                    let section = JSON.parse(entry.response.content.text);
+                    let sectionLi = document.createElement("li");
+                    let sectionOl = document.createElement("ol");
+                    sectionModuleList.push(sectionOl);
+
+                    for (let question of section.questions) {
+                        let li = document.createElement("li");
+
+                        if (show.mcq.stimulus) {
+                            let stimulus = document.createElement("div");
+                            stimulus.innerHTML = parseImagesAndLatex(question.content);
+                            li.appendChild(stimulus);
+
+                            if (question.options) {
+                                let options = document.createElement("ol");
+                                options.style.listStyleType = "upper-alpha";
+                                options.style.marginBottom = "4em";
+                                for (let answer of "ABCD") {
+                                    let letter = document.createElement("li");
+                                    letter.innerHTML = parseImagesAndLatex(question.options[answer]);
+                                    options.appendChild(letter);
+                                }
+                                li.appendChild(options);
+                            }
+                        }
+
+                        sectionOl.appendChild(li);
+                        sectionLi.appendChild(sectionOl);
+                        results.appendChild(sectionLi);
+                    }
+                    
+                } else if (entry.request.url.endsWith("report")) {
+                    let key = JSON.parse(entry.response.content.text);
+                    for (let question of key.questions) {
+                        let sectionIndex = 3;
+                        if (question.section_name[0] === "R") {
+                            if (question.module_name === "Module 1")
+                                sectionIndex = 0;
+                            else
+                                sectionIndex = 1;
+                        } else {
+                            if (question.module_name === "Module 1")
+                                sectionIndex = 2;
+                        }
+                        let li = sectionModuleList[sectionIndex].children[question.order - 1];
+                        li.appendChild(document.createTextNode(`Correct answer: ${question.correct_answer}; Difficulty: ${question.difficulty}; Topic: ${question.topic}—${question.subtopic}.`));
+                        
+                        let explanation = document.createElement("div");
+                        explanation.innerHTML = parseImagesAndLatex(question.explanation);
+                        li.appendChild(explanation);
+                    }
+                }
+            }
+            MathJax.typesetPromise([results]);
+            // autocompleterLumi();
             break;
     }
 
@@ -542,7 +624,7 @@ async function parse() {
 
     if (darkMode) {
         for (let e of document.querySelectorAll("pre, code, a, img, #results, .hub, .heading")) {
-            e.classList.toggle("dark");
+            e.classList.add("dark");
         }
     }
 }
@@ -583,7 +665,7 @@ onkeydown = ev => {
             parseMode.value = "mokaoai";
             break;
         case "L":
-            parseMode.value = "lumi";
+            parseMode.value = "lumiAP";
             break;
         case "Enter":
             if (ev.shiftKey)
