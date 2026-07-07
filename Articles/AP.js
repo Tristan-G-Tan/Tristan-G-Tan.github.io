@@ -24,7 +24,7 @@ let show = {
         stimulus: true,
         correct: true,
         rationale: true,
-        correctHighlight: false,
+        correctHighlight: true,  // TODO: lumi SAT
         rationaleHighlight: true
     },
 
@@ -36,7 +36,7 @@ let show = {
 
     features: true
 }
-let assignmentName
+let assignmentName;
 
 function handle1response(txt) {
     let data;
@@ -69,6 +69,7 @@ function handle1response(txt) {
 
     try {
         for (let q of data) {
+                console.log("question")
             let subq = q.questions ? q.questions[0] : q; // TODO: awkward. Only added to parse init response
             if (subq.type === "mcq") {
                 if (!show.mcq.atAll) {
@@ -210,8 +211,11 @@ doOneMore();`;
 
 // https://mokaoai.com/dashboard
 // TODO: COMPLETE BEFORE 15 July 2026
+// EXPIRED in 3 months.
 function handleMokao(txt) {
     let data = JSON.parse(txt).data;
+    assignmentName = data.examName;
+    document.title = assignmentName;
 
     if (show.mcq.atAll)
         for (let q of data.mcqAnswerInfoJsonList) {
@@ -520,7 +524,7 @@ async function parse() {
 
             autocompleter();
             break;
-        case "mokaoai":
+        case "mokaoaiAP": // filter in the network tab for getApPracticeReportInfo (progress checks) or getexamreport (practice exams)
             response = JSON.parse(uploadedText);
             for (let entry of response.log.entries) {
                 let content = entry.response.content;
@@ -533,6 +537,60 @@ async function parse() {
                     }
                 }
             }
+            autocompleter();
+            break;
+        case "mokaoaiSAT": // filter in the network tab for getReportInfo
+            response = JSON.parse(uploadedText);
+            // let questionTestingCentres = new Set();
+            for (let entry of response.log.entries) {
+                if (entry.request.url.includes("getReportInfo")) {
+                    let data = JSON.parse(entry.response.content.text).data;
+                    assignmentName = data.examName;
+                    document.title = assignmentName;
+                    for (let section of data.sectionModuleList) {
+                        // let sectionLi = document.createElement("li");
+                        // let sectionOl = document.createElement("ol");
+                        sectionOl = results;
+
+                        for (let question of section.questionList) {
+                            let li = document.createElement("li");
+                            li.insertAdjacentText("beforeend", `questionTestingCentre: ${question.questionTestingCentre}`);
+                            // questionTestingCentres.add(question.questionTestingCentre)
+
+                            if (show.mcq.stimulus) {
+                                li.insertAdjacentHTML("beforeend", question.questionStem);
+                                li.insertAdjacentHTML("beforeend", question.questionContent);
+                                if (question.questionOption) {
+                                    if (show.mcq.correctHighlight)
+                                        question.questionOption[question.correctQuestionAnswerStr.charCodeAt(0) - 65] = question.questionOption[question.correctQuestionAnswerStr.charCodeAt(0) - 65].replace('<p>', '<p class="correct">')
+                                    li.insertAdjacentHTML("beforeend", question.questionOption);
+                                }
+                            }
+                            if (show.mcq.correct) {
+                                li.insertAdjacentText("beforeend", `Correct answer: ${question.correctQuestionAnswerStr}`);
+                            }
+                            if (show.mcq.rationale) {
+                                if (question.questionAnalysis) {
+                                    li.insertAdjacentHTML("beforeend", question.questionAnalysis);
+                                }
+                                if (question.aiAnalysisEn) {
+                                    li.insertAdjacentText("beforeend", `\n\naiAnalysisEn: ${question.aiAnalysisEn.analysis} correct_answer:`);
+                                    li.insertAdjacentHTML("beforeend", question.aiAnalysisEn.correct_answer);
+                                }
+                                if (question.aiAnalysis) {
+                                    li.insertAdjacentText("beforeend", `\n\naiAnalysis: ${question.aiAnalysis.analysis} correct_answer:`);
+                                    li.insertAdjacentHTML("beforeend", question.aiAnalysis.correct_answer);
+                                }
+                            }
+                            sectionOl.appendChild(li);
+                        }
+
+                        // sectionLi.appendChild(sectionOl);
+                        // results.appendChild(sectionLi);
+                    }
+                }
+            }
+            // console.log(questionTestingCentres);
             autocompleter();
             break;
         case "lumiAP":
@@ -586,7 +644,7 @@ async function parse() {
                         sectionLi.appendChild(sectionOl);
                         results.appendChild(sectionLi);
                     }
-                    
+
                 } else if (entry.request.url.endsWith("report")) {
                     let key = JSON.parse(entry.response.content.text);
                     for (let question of key.questions) {
@@ -602,7 +660,7 @@ async function parse() {
                         }
                         let li = sectionModuleList[sectionIndex].children[question.order - 1];
                         li.appendChild(document.createTextNode(`Correct answer: ${question.correct_answer}; Difficulty: ${question.difficulty}; Topic: ${question.topic}—${question.subtopic}.`));
-                        
+
                         let explanation = document.createElement("div");
                         explanation.innerHTML = parseImagesAndLatex(question.explanation);
                         li.appendChild(explanation);
@@ -662,7 +720,7 @@ onkeydown = ev => {
             parseMode.value = "video";
             break;
         case "M":
-            parseMode.value = "mokaoai";
+            parseMode.value = "mokaoaiAP";
             break;
         case "L":
             parseMode.value = "lumiAP";

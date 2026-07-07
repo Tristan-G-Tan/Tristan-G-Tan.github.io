@@ -32,6 +32,7 @@
 
         #results {
             font-family: 'Minion Pro', 'Roboto Slab', 'Roboto', 'Arial';
+            white-space: pre-wrap;
         }
 
         #results.dark {
@@ -248,10 +249,11 @@
             <input id="file-upload" type="file" onchange="upload(this.files[0])" />
         </li>
         <li><button onclick="parse();"><strong>Load</strong></button> the answers. Or, if you know what you're doing, change the mode: <select id="parseMode">
-            <option value="HAR" selected>HAR</option>
+            <option value="HAR">HAR</option>
             <option value="activity">activity</option>
             <option value="video">video</option>
-            <option value="mokaoai">mokaoai</option>
+            <option value="mokaoaiAP" selected>mokaoai AP</option>
+            <option value="mokaoaiSAT">mokaoai SAT</option>
             <option value="lumiAP">lumi AP</option>
             <option value="lumiSAT">lumi SAT</option>
         </select></li>
