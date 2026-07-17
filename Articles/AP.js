@@ -498,7 +498,7 @@ async function parse() {
             if (uploadedText)
                 response = uploadedText;
             else
-                response = prompt("Paste in the response from the learnosity activity:");
+                response = uploadedText = prompt("Paste in the response from the learnosity activity:");
             handle1response(response);
             autocompleter();
             break;

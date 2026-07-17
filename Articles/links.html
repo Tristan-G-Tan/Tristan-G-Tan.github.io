@@ -271,6 +271,263 @@
           </li>
         </ol>
       </li>
+
+      <li>
+        <h2>Teacher's Guide to AP Classroom</h2>
+        <p><a href="https://apclassroom.clickhelp.co/articles/#!ap-classroom-user-guide-for-teachers-publication/tch-what-you-will-find-in-ap-classroom">Each linked article</a> gives insight on just how many questions are in the AP Classroom Question Bank, as of 1 July 2026. Also interesting: <a href="https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/QB/tch2526_QB_AuthorMCQ_Edit1.png">this image on the "Authoring a New MCQ" page</a></p>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Course</td>
+              <th>Question Bank</td>
+              <th>Screenshots</td>
+            </tr>
+          </thead>
+          <tbody id="table"></tbody>
+        </table>
+      </li>
     </ol>
+
+    <script>
+      info = {
+        "AP African American Studies": {
+            "count": " more than 600 AP African-American Studies questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP Art History": {
+            "count": " more than 1500 AP Art History questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP Biology": {
+            "count": " more than 2,000 AP Biology questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Bio_QB.png"
+            ]
+        },
+        "AP Calculus": {
+            "count": " over 4,300 AP Calculus AB and BC questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_CalcAB_QB.png"
+            ]
+        },
+        "AP Chemistry": {
+            "count": " more than 1,700 AP Chemistry questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Chem_QB.png"
+            ]
+        },
+        "AP Chinese Language and Culture": {
+            "count": " more than 350 AP Chinese Language and Culture questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Chinese_QB.png"
+            ]
+        },
+        "AP Comparative U.S. Government and Politics": {
+            "count": " more than 900 AP Comparative Government and Politics questions, including  practice exams and progress check questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_CompGoPo_QB.png"
+            ]
+        },
+        "AP Computer Science A": {
+            "count": " over 600 AP Computer Science A, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_CSA_QB.png"
+            ]
+        },
+        "AP Computer Science Principles": {
+            "count": " over 500 AP Computer Science Principles questions, including  practice exam, and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_CSP_QB.png"
+            ]
+        },
+        "AP English": {
+            "count": " more than 1500 AP English Literature and 1200 AP English Language questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP Environmental Science": {
+            "count": " more than 1,600 AP Environmental Science questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-statistics/tch2627_APES_QB.png"
+            ]
+        },
+        "AP European History": {
+            "count": " more than 1,400 AP European History questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP French Language and Culture": {
+            "count": " more than 280 AP French Language questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_French_QB.png"
+            ]
+        },
+        "AP German Language and Culture": {
+            "count": " more than 280 AP German Language questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_German_QB.png"
+            ]
+        },
+        "AP Human Geography": {
+            "count": " more than 900 AP Human Geography questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP Italian Language and Culture": {
+            "count": " more than 280 AP Italian Language questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Ital_QB.png"
+            ]
+        },
+        "AP Japanese Language and Culture": {
+            "count": " more than 340 AP Japanese Language and Culture questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Japanese_QB.png"
+            ]
+        },
+        "AP Latin": {
+            "count": " more than 1500 AP Latin questions, including  practice exams and progress check questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Latin_QB.png"
+            ]
+        },
+        "AP Macroeconomics": {
+            "count": " over 1,500 Macroeconomics questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Macro_QB.png"
+            ]
+        },
+        "AP Microeconomics": {
+            "count": " over 1,500 Microeconomics questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Micro_QB.png"
+            ]
+        },
+        "AP Music Theory": {
+            "count": " over 740 Music Theory questions, including  progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_MT_QB.png"
+            ]
+        },
+        "AP Physics": {
+            "count": " over 3,000 AP Physics 1 and Physics 2 questions (and more that 2,600 for the Physics C courses), including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_Physics1_QB.png"
+            ]
+        },
+        "AP Precalculus": {
+            "count": " over 800 AP Precalculus questions, including  practice exam, progress check and topic questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_PreCalc_QB.png"
+            ]
+        },
+        "AP Psychology": {
+            "count": " more than 2,000 AP Psychology questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP Spanish Language and Culture": {
+            "count": " more than 300 AP Spanish Language questions, including  practice exam, progress check and topic questions",
+            "screenshots": []
+        },
+        "AP Spanish Literature and Culture": {
+            "count": " over 470 AP Spanish Literature questions, including  practice exam and progress check questions",
+            "screenshots": [
+                "https://apclassroom.clickhelp.co/resources/Storage/ap-classroom-user-guide-for-teachers-publication/CoursePages/tch2627_SpanLit_QB.png"
+            ]
+        },
+        "AP Statistics": {
+            "count": " more than 1,000 AP Statistics questions, including  practice exam, progress check and topic questions",
+            "screenshots": []
+        },
+        "AP U.S. Government and Politics": {
+            "count": " more than 1200 AP U.S. Government and Politics questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP U.S. History": {
+            "count": " more than 2,000 AP U.S. History questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP World History": {
+            "count": " more than 1600 AP World History questions, including  practice exams and progress check questions",
+            "screenshots": []
+        },
+        "AP Seminar": {
+          "count": "end-of-course exam questions that can be used to create customized practice and tests",
+          "screenshots": []
+        }
+      }
+      pages = {
+        "AP African American Studies": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-aas",
+        "AP Art History": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-ah",
+        "AP Art and Design": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-design",
+        "AP Biology": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-bio",
+        "AP Business with Personal Finance": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-business",
+        "AP Calculus": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-calculus",
+        "AP Chemistry": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-chemistry",
+        "AP Chinese Language and Culture": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-chinese",
+        "AP Comparative U.S. Government and Politics": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-comparativegopo",
+        "AP Computer Science A": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-csa",
+        "AP Computer Science Principles": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-csp",
+        "AP Cybersecurity": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-cybersecurity",
+        "AP English": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-english",
+        "AP Environmental Science": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-es",
+        "AP European History": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-eh",
+        "AP French Language and Culture": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-french",
+        "AP German Language and Culture": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-german",
+        "AP Human Geography": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-humangeo",
+        "AP Italian Language and Culture": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-italian",
+        "AP Japanese Language and Culture": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-japanese",
+        "AP Latin": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-latin",
+        "AP Macroeconomics": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-macroeconomics",
+        "AP Microeconomics": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-microeconomics",
+        "AP Music Theory": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-musictheory",
+        "AP Physics": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-physics",
+        "AP Precalculus": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-precalculus",
+        "AP Psychology": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-psychology",
+        "AP Research": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-research",
+        "AP Seminar": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-seminar",
+        "AP Spanish Language and Culture": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-spanlang",
+        "AP Spanish Literature and Culture": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-spanlit",
+        "AP Statistics": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-statistics",
+        "AP U.S. Government and Politics": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-usgopo",
+        "AP U.S. History": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-ush",
+        "AP World History": "https://apclassroom.clickhelp.co/articles/ap-classroom-user-guide-for-teachers-publication/tch-ap-classroom-overview-wh"
+      }
+
+      table = document.getElementById("table");
+
+      for ([subject, link] of Object.entries(pages)) {
+        const tr = document.createElement("tr");
+        
+        const td_subject = document.createElement("td");
+        const a = document.createElement("a");
+        a.innerHTML = subject;
+        a.href = link;
+        td_subject.appendChild(a);
+        tr.appendChild(td_subject);
+
+        const td_count = document.createElement("td");
+        if (subject in info) {
+          td_count.innerHTML = info[subject].count;
+        } else {
+          td_count.innerHTML = "no question bank";
+        }
+        tr.appendChild(td_count);
+        
+        const td_screenshot = document.createElement("td");
+        if (subject in info) {
+          let src = info[subject].screenshots[0];
+          if (src) {
+            td_screenshot.innerHTML = `<a href="${src}">here</a>`;
+            // td_screenshot.innerHTML = `<img src="${src}">`;
+          } else {
+            td_screenshot.innerHTML = "no screenshots";
+          }
+        } else {
+          td_screenshot.innerHTML = "no question bank";
+        }
+        tr.appendChild(td_screenshot);
+
+        table.appendChild(tr);
+      }
+    </script>
   </body>
 </html>

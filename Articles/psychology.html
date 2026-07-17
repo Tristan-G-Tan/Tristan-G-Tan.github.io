@@ -45,6 +45,30 @@
             padding: 0.2rem;
             font-weight: bold;
         }
+
+        #timerWidget {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: #EBEBEC;
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: 0.65rem 1.2rem;
+            /* border-radius: 5px; */
+            /* box-shadow: 0 12px 28px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.1); */
+            border: 7px solid #BCBEC0;
+            color: black;
+            font-family: 'Arial';
+            font-size: 3rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            z-index: 9999;
+            display: none;          /* concealed until startTimer() is called */
+            align-items: center;
+            gap: 0.5rem;
+            transition: opacity 0.25s ease, transform 0.2s ease;
+            pointer-events: none;   /* so clicks pass through to button / content */
+        }
     </style>
 </head>
 
@@ -285,7 +309,7 @@ functions together as a whole using</span>
         </details>
 
         <details>
-            <summary>case studies</summary>I LOVE NICE
+            <summary onclick="startTimer();">case studies</summary>I LOVE NICE
         </details>
 
         <details>
@@ -297,7 +321,36 @@ functions together as a whole using</span>
     <p>
         Hovering over a span would reveal its source: either compiled from the question bank, <a href="https://chat.deepseek.com/a/chat/s/28121872-c76a-45cc-9f6e-bd053d091be2"><i>DeepSeek: Random Assignment and Non Experimental Methods in Psychology</i></a>, or if no source was given, <a href="https://apcentral.collegeboard.org/media/pdf/ap-psychology-course-and-exam-description.pdf">the CED</a>. <a href="https://www.cliffsnotes.com/study-notes/31000447">SG Biology quiz</a> <a href="https://www.cliffsnotes.com/study-notes/28552646">SG unit 1 midterm</a> <a href="https://www.cliffsnotes.com/study-notes/33665663">unit 1</a>
     </p>
+
+    <div id="timerWidget" style="display: none;">
+        <span id="timerDisplay">00:10</span>
+    </div>
     
+    <script>
+        const widget = document.getElementById('timerWidget');
+        const display = document.getElementById('timerDisplay');
+        let totalSeconds = 10;
+        function tick() {
+            ++totalSeconds;
+            const mins = Math.trunc(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+            display.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        let running = false;
+        function startTimer() {
+            if (running) return;
+            running = true;
+            
+            // 1. Make widget visible (if hidden)
+            widget.classList.add('visible');
+            widget.style.display = 'flex';   // ensure it's shown
+
+            // 3. Start fresh interval
+            timerInterval = setInterval(tick, 1000);
+            isRunning = true;
+        }
+    </script>
 </body>
 
 </html>
