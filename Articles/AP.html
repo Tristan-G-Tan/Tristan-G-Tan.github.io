@@ -219,6 +219,27 @@
         .formatted_text[class*="font_variant:normal"] {
             font-variant: normal;
         }
+
+        .score-row {
+            width: 100%;
+            display: flex;
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .score-value {
+            flex: 1 1 0;
+            border: 1px solid #D9D9D9;
+            padding: 24px 8px;
+            text-align: center;
+            font-size: 18px;
+            /* background: #fff; */
+        }
+
+        .score-value.selected {
+            background-color: #E3FFDE;
+            border: 1px solid #3A913F;
+        }
     </style>
 
     <script>
@@ -235,7 +256,7 @@
 
 <body>
     <div class="hub">
-        <span>AP</span>
+        <span>Physics</span>
         <span>hub</span>
     </div>
     <a href="javascript:window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Click to scroll to the bottom.</a>
@@ -249,10 +270,10 @@
             <input id="file-upload" type="file" onchange="upload(this.files[0])" />
         </li>
         <li><button onclick="parse();"><strong>Load</strong></button> the answers. Or, if you know what you're doing, change the mode: <select id="parseMode">
-            <option value="HAR">HAR</option>
+            <option value="HAR" selected>HAR</option>
             <option value="activity">activity</option>
             <option value="video">video</option>
-            <option value="mokaoaiAP" selected>mokaoai AP</option>
+            <option value="mokaoaiAP">mokaoai AP</option>
             <option value="mokaoaiSAT">mokaoai SAT</option>
             <option value="lumiAP">lumi AP</option>
             <option value="lumiSAT">lumi SAT</option>

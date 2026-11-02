@@ -24,7 +24,7 @@ let show = {
         stimulus: true,
         correct: true,
         rationale: true,
-        correctHighlight: true,  // TODO: lumi SAT
+        correctHighlight: false,  // TODO: lumi SAT
         rationaleHighlight: true
     },
 
@@ -69,7 +69,7 @@ function handle1response(txt) {
 
     try {
         for (let q of data) {
-                console.log("question")
+            console.log("question")
             let subq = q.questions ? q.questions[0] : q; // TODO: awkward. Only added to parse init response
             if (subq.type === "mcq") {
                 if (!show.mcq.atAll) {
@@ -245,6 +245,7 @@ function handleMokao(txt) {
                 let correct = document.createElement("div");
                 correct.innerHTML = `Correct answer: ${alphabet[correctIndex]}`;
                 correct.className = "heading"
+                correct.style.marginTop = "8em";
                 li.appendChild(correct);
             }
 
@@ -266,35 +267,62 @@ function handleMokao(txt) {
     // } else {
     //     data = data.frqAnswerJsonList;
     // }
-    if (show.frq.atAll)
+    if (show.frq.atAll) {
+        frqs = [];
         for (let q of data.frqAnswerJsonList) {
+            let frq = {}
             answerKey.push(-1);
             let li = document.createElement("li");
             li.className = "question";
 
+            frq.tb = JSON.parse(q.questionContent)
             if (show.frq.stimulus) {
                 let stimulus = document.createElement("div");
-                stimulus.innerHTML = JSON.parse(q.questionContent).join("");
+                stimulus.innerHTML = frq.tb.join("");
                 stimulus.style.marginBottom = "4em";
                 li.appendChild(stimulus);
             }
 
+            frq.sg = []
+            let sg = JSON.parse(q.analysisAndScoringGuidelinesJson);
             if (show.frq.sg) {
-                for (let part of JSON.parse(q.analysisAndScoringGuidelinesJson)) {
-                    let partHeading = document.createElement("div");
+                for (let part of sg) {
+                    let partHeading = document.createElement("b");
                     partHeading.innerHTML = part.title;
                     partHeading.className = "heading";
                     li.appendChild(partHeading);
 
-                    let d = document.createElement("div");
-                    let criteria = part.categoryList;
-                    // part.content = "Select a point value to view scoring criteria, solutions, and/or examples and to score the response."
-                    d.innerHTML = part.content + criteria[criteria.length - 1].description;
-                    li.appendChild(d);
+                    li.insertAdjacentHTML("beforeend", part.content); // "Select a point value to view scoring criteria, solutions, and/or examples and to score the response."
+
+
+                    // d.innerHTML = part.content + criteria.map(criterion => criterion.description).join("");
+                    // d.innerHTML = criteria[criteria.length - 1].description;
+
+                    let points = part.categoryList.length;
+                    for (let score = 0; score < points; score++) {
+                        let row = document.createElement("div");
+                        row.className = "score-row";
+
+                        for (let i = 0; i < points; i++) {
+                            let value = document.createElement("div");
+                            value.className = i === score ? "score-value selected" : "score-value";
+                            value.innerHTML = i;
+                            row.appendChild(value);
+                        }
+                        li.appendChild(row);
+
+                        li.insertAdjacentHTML("beforeend", part.categoryList[score].description)
+                    }
+
+                    frq.sg.push(part)
+                    // frq.sg.push(part.categoryList[points - 1].description)
                 }
-                results.appendChild(li);
             }
+
+            frqs.push(frq);
+            results.appendChild(li);
         }
+    }
 }
 
 // https://mock.lumiclass.com/dashboard
@@ -456,6 +484,7 @@ let VALUABLE;
 let err;
 let answerKey;
 let uploadedText;
+let frqs;
 
 function upload(f) {
     let reader = new FileReader();
@@ -563,7 +592,7 @@ async function parse() {
                                 if (question.questionOption) {
                                     if (show.mcq.correctHighlight)
                                         question.questionOption[question.correctQuestionAnswerStr.charCodeAt(0) - 65] = question.questionOption[question.correctQuestionAnswerStr.charCodeAt(0) - 65].replace('<p>', '<p class="correct">')
-                                    li.insertAdjacentHTML("beforeend", question.questionOption);
+                                    li.insertAdjacentHTML("beforeend", question.questionOption.join("<br>"));
                                 }
                             }
                             if (show.mcq.correct) {
