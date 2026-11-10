@@ -198,13 +198,13 @@ function doOneMore() {
     } else {
         const choices = questions[i].querySelectorAll("input");
         choices[answerKey[i]].click();
-        console.log(\`Completed question \${++i}.\`);
+        console.log(\`Done with question \${++i}.\`);
     }
   document.querySelector("button[data-test-id=next-button]").click();
   if (i < questions.length)
     setTimeout(doOneMore, 900);
   else
-    console.log("NICE");
+    console.log("GNEISS");
 }
 doOneMore();`;
 }
@@ -294,12 +294,12 @@ function handleMokao(txt) {
 
                     li.insertAdjacentHTML("beforeend", part.content); // "Select a point value to view scoring criteria, solutions, and/or examples and to score the response."
 
-
                     // d.innerHTML = part.content + criteria.map(criterion => criterion.description).join("");
                     // d.innerHTML = criteria[criteria.length - 1].description;
 
                     let points = part.categoryList.length;
-                    for (let score = 0; score < points; score++) {
+                    for (let score = points - 1; score < points; score++) {
+                    // for (let score = 0; score < points; score++) { // AP Psychology, Statistics, Chemistry (that 1 PC FRQ)
                         let row = document.createElement("div");
                         row.className = "score-row";
 
@@ -314,8 +314,8 @@ function handleMokao(txt) {
                         li.insertAdjacentHTML("beforeend", part.categoryList[score].description)
                     }
 
-                    frq.sg.push(part)
-                    // frq.sg.push(part.categoryList[points - 1].description)
+                    // frq.sg.push(part)
+                    frq.sg.push(part.categoryList[points - 1].description)
                 }
             }
 
@@ -700,6 +700,8 @@ async function parse() {
             // autocompleterLumi();
             break;
     }
+
+    footer.style.display = "block";
 
 
     /* TODO: FIRST PHUB THEN LOAD BREAKS THE THEME; also: random rationales have the inline declaration color:black; not sure if this is the best fix for this */

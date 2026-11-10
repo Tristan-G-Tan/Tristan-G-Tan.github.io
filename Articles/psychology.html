@@ -31,12 +31,20 @@
         }
 
         details {
-            padding-left: 0;
+            /* margin-left: 1em;
+            margin-bottom: 1em; */
+            margin-bottom: 0.5em;
+            padding-left: 1em;
+            padding-right: 0.1em;
         }
 
-        details details {
-            padding-left: 1.5em;
+        details:open {
+            border: 1px solid black;
         }
+
+        /* details details {
+            padding-left: 1.5em;
+        } */
 
         .box { /* FIGURE THIS OUT */
             background-color: #D1D3D4;
@@ -44,6 +52,11 @@
             margin: 0.5rem 0.3rem;
             padding: 0.2rem;
             font-weight: bold;
+        }
+
+        .box.light {
+            background-color: #EAEBEC;
+            border: 0.1rem solid #BBBDC0;
         }
 
         #timerWidget {
@@ -118,7 +131,7 @@ hemispheres of the brain may specialize in
 different activities and functions.  </span>
 
                         <details>
-                            <summary>left hemisphere<span class="box">1.4.A.5.i</span></summary>
+                            <summary>left hemisphere<span class="box light">1.4.A.5.i</span></summary>
                             <span>Areas of the brain that affect language</span>
 
                             <details>
@@ -139,7 +152,8 @@ speech production</span>
                         </details>
                     </details>
 
-                    <span>and includes the</span>
+                    <details>
+                    <summary>and includes the</summary>
 
                     <details>
                         <summary>limbic system</summary>
@@ -179,21 +193,21 @@ speech production</span>
                         <summary>lobes of the cortex</summary>
 
                         <details>
-                            <summary>occipital lobes<span class="box">1.4.A.4.i</span></summary>
+                            <summary>occipital lobes<span class="box light">1.4.A.4.i</span></summary>
                             <span>generally control visual 
 information processing and are located in 
 the rear of the brain.</span>
                         </details>
 
                         <details>
-                            <summary>temporal lobes<span class="box">1.4.A.4.ii</span></summary>
+                            <summary>temporal lobes<span class="box light">1.4.A.4.ii</span></summary>
                             <span>control 
 auditory and linguistic processing and are 
 located on the sides of the brain.</span>
                         </details>
 
                         <details>
-                            <summary>parietal lobes<span class="box">1.4.A.4.iii</span></summary>
+                            <summary>parietal lobes<span class="box light">1.4.A.4.iii</span></summary>
                             <span> are located 
 near the back crown of the brain. generally control</span>
 
@@ -211,7 +225,7 @@ touch sensitivity</span>
                         </details>
 
                         <details>
-                            <summary>frontal lobes<span class="box">1.4.A.4.iv</span></summary>
+                            <summary>frontal lobes<span class="box light">1.4.A.4.iv</span></summary>
                             <span>located just behind 
 the forehead</span>
 
@@ -230,12 +244,34 @@ controls most types of skeletal movement.</span>
                             </details>
                         </details>
                     </details>
+                    </details>
                 </details>
             </details>
 
             <details>
-                <summary>spinal cord</summary>
-                <span title="DeepSeek">reflexes, signal highway</span>
+                <summary>spinal cord <span class="box">1.3.A.2</span></summary>
+                <span>In the spinal cord, the reflex arc demonstrates
+how neurons within the central and peripheral 
+nervous systems work together to respond to 
+stimuli. Three types of neurons work together:</span>
+
+                <details>
+                    <summary>sensory neurons</summary>
+
+                    <span title="1.3: Daily Video 1"><u>A</u>fferent signals <u>a</u>rrive at the brain.</span>
+                </details>
+
+                <details>
+                    <summary>interneurons</summary>
+
+                    <span title="1.2 Overview of Nervous System.pptx">Relay messages from sensory neurons to other interneurons or motor neurons</span>
+                </details>
+
+                <details>
+                    <summary>motor neurons</summary>
+
+                    <span title="1.3: Daily Video 1"><u>E</u>fferent signals <u>e</u>xit at the brain.</span>
+                </details>
             </details>
         </details>
 
@@ -246,7 +282,7 @@ messages from the central nervous system
 to the rest of the body</span>
 
             <details>
-                <summary>autonomic nervous system<span class="box">1.2.A.2.i</span></summary>
+                <summary>autonomic nervous system<span class="box light">1.2.A.2.i</span></summary>
                 <span>governs 
 processes that are involuntary</span>
 
@@ -262,16 +298,16 @@ processes that are involuntary</span>
             </details>
             
             <details>
-                <summary>somatic nervous system<span class="box">1.2.A.2.ii</span></summary>
+                <summary>somatic nervous system<span class="box light">1.2.A.2.ii</span></summary>
                 <span> governs 
 processes that are voluntary.</span>
             </details>
         </details>
     </details>
 
-    <h2>Other things about the brain <span class="box">1.4</span></h2>
+    <h2>Brain <span class="box">1.4</span></h2>
     <details>
-        <summary>test for cortex specialization<span class="box">1.4.A.5.ii</span></summary>
+        <summary>test for cortex specialization<span class="box light">1.4.A.5.ii</span></summary>
         <span>Researchers test for cortex specialization 
 with split-brain patients by showing 
 information in each visual field, taking 
@@ -285,7 +321,20 @@ to rewire itself or modify or create new
 connections throughout development and 
 generally allows for the function of a damaged 
 part of the brain to be assumed by a different 
-part of the brain.</span>
+part of the brain. Compare:</span>
+        
+        <details>
+            <summary>Neurogenesis</summary>
+
+            <span title="1.4 The Brain.pptx">production of new brain cells. </span>
+        </details>
+        
+        <details>
+            <summary>Long-term potentiation<span class="box">2.3.A.2</span></summary>
+
+            <span>synaptic connections between neurons 
+become stronger with frequent activation</span>
+        </details>
     </details>
     <details>
         <summary>Research on the brain is done...<span class="box">1.4.A.7</span></summary>
@@ -309,7 +358,7 @@ functions together as a whole using</span>
         </details>
 
         <details>
-            <summary onclick="startTimer();">case studies</summary>I LOVE NICE
+            <summary onclick="startTimer();">case studies</summary>I LOVE GNEISS
         </details>
 
         <details>
@@ -318,8 +367,293 @@ functions together as a whole using</span>
         </details>
     </details>
 
+    <h2>Neuron <span class="box">1.3</span></h2>
+    <details>
+        <summary>Neural cells<span class="box">1.3.A.1</span></summary>
+        <span>These types of cells form the basis of the nervous system and are the building blocks of all behavior and mental processes. Two common types of neural cells in the 
+brain are:</span>
+
+        <details>
+            <summary>neurons</summary>
+
+            <span>neural cells that transmit 
+information</span>
+        </details>
+
+        <details>
+            <summary>glial cells</summary>
+
+            <span>cells that provide 
+structure, insulation, communication, and 
+waste transport</span>
+        </details>
+    </details>
+    <details>
+        <summary>neural transmission <span class="box">1.3.B.1 </span></summary>
+
+        <span>occurs in an orderly, systematic 
+way and involves the all-or-none principle, depolarization, refractory period, resting potential, reuptake, and threshold. Disruptions to this process can lead to disorders such as multiple sclerosis or myasthenia gravis </span>
+    </details>
+    <details>
+        <summary>neurotransmitters <span class="box">1.3.B.2</span></summary>
+
+        <span>between neurons</span>
+
+        <details>
+            <summary>dopamine</summary>
+
+            <span>wanting something. Oversupply = schizophrenia, undersupply = tremors in Parkinson's disease</span>
+        </details>
+
+        <details>
+            <summary>serotonin</summary>
+
+            <span>calms mood. Undersupply = depression</span>
+        </details>
+
+        <details>
+            <summary>norepinephrine (noradrenaline)</summary>
+
+            <span>alertness, attention</span>
+        </details>
+
+        <details>
+            <summary>glutamate</summary>
+
+            <span>major excitatory neurotransmitter, making an 
+action potential more likely. Oversupply = migraines, seizures</span>
+        </details>
+
+        <details>
+            <summary>GABA</summary>
+
+            <span>major inhibitory neurotransitter, making an action potential less likely. Undersupply = seizures, tremors, insomnia</span>
+        </details>
+
+        <details>
+            <summary>endorphins</summary>
+
+            <span>relieves pain</span>
+        </details>
+
+        <details>
+            <summary>substance P</summary>
+
+            <span>increases pain. Oversupply = chronic pain</span>
+        </details>
+
+        <details>
+            <summary>acetylcholine</summary>
+
+            <span>muscles. Undersupply = Alzheimers</span>
+        </details>
+    </details>
+    <details>
+        <summary>hormones <span class="box">1.3.B.3</span></summary>
+        
+        <span>in bloodstream</span>
+
+        <details>
+            <summary>adrenaline (epinephrine)</summary>
+
+            <span>fight-or-flight hormone, cf. cortisol (long-term stress hormone)</span>
+        </details>
+
+        <details>
+            <summary>leptin</summary>
+
+            <span>fullness hormone, makes you feel full</span>
+        </details>
+
+        <details>
+            <summary>ghrelin</summary>
+
+            <span>hunger hormone, makes you feel hungry</span>
+        </details>
+
+        <details>
+            <summary>melatonin</summary>
+
+            <span>sleep hormone, makes you feel sleepy</span>
+        </details>
+
+        <details>
+            <summary>oxytocin</summary>
+
+            <span>love hormone, makes you feel in love and trust others</span>
+        </details>
+    </details>
+    <details>
+        <summary>Psychoactive drugs <span class="box">1.3.C.3</span></summary>
+
+        <span>Psychoactive drug use can lead to tolerance 
+and/or addiction. Addiction can create 
+significant withdrawal symptoms if the
+psychoactive drugs are no longer consumed.</span>
+
+        <details>
+            <summary>influence
+neurotransmitter function <span class="box">1.3.C.1</span></summary>
+
+            <details>
+                <summary>agonists</summary>
+                <span>encourage 
+neural firing</span>
+            </details>
+
+            <details>
+                <summary>antagonists</summary>
+                <span>discourage 
+neural firing</span>
+            </details>
+
+            <details>
+                <summary>reuptake inhibitors</summary>
+                <span>block the reabsorption of 
+neurotransmitters back into the cell</span>
+            </details>
+        </details>
+
+        <details>
+            <summary>psychological and physiological effects by class <span class="box">1.3.C.2</span></summary>
+
+            <details>
+                <summary>Stimulants<span class="box light">1.3.C.2.i</span></summary>
+
+                <span>caffeine and cocaine,
+typically cause increased neural activity</span>
+            </details>
+
+            <details>
+                <summary>Depressants<span class="box light">1.3.C.2.ii</span></summary>
+
+                <span> alcohol, typically 
+cause decreased neural activity.</span>
+
+                <details>
+                    <summary>Opioids<span class="box light">1.3.C.2.iv</span></summary>
+
+                    <span>heroin, typically act as 
+    pain relievers.</span>
+                </details>
+            </details>
+
+            <details>
+                <summary>Hallucinogens<span class="box light">1.3.C.2.iii</span></summary>
+
+                <span>marijuana, typically 
+cause distortions in perception and/or 
+cognition</span>
+            </details>
+        </details>
+    </details>
+
+    <h2>Memories</h2>
+    <details>
+        <summary>Summary</summary>
+        <p>Dual-Track memory: Explicit=Declarative=Effortful=Conscious; Implicit=Procedural=Automatic=Unconscious.</p>
+        <p>Working=short-term, just a newer understanding of it. Iconic=visual, echoic=auditory.</p>
+    </details>
+    <details>
+        <summary>explicit/implicit/prospective<span class="box">2.3.A.1</span></summary>
+
+        <span>Memories for learned knowledge, events, and 
+experiences are differentiated by how they are
+processed by, stored in, and retrieved by the 
+brain.  </span>
+
+        <details>
+            <summary>Explicit memory<span class="box light">2.3.A.1.i</span></summary>
+
+            <span>more easily described or explained to 
+others</span>
+
+            <details>
+                <summary>episodic memory</summary>
+            </details>
+
+            <details>
+                <summary>semantic memory</summary>
+            </details>
+        </details>
+
+        <details>
+            <summary>Implicit memory<span class="box light">2.3.A.1.ii</span></summary>
+
+            <span>more challenging to 
+describe or explain to others</span>
+
+            <details>
+                <summary>procedural memory</summary>
+            </details>
+        </details>
+
+        <details>
+            <summary>Prospective memory<span class="box light">2.3.A.1.iii</span></summary>
+
+            <span>related to future actions</span>
+        </details>
+    </details>
+    <details>
+        <summary>working memory model<span class="box">2.3.A.3</span></summary>
+        <span>examines how our 
+primary memory system—working memory—engages in a dynamic interaction with</span>
+
+        <details>
+            <summary>central executive</summary>
+        </details>
+        <details>
+            <summary>phonological loop</summary>
+        </details>
+        <details>
+            <summary>visuospatial sketchpad</summary>
+        </details>
+    </details>
+    <details>
+        <summary>multi-store model <span class="box">2.3.A.4</span></summary>
+        <span> focuses on the impact of automatic and effortful processing
+on memory encoding, storage, and retrieval. Information must pass through three interacting systems to be remembered:</span>
+
+        <details>
+            <summary>sensory memory</summary>
+
+            <details>
+                <summary>iconic memory</summary>
+            </details>
+            <details>
+                <summary>echoic memory</summary>
+            </details>
+        </details>
+
+        <details>
+            <summary>short-term memory</summary>
+        </details>
+
+        <details>
+            <summary>long-term memory</summary>
+        </details>
+    </details>
+    <details>
+        <summary>levels of processing model <span class="box">2.3.A.5</span></summary>
+        <span>proposes 
+that memory is encoded on three levels from 
+shallowest to deepest:</span>
+
+        <details>
+            <summary>structural memory</summary>
+        </details>
+
+        <details>
+            <summary>phonemic memory</summary>
+        </details>
+
+        <details>
+            <summary>semantic memory</summary>
+        </details>
+    </details>
+
     <p>
-        Hovering over a span would reveal its source: either compiled from the question bank, <a href="https://chat.deepseek.com/a/chat/s/28121872-c76a-45cc-9f6e-bd053d091be2"><i>DeepSeek: Random Assignment and Non Experimental Methods in Psychology</i></a>, or if no source was given, <a href="https://apcentral.collegeboard.org/media/pdf/ap-psychology-course-and-exam-description.pdf">the CED</a>. <a href="https://www.cliffsnotes.com/study-notes/31000447">SG Biology quiz</a> <a href="https://www.cliffsnotes.com/study-notes/28552646">SG unit 1 midterm</a> <a href="https://www.cliffsnotes.com/study-notes/33665663">unit 1</a>
+        Hovering over a span would reveal its source: either compiled from the question bank, <a href="https://chat.deepseek.com/a/chat/s/28121872-c76a-45cc-9f6e-bd053d091be2"><i>DeepSeek: Random Assignment and Non Experimental Methods in Psychology</i></a>, or if no source was given, <a href="https://apcentral.collegeboard.org/media/pdf/ap-psychology-course-and-exam-description.pdf">the CED</a>. <a href="https://www.cliffsnotes.com/study-notes/31000447">SG</a> <a href="https://www.cliffsnotes.com/study-notes/28552646">SG</a> <a href="https://www.cliffsnotes.com/study-notes/33665663">unit 1 (full)</a>
     </p>
 
     <div id="timerWidget" style="display: none;">

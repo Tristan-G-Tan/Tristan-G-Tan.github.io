@@ -31,7 +31,7 @@
         }
 
         #results {
-            font-family: 'Minion Pro', 'Roboto Slab', 'Roboto', 'Arial';
+            font-family: 'Noto Serif SC Medium', 'Minion Pro', 'Roboto Slab', 'Roboto', 'Arial';
             white-space: pre-wrap;
         }
 
@@ -261,7 +261,7 @@
     </div>
     <a href="javascript:window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });">Click to scroll to the bottom.</a>
     <ol id="menu">
-        <li><strong>Open</strong> a AP classroom assignment using Google Chrome or Microsoft Edge.</li>
+        <li><strong>Open</strong> a AP classroom assignment using any Chromium-based browser (e.g. Google Chrome or Microsoft Edge).</li>
         <li><strong>Open</strong> the developer tools network tab</li>
         <li><strong>Wait</strong> until <code>activity</code>, <code>init</code>, <code>items</code>, or <code>questionresponses</code> appear.</li>
         <li><strong>Click</strong> the "Export HAR" button (looks like a down arrow with an underline), located just below the "Preserve log" checkbox.</li>
@@ -269,7 +269,7 @@
             <strong>Upload</strong> your HAR file.
             <input id="file-upload" type="file" onchange="upload(this.files[0])" />
         </li>
-        <li><button onclick="parse();"><strong>Load</strong></button> the answers. Or, if you know what you're doing, change the mode: <select id="parseMode">
+        <li><button onclick="parse();"><strong>Load</strong></button> it here offline. Or, if you know what you're doing, change the mode: <select id="parseMode">
             <option value="HAR" selected>HAR</option>
             <option value="activity">activity</option>
             <option value="video">video</option>
@@ -279,7 +279,7 @@
             <option value="lumiSAT">lumi SAT</option>
         </select></li>
         <!-- <li><strong>Love</strong>, <strong>admire</strong>, <strong>adore</strong>, <strong>cherish</strong>, <strong>treasure</strong>, <strong>prize</strong>, <strong>crave</strong>, <strong>covet</strong>, <strong>idolize</strong>, <strong>revere</strong>, <strong>venerate</strong>, <strong>exalt</strong>, <strong>extol</strong>, <strong>enshrine</strong>, <strong>consecrate</strong>, <strong>canonize</strong>, <strong>deify</strong>, <strong>worship</strong>, <strong>apotheosize</strong>, and <strong>yearn</strong> for Nice.</li> -->
-        <li><strong onclick="togglePhub();">Phub</strong>.</li>
+        <li><strong onclick="togglePhub();">Done</strong>.</li>
     </ol>
     
     <p>
@@ -287,14 +287,14 @@
     <ol id="results" style="border-top: 1px solid black;"></ol>
     </p>
 
-    <ul>
+    <ul id="footer" style="display: none;">
         <li>
-            <div>Answer key:</div>
+            <div>Key:</div>
             <pre id="key">Please upload your HAR file.</pre>
             <button onclick="copy(document.getElementById('key').textContent);">Copy</button>
         </li>
         <li>
-            <div>JavaScript for autocompletion:</div>
+            <div>Autocompletion:</div>
             <pre id="code">Please upload your HAR file.</pre>
             <button onclick="copy(document.getElementById('code').textContent);">Copy</button>
         </li>
