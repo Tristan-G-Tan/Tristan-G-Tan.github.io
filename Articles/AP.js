@@ -538,6 +538,7 @@ async function parse() {
                 if (content.size > 0) {
                     let text = content.text;
                     if (content.encoding === "base64") {
+                        // Why not atob? Because that messes up characterMapMathCharacters
                         let response = await fetch(`data:application/octet-stream;base64,${text}`);
                         text = await response.text();
                     }
