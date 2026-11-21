@@ -164,7 +164,7 @@ function handle1response(txt) {
                         li.appendChild(answers);
                     }
                 }
-            } else if (show.frq.stimulus) { // TODO: FIGURE OUT HOW TO ACCESS FRQ RUBRIC
+            } else if (show.frq.stimulus) { // TODO: FIGURE OUT HOW TO ACCESS FRQ RUBRIC: items, activity, and questionresponses
                 answerKey.push(-1);
 
                 for (subq of q.questions) {

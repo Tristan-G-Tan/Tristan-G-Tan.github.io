@@ -69,6 +69,36 @@
             border: 0.1rem solid #BBBDC0;
         }
 
+        .exclude {
+            background-color: #EFF7FC;
+            color: #58595B;
+            font-style: italic;
+        }
+
+        .p1 {
+            background-color: #B12D8A;
+            color: #FFFFFF;
+            margin: 0.5rem 0.3rem;
+            padding: 0.2rem;
+            font-weight: bold;
+        }
+
+        .p2 {
+            background-color: #5172AA;
+            color: #FFFFFF;
+            margin: 0.5rem 0.3rem;
+            padding: 0.2rem;
+            font-weight: bold;
+        }
+
+        .p3 {
+            background-color: #AC5326;
+            color: #FFFFFF;
+            margin: 0.5rem 0.3rem;
+            padding: 0.2rem;
+            font-weight: bold;
+        }
+
         #timerWidget {
             position: fixed;
             top: 1.5rem;
@@ -97,14 +127,684 @@
 
 <body>
     <header>
-        
-        <details>
-            <summary>Click any text with a triangle...</summary>
+        <p>
+            <details>
+                <summary>Click any text with a triangle...</summary>
 
-            <span>to expand it.</span>
-        </details>
-        Alternatively, <button onclick="document.querySelectorAll('details').forEach(e => e.open = true);">expand everything</button> here. To collapse everything, refresh the page (Ctrl + R).
+                <span>to expand it.</span>
+            </details>
+            Alternatively, <button onclick="document.querySelectorAll('details').forEach(e => e.open = true);">expand everything</button> here. To collapse everything, refresh the page (CTRL + R). Feel free to use the search functionality (CTRL + F) to automatically expand and find keywords on this page.
+        </p>
+        
+        <p>
+            These notes do NOT comprehensively exhaust all topics; see <a href="https://apcentral.collegeboard.org/media/pdf/ap-psychology-course-and-exam-description.pdf">the CED</a> for that. But if a topic is covered here, it WILL be covered comprehensively and exhaustively. <span class="exclude">Italicized, grayed out content like this is included FYI only and most likely won't be assessed on the AP Exam.</span>
+        </p>
     </header>
+<!-- 
+Replace  and  with space
+Replace § with *§
+Replace (delete) newlines
+Replace * with newlines
+
+2.B
+§ State the hypothesis of a research scenario, including whether the hypothesis is falsifiable.
+§ Identify operational definitions of variables in research scenarios to determine how well the definitions allow for the study to be replicated.
+§ Identify the independent variable(s), dependent variable(s), and/or confounding variable(s) in a research scenario.
+§ In a research scenario, identify the participants of a study who make up the sample that is drawn from a population.
+§ Determine whether the sample used is representative of the population and is selected by either random sampling or convenience sampling.
+§ Evaluate whether the sampling procedure involves sampling bias. 
+§ Determine to what extent the sampling method allows for results of the study to be generalized.
+§ Identify the experimental and control groups, including the process and purpose for assigning people to groups, whether a placebo was used with the control group, and the effect of the placebo on the results.
+§ Determine whether the study used single-blind or double blind procedures to control for confounding variables like experimenter bias or the social desirability bias.
+§ Determine whether the measurement instrument for experimental research used qualitative (such as structured interviews) or quantitative measures (such as Likert scales).
+§ Describe the impact of appropriate representation of participants in conducting research and on the outcomes of research.
+§ Explain how conclusions from experimental research evolve via scientific processes such as peer review and replication.
+
+2.C
+§ State the hypothesis of a research scenario, including whether the hypothesis is falsifiable.
+§ Identify operational definitions of variables in research scenarios to determine how well the definitions allow for the study to be replicated.
+§ Identify the variables of interest in a research scenario.
+§ Evaluate whether the results of a correlational study have a directionality problem or third variable problem that demonstrates that correlation does not equal causation.
+§ Determine whether the measurement instrument for non-experimental research was qualitative (such as structured interviews) or quantitative measures (such as Likert scales).
+§ Determine whether the research used a survey technique and whether the wording of the survey could lead respondents to demonstrate self-report bias or social desirability bias.
+§ Describe the impact of appropriate representation of participants in conducting research and on the outcomes of research.
+§ Explain how conclusions from non-experimental research evolve via scientific processes such as peer review and replication. 
+
+3.C Interpret quantitative or qualitative inferential data from a given table, graph, chart, figure, or diagram.
+§ Describe trends in and relationships between the variables as depicted in the data presented, such as interpreting correlational data from a scatterplot, including the correlation coefficient.
+§ Interpret results from research that could be expressed as effect sizes or statistical significance.
+    a. Effect size indicates the strength of the relationship between or among variables in a non-experimental study or the size of the difference between or among conditions in an experimental study. The effect size statistic is often interpreted as follows: 
+        § A small effect size statistic is usually 0.2 and below. 
+        § A medium effect size statistic is usually between 0.3 to 0.7. 
+        § A large effect size statistic is usually 0.8 or greater.
+    b.  Statistical significance indicates that the results of the study are not likely due to chance and instead likely due to the variables being studied. This statistic can be calculated for all types of research methods
+-->
+
+    <h2>Science Practices (Myers' Unit 0)</h2>
+    <details>
+        <summary>research design/methodology<span class="p2">2.A</span></summary>
+
+        <span>(A) <b>Identify</b> the research method used in the study.</span>
+
+        <details>
+            <summary>Experimental 
+methodology<span class="p2">2.B</span></summary>
+
+            <span>involves the use 
+of independent 
+variable(s) and 
+random assignment 
+to groups.</span>
+
+
+            <details>
+                <summary>independent variable</summary>
+
+                <span title="An Introduction to Psychology.pptx">Whatever is being manipulated in the experiment.</span>
+            </details>
+
+            <details>
+                <summary>dependent variable</summary>
+
+                <span title="An Introduction to Psychology.pptx">Whatever is being measured in the experiment.</span>
+            </details>
+
+            <details>
+                <summary>confounding variable</summary>
+
+                <span title="An Introduction to Psychology.pptx and 24 of 500 AP psychology to know test day">Variables that have unwanted influence on the outcome of an experiment; anything that differs between the control group and the experimental group besides the independent variable.</span>
+            </details>
+
+            <details>
+                <summary>random assignment</summary>
+
+                <span title="An Introduction to Psychology.pptx">Assigning participants to experimental and control groups by chance, thus minimizing preexisting differences (confounding variables) between the different groups. This is done to infer causation (NOT random <b>sampling</b>; that's for generalizability).</span>
+            </details>
+
+            <details>
+                <summary>control group and placebo</summary>
+
+                <span title="An Introduction to Psychology.pptx">the group not exposed to the treatment; contrasts with the experimental group and serves as a comparison for evaluating the effect of the treatment.</span>
+
+                <details>
+                    <summary>placebo</summary>
+
+                    <span title="AP Statistics CED EK 1.13.A.2">a 
+treatment with an inactive substance</span>
+                </details>
+
+                <details>
+                    <summary>placebo effect</summary>
+
+                    <span title="AP Statistics CED EK 1.13.A.3">The placebo effect is the difference between 
+the average response to a placebo and the 
+average response to no treatment.</span>
+                </details>
+            </details>
+
+            <details>
+                <summary>single-blind</summary>
+
+                <span title="AP Statistics CED EK 1.13.A.4">In a single-blind, also called single-masked, 
+experiment, participants do not know which 
+treatment they are receiving, but members 
+of the research team who interact with them 
+know which treatment each participant is 
+receiving, or vice versa.</span>
+            </details>
+
+            <details>
+                <summary>double-blind</summary>
+
+                <span title="AP Statistics CED EK 1.13.A.5">In a double-blind, also called double-masked, 
+experiment, neither the participants nor the 
+members of the research team who interact 
+with them know which treatment each 
+participant is receiving.</span>
+            </details>
+        </details>
+
+        <details>
+            <summary>Non-experimental
+methodologies<span class="p2">2.C</span></summary>
+
+            <span title="AP Statistics CED EK 1.10.D.1" class="exclude">An observational (cf. experimental) study is a study where 
+treatments are not imposed. The researcher 
+records the values of the variables of interest 
+in order to explore an investigative question of 
+interest.</span>
+
+            <details>
+                <summary>case study</summary>
+
+                <span title="An Introduction to Psychology.pptx">One individual or group is studied in depth in the hope of revealing universal principles.</span>
+            </details>
+
+            <details>
+                <summary>correlation</summary>
+
+                <span title="An Introduction to Psychology.pptx">Determining a relationship between two variables in which change in one variable are reflected in the changes in the other variable.</span>
+
+                <details>
+                    <summary>correlation 
+does not equal causation</summary>
+
+                    <span>causation requires experiments and random <b>assignment</b>; demonstrated by:</span>
+
+                    <details>
+                        <summary>directionality problem</summary>
+
+                        <span title="Gemini">Variable A could cause Variable B, Variable B could cause Variable A (reverse causation), or both could influence each other.</span>
+                    </details>
+
+                    <details>
+                        <summary>third variable problem</summary>
+
+                        <span title="An Introduction to Psychology.pptx">A situation where a third variable is responsible for the observed correlation between two other variables.</span>
+                    </details>
+                </details>
+
+                <details>
+                    <summary>correlation coefficient<span class="p3">3.C</span></summary>
+
+                    <span>
+                        <p title="AP Statistics CED EK 5.2.A.1">
+                            The correlation coefficient, r, summarizes 
+the strength and direction of the linear 
+association between two quantitative 
+variables. The correlation coefficient r is 
+unit-free and always between −1 and 1, 
+inclusive.
+                        </p>
+
+                        <p title="AP Statistics CED EK 5.2.A.1">
+                            A negative correlation coefficient 
+value indicates a negative association, and a 
+positive correlation coefficient value indicates 
+a positive association.
+                        </p>
+
+                        <p title="AP Statistics CED EK 5.2.A.2">
+                            The strength of the linear association is 
+determined by how close the correlation 
+coefficient is to −1 or 1. A value of r = 0
+indicates that there is no linear association. 
+A value of r = -1 or r =1 indicates that there 
+is a perfect linear association.
+                        </p>
+                    </span>
+                </details>
+            </details>
+
+            <details>
+                <summary>meta-analysis</summary>
+
+                <span title="An Introduction to Psychology.pptx">synthesizes data from multiple independent studies (often on the same research question or topic) to generate a single, more precise, and comprehensive conclusion; uses quantitative techniques (compare <span class="exclude">literature review, which is qualitative</span>)</span>
+            </details>
+
+            <details>
+                <summary>naturalistic observation</summary>
+
+                <span title="An Introduction to Psychology.pptx">Subjects are observed in their natural environment.</span>
+            </details>
+
+            <details>
+                <summary class="exclude">survey (in MCQs but not directly in FRQ AAQs)</summary>
+
+                <span title="AP Statistics CED EK 1.10.D.4">an observational study in which 
+the data are collected from humans using a 
+standard set of questions.</span>
+            </details>
+
+            <details>
+                <summary class="exclude">cross-sectional study</summary>
+
+                <span title="New_Myers' Psychology for the Ap Course.pdf page 597 of 2428">research that compares people of different ages at the same point in time.</span>
+            </details>
+
+            <details>
+                <summary class="exclude">longitudinal study</summary>
+
+                <span title="New_Myers' Psychology for the Ap Course.pdf page 597 of 2428">research that follows and retests the same people over time.</span>
+            </details>
+        </details>
+    </details>
+    <details>
+        <summary>ethical guidelines<span class="p2">2.D</span></summary>
+
+        <details>
+            <summary>institutional review</summary>
+
+            <span title="An Introduction to Psychology.pptx">An official committee reviews research plans before the study starts, to judge if the study is ethical for human or animal subjects.</span>
+        </details>
+
+        <details>
+            <summary>informed consent and/or 
+informed assent</summary>
+
+            <details>
+                <summary>consent</summary>
+
+                <span title="An Introduction to Psychology.pptx">adult participants fully understand study risks, benefits, tasks, and can freely choose to join or quit.</span>
+            </details>
+
+            <details>
+                <summary>assent</summary>
+
+                <span title="An Introduction to Psychology.pptx">children/teens show willingness to take part, while their guardians give formal permission.</span>
+            </details>
+        </details>
+
+        <details>
+            <summary>protect participants from 
+harm</summary>
+
+            <span title="An Introduction to Psychology.pptx">Researchers must take steps to avoid physical, mental, or emotional injury to participants</span>
+        </details>
+
+        <details>
+            <summary>participant 
+information confidential and/or 
+anonymous</summary>
+
+            <details>
+                <summary>confidentiality</summary>
+
+                <span title="An Introduction to Psychology.pptx">Researchers know participants' identities, but promise not to reveal their personal information to outsiders.</span>
+            </details>
+
+            <details>
+                <summary>anonymity</summary>
+
+                <span title="An Introduction to Psychology.pptx">No one (even researchers) can link data back to individual participants, no names are collected.</span>
+            </details>
+        </details>
+
+        <details>
+            <summary>deception</summary>
+
+            <span title="An Introduction to Psychology.pptx">Researchers hide or lie about the true study purpose, only allowed when no better way exists and harm is minimal.</span>
+
+            <details>
+                <summary>research confederates</summary>
+
+                <span title="An Introduction to Psychology.pptx">people pretending to be regular participants</span>
+            </details>
+        </details>
+
+        <details>
+            <summary>debriefing</summary>
+
+            <span title="An Introduction to Psychology.pptx">At the end of research, researchers fully explain the true purpose of the study, especially if deception was used. They answer participants' questions and ease any negative feelings.</span>
+        </details>
+    </details>
+    <details>
+        <summary>cognitive biases/fallacies/shortcuts/heuristics<span class="p1">1.B</span></summary>
+
+        <details>
+            <summary>confirmation bias<span class="p1">1.B</span></summary>
+
+            <span title="2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">Tendency to search for information that supports our preconceptions and to ignore or distort contradictory evidence. 
+</span>
+
+            <details>
+                <summary>belief perseverance<span class="box">4.2.B.1</span></summary>
+
+                <span>when a belief 
+    persists even if evidence suggests it is 
+    not accurate. People experiencing belief 
+    perseverance may engage in confirmation 
+    bias, thereby clinging to an attitude or belief 
+    regardless of the evidence for or against it.</span>
+            </details>
+        </details>
+
+        <details>
+            <summary>hindsight bias<span class="p1">1.B</span></summary>
+
+            <span title="An Introduction to Psychology.pptx and 2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">The tendency to believe, after learning an outcome, that one would have foreseen it. (Also known as the I-knew-it-all-along phenomenon.) Tendency to second guess a decision after the event has happened.</span>
+        </details>
+
+        <details>
+            <summary>overconfidence<span class="p1">1.B</span></summary>
+
+            <span title="An Introduction to Psychology.pptx and 2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">We humans tend to think we know more than we do: a tendency to overestimate the accuracy of one’s beliefs and judgments.</span>
+        </details>
+
+        <details>
+            <summary>representativeness heuristic<span class="box">2.2.A.4</span></summary> 
+
+            <span>when decisions are made according to prior expectations or 
+stereotypes</span>
+        </details>
+
+        <details>
+            <summary>availability heuristic<span class="box">2.2.A.4</span></summary> 
+
+            <span>when decisions are made recalling the first or most vivid example that 
+comes to mind</span>
+        </details>
+
+        <details>
+            <summary>gambler's fallacy<span class="box">2.2.A.6</span></summary>
+
+            <span title="2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">flipping a coin and having it land on heads eight times in a row, people may assume the coin will surely land on tails the next time</span>
+        </details>
+
+        <details>
+            <summary>sunk-cost fallacy<span class="box">2.2.A.6</span></summary>
+
+            <span title="2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">Our tendency to continue with an endeavor we've invested money, effort, or time into — even if the current costs outweigh the benefits.</span>
+        </details>
+
+        <details>
+            <summary>functional fixedness<span class="box">2.2.A.8</span></summary>
+
+            <span title="2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">hinders creative thinking: the inability to perceive a new use for an object associated with a different purpose; tendency to think of things only in terms of their usual functions</span>
+
+            <details>
+                <summary class="exclude">fixation/fixedness (in general)</summary>
+
+                <span title="2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">inability to see a problem from a new perspective, interfering with problem solving</span>
+            </details>
+        </details>
+
+        <details>
+            <summary class="exclude">racial bias</summary>
+
+            <span title="2.2 Thinking, Problem Solving, Judgments, and Decision-Making.pptx">e.g. associating Black people with aggressive behavior</span>
+        </details>
+    </details>
+    <details>
+        <summary>Data Interpretation (statistics)<span class="p3">3</span></summary>
+
+        <details>
+            <summary>Descriptive statistics<span class="p3">3.B</span></summary>
+
+            <details>
+                <summary>Shape</summary>
+
+                <details>
+                    <summary>skewness</summary>
+
+                    <p>AP Statistics CED EK 1.6.A.2: The shape of the distribution of one quantitative 
+variable is skewed to the right (positively skewed) 
+if the right tail (toward larger values) is longer than 
+the left. The shape of the distribution is skewed to 
+the left (negatively skewed) if the left tail (toward 
+smaller values) is longer than the right.</p>
+
+                    <p>AP Statistics CED EK 1.8.B.1: If a distribution is relatively symmetric, then 
+the values of the mean and median are 
+relatively close to each other. If a distribution 
+is skewed right, then the value of the mean 
+is usually larger than the median. If the 
+distribution is skewed left, then the value of 
+the mean is usually smaller than the median.</p>
+                </details>
+
+                <details>
+                    <summary>modality AP Statistics CED EK 1.6.A.3</summary>
+
+                    <span>Distributions with two prominent peaks are 
+called bimodal.</span>
+                </details>
+
+                <details>
+                    <summary>normal distribution curve</summary>
+
+                    <p title="AP Statistics CED EK 2.11.A.2">
+                        Many continuous random variables are well modeled by a normal distribution.
+                    </p>
+                    <p title="AP Statistics CED EK 2.11.A.3">
+                        A normal distribution can be described as 
+a continuous, unimodal, bell-shaped, and 
+symmetric curve.
+                    </p>
+                    <p title="AP Statistics CED EK 2.11.A.5">
+                        The normal distribution, or the normal curve, 
+is identified by two parameters, the mean, µ, 
+and the standard deviation, σ . The smaller 
+the standard deviation, the taller and more 
+concentrated the normal curve is around its 
+mean. The larger the standard deviation, the 
+shorter and less concentrated the normal 
+curve is around its mean.
+                    </p>
+
+                    <p title="AP Statistics CED EK 2.11.C.1">
+                        The empirical rule can be used to estimate the 
+area of a region under the graph of the normal 
+distribution curve. For a normal distribution, 
+approximately 68% of observations are within 1 
+standard deviation of the mean, approximately 
+95% of observations are within 2 standard 
+deviations of the mean, and approximately 
+99.7% of observations are within 3 standard 
+deviations of the mean. This is called the 
+empirical rule, or the 68–95–99.7 rule.
+                    </p>
+                </details>
+            </details>
+
+            <details>
+                <summary class="exclude">Outliers/Gaps/Clusters</summary>
+
+                <span>AP Statistics only; see topic 1.6</span>
+            </details>
+
+            <details>
+                <summary>Center (central tendency)</summary>
+            
+                <details>
+                    <summary>mean</summary>
+
+                    <span title="AP Statistics CED EK 1.7.A.2">the sum of all the values divided by 
+the number of values.</span>
+
+                    <details>
+                        <summary>It is considered nonresistant/non-robust</summary>
+
+                        <span title="AP Statistics CED EK 1.7.F.1">outliers can affect their values greatly</span>
+                    </details>
+
+                    <details>
+                        <summary>regression toward the mean</summary>
+
+                        <span title="An Introduction to Psychology.pptx">the tendency for extreme or unusual scores to fall back (regress) toward the average as more data are collected.</span>
+                    </details>
+                </details>
+
+                <details>
+                    <summary>median</summary>
+
+                    <span title="AP Statistics CED EK 1.7.A.3">the middle value when the data 
+set is ordered from smallest to largest.</span>
+
+                    <details>
+                        <summary>It is considered resistant/robust</summary>
+
+                        <span title="AP Statistics CED EK 1.7.F.1">outliers do 
+not greatly (if at all) affect their values</span>
+                    </details>
+
+                    <details>
+                        <summary>percentile rank</summary>
+
+                        <span title="AP Statistics CED EK 1.7.A.6">The pth percentile is the value that has p% of 
+the data less than or equal to it when the data 
+set is ordered from smallest to largest.</span>
+                    </details>
+                </details>
+
+                <details>
+                    <summary>mode</summary>
+                    
+                    <span title="An Introduction to Psychology.pptx">the score that occurs most often</span>
+                </details>
+            </details>
+
+            <details>
+                <summary>Spread (variability/variation)</summary>
+
+                <details>
+                    <summary>range</summary>
+
+                    <span title="AP Statistics CED EK 1.7.B.2">the difference between the 
+maximum data value and the minimum data 
+value.</span>
+                </details>
+
+                <details>
+                    <summary class="exclude">interquartile range</summary>
+
+                    <span title="AP Statistics CED EK 1.7.B.3">the difference 
+between the third and first quartiles: Q3 −Q1.</span>
+                </details>
+
+                <details>
+                    <summary>standard deviation</summary>
+
+                    <span title="AP Statistics CED EK 1.7.B.4 and An Introduction to Psychology.pptx">typical deviation 
+of the data values from their mean; the average squared distance between the scores and their mean</span>
+
+                    <details>
+                        <summary class="exclude">z-scores</summary>
+
+                        <span title="AP Statistics CED EK 1.9.D.2">A z-score measures how many standard 
+deviations a data value is above (positive 
+z-score) or below (negative z-score) the mean.</span>
+                    </details>
+                </details>
+
+                <details>
+                    <summary class="exclude">variance</summary>
+
+                    <span title="AP Statistics CED EK 1.7.B.4">The square of the standard deviation</span>
+                </details>
+            </details>
+        </details>
+
+        <details>
+            <summary>Inferential statistics<span class="p3">3.C</span></summary>
+
+            <details>
+                <summary>effect size</summary>
+
+                <span>A small effect size statistic is usually 0.2 and below. A medium effect size statistic is usually between 0.3 to 0.7. A large effect size statistic is usually 0.8 or greater.</span>
+
+                <details>
+                    <summary>in a non-experimental study<span class="p2">2.C</span></summary>
+
+                    <span>the strength of the 
+relationship between 
+or among variables </span>
+                </details>
+
+                <details>
+                    <summary>in an experimental study<span class="p2">2.B</span></summary>
+
+                    <span>experimental
+                    study or the size of the
+                    difference between or
+                    among conditions</span>
+                </details>
+            </details>
+
+            <details>
+                <summary>statistical significance (p-values)</summary>
+
+                <span>indicates that the 
+results of the study are 
+not likely due to chance 
+and instead likely due 
+to the variables being 
+studied. This statistic 
+can be calculated for 
+all types of research 
+methods.</span>
+            </details>
+        </details>
+
+        <details>
+            <summary>Research Methods and 
+Design (miscellaneous)<span class="p2">2</span></summary>
+
+            <details>
+                <summary>sampling<span class="p2">2.C</span></summary>
+
+                <!-- <p>
+                    random/convenient/representative sample, generalizability NOT causation (that's random assignment)
+    <br> § In a research scenario, identify the participants of a study who make up the sample that is drawn from a population.
+    <br> § Determine whether the sample used is representative of the population and is selected by either random sampling or convenience sampling.
+    <br> § Evaluate whether the sampling procedure involves sampling bias. 
+    <br> § Determine to what extent the sampling method allows for results of the study to be generalized.
+    <br> § Describe the impact of appropriate representation of participants in conducting research and on the outcomes of research.
+                </p> -->
+
+                <details>
+                    <summary>representative sample</summary>
+
+                    <span title="An Introduction to Psychology.pptx">A subset of population that accurately reflects the key characteristics, proportions, and diversity of the entire population. This is the ultimate goal, allowing for generalizability to the population (NOT causation; that's for experiments and achieved through random <b>assignment</b>)</span>
+                </details>
+
+                <details>
+                    <summary>random sample</summary>
+
+                    <span title="An Introduction to Psychology.pptx">A sample group of subjects selected by chance</span>
+                </details>
+
+                <details>
+                    <summary>convenient sample</summary>
+
+                    <span title="An Introduction to Psychology.pptx">A non-random sampling method where participants are selected based on their ease of access.</span>
+                </details>
+            </details>
+
+            <details>
+                <summary>experimenter bias<span class="p2">2.B</span></summary>
+
+                <span title="Gemini">when a researcher’s expectations, beliefs, or unconscious cues influence how a study is conducted, how participants behave, or how results are interpreted. Researchers prevent this by using a double-blind procedure, where neither the participant nor the person collecting data knows who is in the experimental or control group.</span>
+            </details>
+
+            <details>
+                <summary>wording (effect/bias)<span class="p2">2.C</span></summary>
+
+                <span title="AP Statistics CED EK 1.12.A.5">questions that are 
+confusing or leading (question wording bias); <span class="exclude">an example of response bias (the other being self-reported responses).</span></span>
+            </details>
+
+            <details>
+                <summary>self-report bias<span class="p2">2.C</span></summary>
+
+                <span title="Gemini">participants provide inaccurate information while describing their own thoughts, feelings, or behaviors on surveys or interviews. It often stems from faulty memory, misunderstanding a question, or an inability to evaluate oneself objectively.</span>
+            </details>
+
+            <details>
+                <summary>social desirability bias<span class="p2">2.B</span><span class="p2">2.C</span></summary>
+
+                <span title="Gemini">a specific form of self-report bias where people answer questions in a way that makes them look favorable to others rather than giving truthful responses. Respondents tend to over-report positive habits (like exercising or volunteering) and under-report socially frowned-upon behaviors (like cheating or unhealthy habits).</span>
+            </details>
+
+            <details>
+                <summary>measurement instruments<span class="p2">2.B</span><span class="p2">2.C</span></summary>
+
+                <details>
+                    <summary>qualitative measures</summary>
+                    
+                    <span>structured interviews</span>
+                </details>
+
+                <details>
+                    <summary>quantitative measures</summary>
+
+                    <span>Likert scales</span>
+                </details>
+            </details>
+        </details>
+    </details>
+
+
     <h2>Nervous System<span class="box">1.2</span></h2>
     <details>
         <summary>nervous system<span class="box">1.2</span></summary>
@@ -179,17 +879,17 @@ speech production</span>
 
                         <details>
                             <summary>thalamus</summary>
-                            <span title="Unit 1 Progress Check: MCQ 20">directs sensory input from the peripheral nervous system to the various parts of the brain for processing</span>
+                            <span title="1.4 The Brain.pptx and Unit 1 Progress Check: MCQ 20">central sensory (except smell) switchboard of the brain; directs sensory input from the peripheral nervous system to the various parts of the brain for processing</span>
                         </details>
 
                         <details>
                             <summary>hypothalamus</summary>
-                            <span title="DeepSeek">regulates hunger, thirst, body temperature, sex drive; controls pituitary gland (master gland of endocrine system)</span>
-                        </details>
+                            <span title="1.4 Daily Video 2 and DeepSeek">fight/flight, feeding, and fornication; regulates<span class="box light">4.6.B.1.i</span>hormones via the master gland of the endocrine system:</span>
 
-                        <details>
-                            <summary>pituitary gland</summary>
-                            <span title="https://en.wikipedia.org/wiki/Brain#cite_ref-106">secretes hormones into the bloodstream, where they circulate throughout the body and induce changes in cellular activity</span>
+                            <details>
+                                <summary>pituitary gland</summary>
+                                <span title="https://en.wikipedia.org/wiki/Brain#cite_ref-106 and 1.3 Neuron and Drug.pptx">secretes hormones into the bloodstream, where they circulate throughout the body and induce changes in cellular activity; secretes oxytocin and growth hormones</span>
+                            </details>
                         </details>
 
                         <details>
@@ -199,7 +899,7 @@ speech production</span>
 
                         <details>
                             <summary>amygdala</summary>
-                            <span title="Unit 1 Progress Check: MCQ 20">regulates emotional reactions</span>
+                            <span title="1.4 Daily Video 2 and Unit 1 Progress Check: MCQ 20">anger, aggression, and afraid; regulates emotional reactions</span>
                         </details>
                     </details>
 
@@ -292,6 +992,10 @@ stimuli. Three types of neurons work together:</span>
                     <span title="1.3: Daily Video 1"><u>E</u>fferent signals <u>e</u>xit at the brain.</span>
                 </details>
             </details>
+
+            <details>
+                <summary class="exclude">meninges</summary>
+            </details>
         </details>
 
         <details>
@@ -314,6 +1018,10 @@ processes that are involuntary</span>
                     <summary>parasympathetic nervous system</summary>
                     <span title="Unit 1 Progress Check: MCQ 5">helps calm the body and instigates digestion of food (rest-and-digest)</span>
                 </details>
+
+                <details>
+                    <summary class="exclude">enteric nervous system</summary>
+                </details>
             </details>
             
             <details>
@@ -324,7 +1032,8 @@ processes that are voluntary.</span>
         </details>
     </details>
 
-    <h2>Brain<span class="box">1.4</span></h2>
+
+    <h2>Brain (miscellaneous)<span class="box">1.4</span></h2>
     <details>
         <summary>test for cortex specialization<span class="box light">1.4.A.5.ii</span></summary>
         <span>Researchers test for cortex specialization 
@@ -377,14 +1086,21 @@ functions together as a whole using</span>
         </details>
 
         <details>
-            <summary onclick="startTimer();">case studies</summary>I LOVE GNEISS
+            <summary onclick="startTimer();">case studies<span class="p2">2.C</span></summary>I LOVE GNEISS
         </details>
 
         <details>
-            <summary>surgical procedures</summary>
-            <span title="Unit 1 Progress Check: MCQ 7">such as lesioning, a surgical technique that removes parts of the brain to treat psychological or physical illnesses.</span>
+            <summary>surgical procedures<span class="box">5.5.G.2</span></summary>
+            <span title="Unit 1 Progress Check: MCQ 7">such as lesioning, a surgical technique that removes parts of the brain to treat psychological or physical illnesses. Surgical or invasive interventions include 
+psychosurgery (which may involve lesioning), 
+TMS (transcranial magnetic stimulation), or 
+electroconvulsive therapy. The lobotomy is 
+a form of psychosurgery that was popular 
+in the mid-20th century but is rarely, if ever, 
+performed today</span>
         </details>
     </details>
+
 
     <h2>Neuron<span class="box">1.3</span></h2>
     <details>
@@ -475,17 +1191,17 @@ action potential more likely. Oversupply = migraines, seizures</span>
         <details>
             <summary>adrenaline (epinephrine)</summary>
 
-            <span>fight-or-flight hormone, cf. cortisol (long-term stress hormone)</span>
+            <span>fight-or-flight hormone, cf. <span class="exclude">cortisol (long-term stress hormone)</span></span>
         </details>
 
         <details>
-            <summary>leptin</summary>
+            <summary>leptin<span class="box light">4.6.B.1.i</span></summary>
 
             <span>fullness hormone, makes you feel full</span>
         </details>
 
         <details>
-            <summary>ghrelin</summary>
+            <summary>ghrelin<span class="box light">4.6.B.1.i</span></summary>
 
             <span>hunger hormone, makes you feel hungry</span>
         </details>
@@ -567,14 +1283,128 @@ cognition</span>
         </details>
     </details>
 
+
+    <h2>Sensation<span class="box">1.6</span></h2>
+
+
     <h2>Perception<span class="box">2.1</span></h2>
     <details>
         <summary>Easily confused terms</summary>
 
         <details>
+            <summary>random sampling vs random assignment</summary>
+
+            <p>The former is for generalizability. The latter is for causation (rather than just correlation).</p>
+            
+            <p>
+                AP Statistics CED EK 1.10.E.2: When observational units, or experimental 
+units, in a sample <b>are randomly selected</b> 
+from a population, it is appropriate to make 
+generalizations about the entire population of 
+individuals from which the sample was selected.
+            </p>
+
+            <p>
+                AP Statistics CED EK 1.10.E.4: When observational units, or experimental 
+units, in a sample are <b>not randomly selected</b> 
+from a population, it is appropriate to make 
+generalizations only about a population of 
+individuals that are similar to those used in the 
+study.
+            </p>
+
+            <p>
+                AP Statistics CED EK 1.13.A.7: The purpose of random <b>assignment</b> is to 
+create treatment groups that are as similar 
+as possible with respect to extraneous 
+sources of variation. If random assignment 
+is successful, the respective distributions of 
+each extraneous variable will be approximately 
+the same for all the treatment groups.
+            </p>
+
+            <p>
+                AP Statistics CED EK 1.13.D.1: Using random <b>assignment</b> of treatments to 
+experimental units allows for cause-and-effect 
+conclusions between the explanatory and the 
+response variables because the potential for 
+confounding variables is reduced.
+            </p>
+        </details>
+
+        <details>
+            <summary>random vs representative sample</summary>
+        </details>
+
+        <details>
+            <summary class="exclude">extraneous vs confounding variable</summary>
+
+            <p>The latter is a subset of the former. Extraneous variables might only affect the dependent variable, or they might be random noise. It becomes confounding when it links to <b>both</b> the independent and dependent variables</p>
+
+            <p>
+                AP Statistics CED EK 1.13.A.6: An extraneous source of variation, also referred 
+to as an extraneous variable, is a variable that is 
+known (or believed) to affect the response but 
+is not an explanatory variable being studied.
+            </p>
+
+            <p>
+                AP Statistics CED EK 1.10.D.5: A confounding variable in an <b>observational</b> 
+study provides an alternative explanation 
+for the observed relationship between the 
+explanatory and response variables determined 
+in the study, thereby reducing the possibility of 
+concluding a causal relationship between the 
+explanatory and response variables of interest. 
+To be a confounding variable, a variable must be 
+<b>associated with both the explanatory variable 
+and the response variable</b>.
+            </p>
+
+            <p>
+                AP Statistics CED EK 1.13.A.8: A confounding variable in an <b>experiment</b> is 
+a variable that is related to the explanatory 
+variable in such a way that it is difficult to 
+determine which variable, explanatory or 
+confounding, is influencing the change in the 
+response variable. However, in a well-designed 
+experiment, the potential for confounding 
+variables is reduced.
+            </p>
+        </details>
+
+        <details>
+            <summary>vestibular vs kinesthetic sense</summary>
+
+            <p>
+                Alicia has a condition in which tiny crystals break loose and randomly touch and bend the hair cells in her semicircular canals. Which of the following is the most likely effect of this condition?
+(A) Loss of feeling in her limbs
+(B) Confusion about right and left directions
+(C) Dizziness and loss of balance
+(D) Inability to determine the position of her joints
+Answer C
+Correct. The hair cells and semicircular canals in the ear are vital for balance, so this disruption would
+cause dizziness.
+            </p>
+        </details>
+
+        <details>
             <summary>drug tolerance, addiction, dependence, and withdrawal<span class="box">1.3.C.3</span></summary>
 
             <span>Tolerance is the diminished effect with the same dose. Addiction is craving. Dependence (not in the CED) is reliance. Withdrawal comes last (you have to quit first to see the withdrawal symptoms).</span>
+        </details>
+
+        <details>
+            <summary>resting potential, action potential, threshold (potential), absolute threshold, and difference threshold (just-noticeable difference, JND)</summary>
+
+            <p>
+                The first 3 are about neural transmission<span class="box">1.3.B.1</span>. Membrane potential (y-axis) is usually at the <u>resting</u> potential, typically -70 millivolts (mV). If it ever increases past the <u>threshold</u> (potential), typically -55 mV, it is now an <u>action</u> potential (the neuron fires) and will keep increasing (known as depolarization) until typically +30 to +40 mV. Then the membrane potential falls (known as repolarization) and, during the refractory period, dips even below the resting potential.
+            </p>
+            <p>
+                The last 2 are about sensation<span class="box">1.6</span>. The absolute 
+threshold<span class="box">1.6.A.1</span>occurs when a stimulus can be 
+detected at least 50% of the time; if a stimulus is less intense than that, it's subliminal. The just-noticeable difference<span class="box">1.6.A.2</span>(JND, also called the difference threshold) is the smallest detectable change between two stimuli that you can notice 50% of the time, and according to Weber's law, this is a constant proportion rather than a constant difference.
+</p>
         </details>
 
         <details>
@@ -628,7 +1458,7 @@ the schema in light of it</span>
                     <summary>accommodation</summary>
 
                     <span>taking in new information and changing the 
-schema to incorporate the new information. ALSO: Visual stimuli are focused onto the retina by 
+schema to incorporate the new information. ALSO<span class="box">1.6.B.2</span>: Visual stimuli are focused onto the retina by 
 the lens via this process</span>
                 </details>
             </details>
@@ -636,7 +1466,7 @@ the lens via this process</span>
             <details>
                 <summary>perceptual sets</summary>
 
-                <span title="2.1 Perception.pptx">temporary mental predisposition to perceive one thing and not another</span>
+                <span title="2.1 Perception.pptx and 2.2 MCQ 15">temporary mental predisposition to perceive one thing and not another. Compare: mental sets<span class="box">2.2.A.5</span>(prior experiences that were successful), a heuristic/problem-solving method (influences decisions, not perception) that continues to be applied because it was successful in the past even though it is now defunct</span>
             </details>
         </details>
 
@@ -734,6 +1564,7 @@ the retinal images by the brain; MORE IMPORTANTLY: feeling the tension when both
             </details>
         </details>
     </details>
+
 
     <h2>Memories</h2>
     <details>
@@ -868,8 +1699,177 @@ shallowest to deepest:</span>
         </details>
     </details>
 
+
+    <h2>Development and Learning (Unit 3)</h2>
+    <details>
+        <summary>Cognitive Development<span class="box">3.4</span></summary>
+
+        <details>
+            <summary>Piaget<span class="box">3.4.A.1</span></summary>
+
+            <span>According to Piaget, children develop schemas 
+via continuous and discontinuous processes 
+such as assimilation and accommodation.</span>
+
+            <details>
+                <summary>sensorimotor stage</summary>
+            </details>
+
+            <details>
+                <summary>preoperational stage</summary>
+            </details>
+
+            <details>
+                <summary>concrete operational stage</summary>
+            </details>
+
+            <details>
+                <summary>formal operational stage</summary>
+            </details>
+        </details>
+
+        <details>
+            <summary>Vygotsky<span class="box">3.4.A.2</span></summary>
+        </details>
+    </details>
+    <details>
+        <summary>Social-Emotional 
+Development Across 
+the Lifespan<span class="box">3.6</span></summary>
+
+        <details>
+            <summary>ecological systems theory<span class="box">3.6.A.1</span></summary>
+
+            <span>explores 
+    how the social environment influences 
+    development</span>
+
+            <details>
+                <summary>Microsystem</summary>
+            </details>
+
+            <details>
+                <summary>Mesosystem</summary>
+            </details>
+
+            <details>
+                <summary>Exosystem</summary>
+            </details>
+
+            <details>
+                <summary>Macrosystem</summary>
+            </details>
+
+            <details>
+                <summary>Chronosystem</summary>
+            </details>
+        </details>
+
+        <details>
+            <summary>stage theory of psychosocial development<span class="box">3.6.A.6</span></summary>
+
+            <span>a reconceptualization 
+of the psychosexual theory, proposes that 
+people must resolve psychosocial conflicts at 
+each stage of the lifespan</span>
+
+            <details>
+                <summary>Trust and mistrust</summary>
+            </details>
+            <details>
+                <summary>Autonomy and shame and doubt</summary>
+            </details>
+            <details>
+                <summary>Initiative and guilt</summary>
+            </details>
+            <details>
+                <summary>Industry and inferiority</summary>
+            </details>
+            <details>
+                <summary>Identity and role confusion</summary>
+            </details>
+            <details>
+                <summary>Intimacy and isolation</summary>
+            </details>
+            <details>
+                <summary>Generativity and stagnation</summary>
+            </details>
+            <details>
+                <summary>Integrity and despair</summary>
+            </details>
+        </details>
+
+        <details>
+            <summary>SYNTHESIZE play (parallel 
+and pretend) AND SPERMARCHE AND moratorium</summary>
+        </details>
+    </details>
+
+
+    <h2>Psychological Disorders</h2>
+    <details>
+        <summary>Classifying<span class="box">5.3</span></summary>
+
+        <details>
+            <summary>psychological 
+perspectives<span class="box">5.3.B.1</span></summary>
+            
+            <span>Most psychologists employ an eclectic 
+approach (using more than one psychological 
+perspective) when diagnosing and treating 
+clients.</span>
+
+            <details>
+                <summary>behavioral<span class="box">5.3.B.2</span></summary>
+            </details>
+            <details>
+                <summary>psychodynamic<span class="box">5.3.B.3</span><span class="box">4.4</span></summary>
+            </details>
+            <details>
+                <summary>humanistic<span class="box">5.3.B.4</span><span class="box">4.4.B.1</span></summary>
+            </details>
+            <details>
+                <summary>cognitive<span class="box">5.3.B.5</span></summary>
+            </details>
+            <details>
+                <summary>evolutionary<span class="box">5.3.B.6</span></summary>
+            </details>
+            <details>
+                <summary>sociocultural<span class="box">5.3.B.7</span></summary>
+            </details>
+            <details>
+                <summary>biological<span class="box">5.3.B.8</span></summary>
+            </details>
+        </details>
+
+        <details>
+            <summary>interaction models</summary>
+
+            <details>
+                <summary>biopsychosocial<span class="box">5.3.C.1</span></summary>
+            </details>
+            <details>
+                <summary>diathesis-stress<span class="box">5.3.C.2</span></summary>
+            </details>
+        </details>
+    </details>
+    <details>
+        <summary>Categories<span class="box">5.4</span></summary>
+
+        <details>
+            <summary></summary>
+        </details>
+    </details>
+    <details>
+        <summary>Treatment<span class="box">5.5</span></summary>
+
+        <details>
+            <summary></summary>
+        </details>
+    </details>
+
     <footer>
-        Hovering over a span would reveal its source: either compiled from the question bank, <a href="https://chat.deepseek.com/a/chat/s/28121872-c76a-45cc-9f6e-bd053d091be2"><i>DeepSeek: Random Assignment and Non Experimental Methods in Psychology</i></a>, or if no source was given, <a href="https://apcentral.collegeboard.org/media/pdf/ap-psychology-course-and-exam-description.pdf">the CED</a>. <a href="https://www.cliffsnotes.com/study-notes/31000447">SG</a> <a href="https://www.cliffsnotes.com/study-notes/28552646">SG</a> <a href="https://www.cliffsnotes.com/study-notes/33665663">unit 1 (full)</a>
+        Hovering over a span would reveal its source: either compiled from the question bank, <a href="https://chat.deepseek.com/a/chat/s/28121872-c76a-45cc-9f6e-bd053d091be2"><i>DeepSeek: Random Assignment and Non Experimental Methods in Psychology</i></a>, lovely PPTs by Summer, Myers', 500, <a href="https://apcentral.collegeboard.org/media/pdf/ap-statistics-course-and-exam-description.pdf">the AP Statistics CED</a>, random Gemini-powered Google searches, or if no source was given, <a href="https://apcentral.collegeboard.org/media/pdf/ap-psychology-course-and-exam-description.pdf">the AP Psychology Course and Exam Description (CED)</a>. <a href="https://www.cliffsnotes.com/study-notes/31000447">SG</a> <a href="https://www.cliffsnotes.com/study-notes/28552646">SG</a> <a href="https://www.cliffsnotes.com/study-notes/33665663">unit 1 (full)</a>
     </footer>
 
     <div id="timerWidget" style="display: none;">
